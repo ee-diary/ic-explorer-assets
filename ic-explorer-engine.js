@@ -136,7 +136,7 @@ function getDipConfig(package, pinCount) {
     };
   }
 }
-  var dip = C.dipConfig || {pinsPerSide:20,bodyX:122,bodyY:25,bodyW:260,bodyH:700};
+  var dip = C.dipConfig || getDipConfig(C.package, C.pinCount);
   var BX=dip.bodyX, BY=dip.bodyY, BW=dip.bodyW, BH=dip.bodyH, SIDE=dip.pinsPerSide;
   var PL=34, PW2=16, PITCH=BH/SIDE;
 
