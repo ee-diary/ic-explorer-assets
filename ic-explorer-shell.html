@@ -1,0 +1,321 @@
+<!-- ============================================================
+     IC EXPLORER — SHARED HTML SCAFFOLD  (ic-explorer-shell.html)
+     Copy this into each Blogger post.
+     Replace only the <script id="ic-data"> block below with
+     the chip-specific config for each IC.
+     ============================================================ -->
+
+<!-- 1. Load shared styles from your CDN -->
+<link rel="stylesheet" href="https://YOUR-CDN.com/ic-explorer/ic-explorer-core.css">
+
+<!-- 2. Chip-specific data (ONLY thing that changes per post) -->
+<script id="ic-data">
+window.IC_CONFIG = {
+  /* ── IDENTITY ── */
+  partName:     'PIC16F877A',
+  partMPN:      'PIC16F877A-I/P',
+  manufacturer: 'MICROCHIP',
+  package:      'DIP-40',
+  pinCount:     40,
+
+  /* ── SNAPMAGIC LINKS ── */
+  snapPageURL:  'https://www.snapeda.com/parts/PIC16F877A-I%2FP/Microchip+Technology/view-part/',
+  downloadURL:  'https://www.snapeda.com/parts/PIC16F877A-I%2FP/Microchip+Technology/view-part/?ref=snapeda',
+
+  /* ── DIP LAYOUT ── */
+  dipConfig: { pinsPerSide: 20, bodyX: 122, bodyY: 25, bodyW: 260, bodyH: 700 },
+
+  /* ── PIN DATA ── */
+  pins: [
+    /* LEFT (pins 1-20, top→bottom) */
+    {num:1,  id:'MCLR', lbl:'MCLR', name:'MCLR / VPP',           type:'RESET',funcs:['RESET'],           volt:'5V', curr:'N/A',  note:'Master Clear (Reset) input — active low. Pull high via 10kΩ to VDD. Also VPP for ICSP programming.'},
+    {num:2,  id:'RA0',  lbl:'RA0',  name:'RA0 / AN0',            type:'ADC',  funcs:['GPIO','ADC'],       volt:'5V', curr:'25mA', note:'PORTA bit 0. Analog input channel AN0 for 10-bit ADC.'},
+    {num:3,  id:'RA1',  lbl:'RA1',  name:'RA1 / AN1',            type:'ADC',  funcs:['GPIO','ADC'],       volt:'5V', curr:'25mA', note:'PORTA bit 1. Analog input channel AN1 for 10-bit ADC.'},
+    {num:4,  id:'RA2',  lbl:'RA2',  name:'RA2 / AN2 / VREF-',   type:'ADC',  funcs:['GPIO','ADC'],       volt:'5V', curr:'25mA', note:'PORTA bit 2. Analog input AN2. ADC negative reference (VREF-). Comparator VREF output.'},
+    {num:5,  id:'RA3',  lbl:'RA3',  name:'RA3 / AN3 / VREF+',   type:'ADC',  funcs:['GPIO','ADC'],       volt:'5V', curr:'25mA', note:'PORTA bit 3. Analog input AN3. ADC positive reference (VREF+).'},
+    {num:6,  id:'RA4',  lbl:'RA4',  name:'RA4 / T0CKI / C1OUT', type:'TIMER',funcs:['GPIO','TIMER','COMP'],volt:'5V',curr:'25mA', note:'PORTA bit 4. Timer0 external clock input (T0CKI). Comparator 1 output (C1OUT). Open-drain output.'},
+    {num:7,  id:'RA5',  lbl:'RA5',  name:'RA5 / AN4 / SS',      type:'ADC',  funcs:['GPIO','ADC','SPI'], volt:'5V', curr:'25mA', note:'PORTA bit 5. Analog input AN4. SPI Slave Select (SS). Comparator 2 output (C2OUT).'},
+    {num:8,  id:'RE0',  lbl:'RE0',  name:'RE0 / RD / AN5',      type:'ADC',  funcs:['GPIO','ADC'],       volt:'5V', curr:'25mA', note:'PORTE bit 0. Analog input AN5. Parallel Slave Port Read strobe (RD).'},
+    {num:9,  id:'RE1',  lbl:'RE1',  name:'RE1 / WR / AN6',      type:'ADC',  funcs:['GPIO','ADC'],       volt:'5V', curr:'25mA', note:'PORTE bit 1. Analog input AN6. Parallel Slave Port Write strobe (WR).'},
+    {num:10, id:'RE2',  lbl:'RE2',  name:'RE2 / CS / AN7',      type:'ADC',  funcs:['GPIO','ADC'],       volt:'5V', curr:'25mA', note:'PORTE bit 2. Analog input AN7. Parallel Slave Port Chip Select (CS).'},
+    {num:11, id:'VDD1', lbl:'VDD',  name:'VDD — Power Supply 1', type:'PWR',  funcs:['PWR'],              volt:'5V', curr:'N/A',  note:'Positive supply voltage (2.0V–5.5V). Decouple with 100nF cap close to pin.'},
+    {num:12, id:'VSS1', lbl:'VSS',  name:'VSS — Ground 1',       type:'GND',  funcs:['GND'],              volt:'0V', curr:'N/A',  note:'Ground reference for logic and I/O pins.'},
+    {num:13, id:'OSC1', lbl:'OSC1', name:'OSC1 / CLKI',          type:'XTAL', funcs:['XTAL'],             volt:'5V', curr:'N/A',  note:'Oscillator crystal input or external clock input (CLKI). Connect crystal or external clock here.'},
+    {num:14, id:'OSC2', lbl:'OSC2', name:'OSC2 / CLKO',          type:'XTAL', funcs:['XTAL'],             volt:'5V', curr:'N/A',  note:'Oscillator crystal output. In RC mode outputs FOSC/4 (CLKO). Connect other crystal leg here.'},
+    {num:15, id:'RC0',  lbl:'RC0',  name:'RC0 / T1OSO / T1CKI', type:'TIMER',funcs:['GPIO','TIMER'],     volt:'5V', curr:'25mA', note:'PORTC bit 0. Timer1 oscillator output (T1OSO). Timer1 external clock input (T1CKI).'},
+    {num:16, id:'RC1',  lbl:'RC1',  name:'RC1 / T1OSI / CCP2',  type:'PWM',  funcs:['GPIO','TIMER','PWM'],volt:'5V',curr:'25mA', note:'PORTC bit 1. Timer1 oscillator input (T1OSI). CCP2 capture/compare/PWM module 2.'},
+    {num:17, id:'RC2',  lbl:'RC2',  name:'RC2 / CCP1',           type:'PWM',  funcs:['GPIO','PWM'],       volt:'5V', curr:'25mA', note:'PORTC bit 2. CCP1 — Capture input / Compare output / PWM output module 1.'},
+    {num:18, id:'RC3',  lbl:'RC3',  name:'RC3 / SCK / SCL',      type:'SPI',  funcs:['GPIO','SPI','I2C'], volt:'5V', curr:'25mA', note:'PORTC bit 3. SPI clock (SCK) in SPI mode. I2C clock (SCL) in I2C mode.'},
+    {num:19, id:'RD0',  lbl:'RD0',  name:'RD0 / PSP0',           type:'GPIO', funcs:['GPIO'],             volt:'5V', curr:'25mA', note:'PORTD bit 0. Parallel Slave Port data bit 0 (PSP0). Bidirectional I/O.'},
+    {num:20, id:'RD1',  lbl:'RD1',  name:'RD1 / PSP1',           type:'GPIO', funcs:['GPIO'],             volt:'5V', curr:'25mA', note:'PORTD bit 1. Parallel Slave Port data bit 1 (PSP1). Bidirectional I/O.'},
+    /* RIGHT (pins 21-40: _rightSlot 0=top-right … 19=bottom-right) */
+    {num:40, id:'RB7',  lbl:'RB7',  name:'RB7 / PGD',            type:'GPIO', funcs:['GPIO','INT','RESET'],volt:'5V',curr:'25mA', _rightSlot:0,  note:'PORTB bit 7. ICSP programming data (PGD). Interrupt-on-change.'},
+    {num:39, id:'RB6',  lbl:'RB6',  name:'RB6 / PGC',            type:'GPIO', funcs:['GPIO','INT','RESET'],volt:'5V',curr:'25mA', _rightSlot:1,  note:'PORTB bit 6. ICSP programming clock (PGC). Interrupt-on-change.'},
+    {num:38, id:'RB5',  lbl:'RB5',  name:'RB5',                   type:'GPIO', funcs:['GPIO','INT'],        volt:'5V',curr:'25mA', _rightSlot:2,  note:'PORTB bit 5. Interrupt-on-change pin. Schmitt Trigger input.'},
+    {num:37, id:'RB4',  lbl:'RB4',  name:'RB4',                   type:'GPIO', funcs:['GPIO','INT'],        volt:'5V',curr:'25mA', _rightSlot:3,  note:'PORTB bit 4. Interrupt-on-change pin. Schmitt Trigger input.'},
+    {num:36, id:'RB3',  lbl:'RB3',  name:'RB3 / PGM',             type:'GPIO', funcs:['GPIO','RESET'],      volt:'5V',curr:'25mA', _rightSlot:4,  note:'PORTB bit 3. Low-voltage ICSP programming enable pin (PGM).'},
+    {num:35, id:'RB2',  lbl:'RB2',  name:'RB2',                   type:'GPIO', funcs:['GPIO'],              volt:'5V',curr:'25mA', _rightSlot:5,  note:'PORTB bit 2. General purpose I/O.'},
+    {num:34, id:'RB1',  lbl:'RB1',  name:'RB1',                   type:'GPIO', funcs:['GPIO'],              volt:'5V',curr:'25mA', _rightSlot:6,  note:'PORTB bit 1. General purpose I/O.'},
+    {num:33, id:'RB0',  lbl:'RB0',  name:'RB0 / INT',             type:'INT',  funcs:['GPIO','INT'],        volt:'5V',curr:'25mA', _rightSlot:7,  note:'PORTB bit 0. External interrupt pin (INT). Schmitt Trigger input.'},
+    {num:32, id:'VDD2', lbl:'VDD',  name:'VDD — Power Supply 2',  type:'PWR',  funcs:['PWR'],               volt:'5V',curr:'N/A',  _rightSlot:8,  note:'Positive supply voltage 2. Decouple with 100nF + 10µF caps.'},
+    {num:31, id:'VSS2', lbl:'VSS',  name:'VSS — Ground 2',        type:'GND',  funcs:['GND'],               volt:'0V',curr:'N/A',  _rightSlot:9,  note:'Ground reference 2.'},
+    {num:30, id:'RD7',  lbl:'RD7',  name:'RD7 / PSP7',            type:'GPIO', funcs:['GPIO'],              volt:'5V',curr:'25mA', _rightSlot:10, note:'PORTD bit 7. Parallel Slave Port data bit 7 (PSP7).'},
+    {num:29, id:'RD6',  lbl:'RD6',  name:'RD6 / PSP6',            type:'GPIO', funcs:['GPIO'],              volt:'5V',curr:'25mA', _rightSlot:11, note:'PORTD bit 6. Parallel Slave Port data bit 6 (PSP6).'},
+    {num:28, id:'RD5',  lbl:'RD5',  name:'RD5 / PSP5',            type:'GPIO', funcs:['GPIO'],              volt:'5V',curr:'25mA', _rightSlot:12, note:'PORTD bit 5. Parallel Slave Port data bit 5 (PSP5).'},
+    {num:27, id:'RD4',  lbl:'RD4',  name:'RD4 / PSP4',            type:'GPIO', funcs:['GPIO'],              volt:'5V',curr:'25mA', _rightSlot:13, note:'PORTD bit 4. Parallel Slave Port data bit 4 (PSP4).'},
+    {num:26, id:'RC7',  lbl:'RC7',  name:'RC7 / RX / DT',         type:'UART', funcs:['GPIO','UART'],       volt:'5V',curr:'25mA', _rightSlot:14, note:'PORTC bit 7. USART asynchronous receive (RX). USART synchronous data (DT).'},
+    {num:25, id:'RC6',  lbl:'RC6',  name:'RC6 / TX / CK',         type:'UART', funcs:['GPIO','UART'],       volt:'5V',curr:'25mA', _rightSlot:15, note:'PORTC bit 6. USART asynchronous transmit (TX). USART synchronous clock (CK).'},
+    {num:24, id:'RC5',  lbl:'RC5',  name:'RC5 / SDO',             type:'SPI',  funcs:['GPIO','SPI'],        volt:'5V',curr:'25mA', _rightSlot:16, note:'PORTC bit 5. SPI data out (SDO). SSP module serial data output.'},
+    {num:23, id:'RC4',  lbl:'RC4',  name:'RC4 / SDI / SDA',       type:'SPI',  funcs:['GPIO','SPI','I2C'],  volt:'5V',curr:'25mA', _rightSlot:17, note:'PORTC bit 4. SPI data in (SDI). I2C data (SDA). SSP module serial data input.'},
+    {num:22, id:'RD3',  lbl:'RD3',  name:'RD3 / PSP3',            type:'GPIO', funcs:['GPIO'],              volt:'5V',curr:'25mA', _rightSlot:18, note:'PORTD bit 3. Parallel Slave Port data bit 3 (PSP3).'},
+    {num:21, id:'RD2',  lbl:'RD2',  name:'RD2 / PSP2',            type:'GPIO', funcs:['GPIO'],              volt:'5V',curr:'25mA', _rightSlot:19, note:'PORTD bit 2. Parallel Slave Port data bit 2 (PSP2).'},
+  ],
+
+  altFuncs: {
+    'MCLR':['VPP'],
+    'RA0':['AN0'],'RA1':['AN1'],'RA2':['AN2','VREF-'],
+    'RA3':['AN3','VREF+'],'RA4':['T0CKI','C1OUT'],
+    'RA5':['AN4','SS','C2OUT'],
+    'RE0':['AN5','RD'],'RE1':['AN6','WR'],'RE2':['AN7','CS'],
+    'OSC1':['CLKI'],'OSC2':['CLKO'],
+    'RC0':['T1OSO','T1CKI'],'RC1':['T1OSI','CCP2'],
+    'RC2':['CCP1'],'RC3':['SCK','SCL'],
+    'RC4':['SDI','SDA'],'RC5':['SDO'],
+    'RC6':['TX','CK'],'RC7':['RX','DT'],
+    'RB0':['INT'],'RB3':['PGM','LVP'],'RB6':['PGC','ICD_CLK'],'RB7':['PGD','ICD_DAT'],
+    'RD0':['PSP0'],'RD1':['PSP1'],'RD2':['PSP2'],'RD3':['PSP3'],
+    'RD4':['PSP4'],'RD5':['PSP5'],'RD6':['PSP6'],'RD7':['PSP7'],
+  },
+
+  quickSpecs: [
+    {label:'Flash',     value:'14 KB (8K × 14-bit)'},
+    {label:'SRAM',      value:'368 bytes'},
+    {label:'EEPROM',    value:'256 bytes'},
+    {label:'Max Freq',  value:'20 MHz',               color:'#c8a850'},
+    {label:'Supply',    value:'2.0–5.5V',              color:'#78c878'},
+    {label:'I/O Pins',  value:'33 (5 ports)'},
+    {label:'ADC',       value:'10-bit, 8 channels',   color:'#c8a850'},
+    {label:'PWM',       value:'2 CCP modules',         color:'#cc6888'},
+    {label:'Interfaces',value:'SPI + I²C + USART + PSP',color:'#c8a850'},
+  ],
+
+  dsSpecs: [
+    {label:'Architecture',   value:'8-bit PIC RISC (mid-range)'},
+    {label:'Flash',          value:'14 KB (8K × 14-bit words)'},
+    {label:'SRAM',           value:'368 bytes'},
+    {label:'EEPROM',         value:'256 bytes'},
+    {label:'Max Frequency',  value:'20 MHz'},
+    {label:'Supply Voltage', value:'2.0V – 5.5V'},
+    {label:'I/O Pins',       value:'33 (Ports A/B/C/D/E)'},
+    {label:'ADC',            value:'10-bit, 8 external channels'},
+    {label:'Timers',         value:'Timer0 (8-bit) + Timer1 (16-bit) + Timer2 (8-bit)'},
+    {label:'CCP Modules',    value:'2× Capture/Compare/PWM'},
+    {label:'USART',          value:'1× async/sync'},
+    {label:'SSP',            value:'SPI (master/slave) + I²C (master/slave)'},
+    {label:'PSP',            value:'Parallel Slave Port (8-bit, PORTD)'},
+    {label:'Comparators',    value:'2× analog comparators'},
+    {label:'Package',        value:'DIP-40, TQFP-44, PLCC-44'},
+  ],
+
+  dsFeatures: [
+    '35 single-word instructions, most execute in 1 cycle (200 ns @ 20 MHz)',
+    '10-bit ADC with 8 multiplexed channels and programmable acquisition time',
+    '2 CCP modules: 16-bit capture, 16-bit compare, 10-bit PWM output',
+    'SSP module supports SPI (4 modes) and I²C master/slave',
+    'Full-duplex USART with auto-baud detection',
+    'Parallel Slave Port (PSP) on PORTD for microprocessor interfacing',
+    '2 analog comparators with programmable reference (CVref)',
+    'In-Circuit Serial Programming (ICSP) via RB6/RB7 pins',
+    'Watchdog Timer with dedicated internal oscillator',
+    'Power-on Reset, Brown-out Reset, Low-voltage Detect',
+  ],
+};
+</script>
+
+<!-- 3. HTML scaffold — identical on every page -->
+<div id="a13wrap">
+<div class="aw">
+
+  <!-- HEADER -->
+  <div class="aw-hdr">
+    <div class="aw-hdr-l">
+      <svg class="aw-logo" viewBox="0 0 100 100">
+        <rect fill="none" height="64" rx="8" stroke-width="5" stroke="currentColor" width="64" x="18" y="18"/>
+        <rect fill="currentColor" height="40" opacity="0.12" rx="4" width="40" x="30" y="30"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="18" x2="4" y1="30" y2="30"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="18" x2="4" y1="46" y2="46"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="18" x2="4" y1="62" y2="62"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="82" x2="96" y1="30" y2="30"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="82" x2="96" y1="46" y2="46"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="82" x2="96" y1="62" y2="62"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="30" x2="30" y1="18" y2="4"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="50" x2="50" y1="18" y2="4"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="70" x2="70" y1="18" y2="4"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="30" x2="30" y1="82" y2="96"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="50" x2="50" y1="82" y2="96"/>
+        <line stroke-linecap="round" stroke-width="4" stroke="currentColor" x1="70" x2="70" y1="82" y2="96"/>
+      </svg>
+      <div>
+        <span class="aw-title" id="hdrTitle">IC</span>
+        <span class="aw-sub" id="hdrSub">Interactive IC Explorer</span>
+      </div>
+    </div>
+    <div style="align-items:center;display:flex;gap:8px;">
+      <span class="aw-badge" id="hdrBadge">DIP</span>
+      <div class="aw-dot"></div>
+    </div>
+  </div>
+
+  <!-- MAIN TABS -->
+  <div class="aw-mtabs">
+    <div class="aw-mtab on" data-mt="pin">
+      <svg fill="none" height="16" stroke-width="2.5" stroke="currentColor" style="margin-right:5px;vertical-align:middle;" viewBox="0 0 24 24" width="16"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>PIN EXPLORER
+    </div>
+    <div class="aw-mtab" data-mt="design">
+      <svg fill="none" height="16" stroke-width="2.5" stroke="currentColor" style="margin-right:5px;vertical-align:middle;" viewBox="0 0 24 24" width="16"><rect height="18" rx="2" width="18" x="3" y="3"/><path d="M3 9h18M9 21V9"/></svg>DESIGN FILES
+    </div>
+    <div class="aw-mtab" data-mt="ds">
+      <svg fill="none" height="16" stroke-width="2.5" stroke="currentColor" style="margin-right:5px;vertical-align:middle;" viewBox="0 0 24 24" width="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>DATASHEET
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="aw-body">
+
+    <!-- LEFT SCREEN -->
+    <div class="aw-screen" id="awScreen">
+      <span class="aw-screen-label" id="awScreenLabel">IC PIN EXPLORER</span>
+      <div class="aw-screen-ic" id="awScreenIC">
+        <svg id="A13" style="display:block;height:auto;overflow:visible;width:100%;" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="aw-screen-canvas" id="awScreenCanvas">
+        <canvas id="awOutputCanvas" style="background:#0d1117;display:block;width:100%;"></canvas>
+      </div>
+      <div id="awScreenDS" style="display:none;height:100%;overflow-y:auto;padding:14px;scrollbar-color:#30363d transparent;scrollbar-width:thin;">
+        <div id="awDSContent" style="color:#8b949e;font-size:14px;line-height:1.7;"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT CONTROLS -->
+    <div class="aw-ctrl" id="awCtrl">
+
+      <!-- PIN EXPLORER CONTROLS -->
+      <div id="ctrl-pin" style="display:flex;flex-direction:column;gap:8px;">
+        <div class="aw-det" id="awDET">
+          <div class="aw-det-empty" id="awEMPTY">
+            <span class="aw-arr"><svg fill="none" height="20" stroke-width="2.5" stroke="currentColor" viewBox="0 0 24 24" width="20"><line x1="19" x2="5" y1="12" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></span>
+            <p>Click any pin on the IC<br>to see full specifications</p>
+          </div>
+          <div class="aw-dc" id="awDC">
+            <div class="aw-dbar"><div class="aw-dbadge" id="awBADGE"></div><div><span class="aw-dpid" id="awDID"></span><span class="aw-dfull" id="awDFULL"></span></div></div>
+            <div class="aw-funcs" id="awFUNCS"></div>
+            <div class="aw-igrid" id="awIGRID"></div>
+            <div class="aw-alts" id="awALTS" style="display:none;"><span class="aw-albl">Alt Functions</span><div class="aw-achips" id="awACHIPS"></div></div>
+            <div class="aw-note" id="awNOTE"></div>
+          </div>
+        </div>
+        <div class="aw-filt">
+          <div class="aw-fpbox">
+            <span class="aw-fplbl"><svg fill="currentColor" height="11" style="margin-right:4px;vertical-align:middle;" viewBox="0 0 24 24" width="11"><polygon points="12,2 22,12 12,22 2,12"/></svg>Highlight by Function</span>
+            <div class="aw-fbtns" id="awFBTNS"></div>
+          </div>
+          <div class="aw-ltog" onclick="awTogList()">
+            <span>PIN LIST &nbsp;<b id="awCNT"></b></span>
+            <span id="awTICON" style="align-items:center;color:#4da6ff;display:flex;gap:4px;"><svg fill="none" height="10" stroke-width="3" stroke="#4da6ff" viewBox="0 0 24 24" width="10"><polyline points="6 9 12 15 18 9"/></svg> SHOW</span>
+          </div>
+          <div class="aw-plist" id="awPLIST"><div id="awROWS"></div></div>
+          <div class="aw-leg" id="awLEG"></div>
+        </div>
+      </div>
+
+      <!-- DESIGN FILES CONTROLS -->
+      <div id="ctrl-design" style="display:none;flex-direction:column;gap:8px;">
+        <div class="aw-ctrl-hdr"><svg fill="currentColor" height="13" style="margin-right:6px;opacity:0.8;vertical-align:middle;" viewBox="0 0 24 24" width="13"><polygon points="12,2 22,12 12,22 2,12"/></svg><span id="hdrDesign">Design Files</span></div>
+        <div class="aw-stabs" id="awStabs">
+          <div class="aw-stab on" data-st="schematic"><svg fill="none" height="12" stroke-width="2.5" stroke="currentColor" style="margin-right:4px;vertical-align:middle;" viewBox="0 0 24 24" width="12"><rect height="10" rx="1" width="6" x="2" y="7"/><rect height="10" rx="1" width="6" x="16" y="7"/><line x1="8" x2="16" y1="12" y2="12"/></svg>SCHEMATIC</div>
+          <div class="aw-stab" data-st="symbol"><svg fill="none" height="12" stroke-width="2.5" stroke="currentColor" style="margin-right:4px;vertical-align:middle;" viewBox="0 0 24 24" width="12"><rect height="12" rx="2" width="18" x="3" y="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="8" x2="8" y1="6" y2="18"/></svg>SYMBOL</div>
+          <div class="aw-stab" data-st="footprint"><svg fill="none" height="12" stroke-width="2.5" stroke="currentColor" style="margin-right:4px;vertical-align:middle;" viewBox="0 0 24 24" width="12"><rect height="14" rx="1" width="14" x="5" y="5"/><rect height="6" width="6" x="9" y="9"/><line x1="1" x2="5" y1="9" y2="9"/><line x1="19" x2="23" y1="15" y2="15"/></svg>FOOTPRINT</div>
+        </div>
+        <div id="awSnapStatus" style="align-items:center;background:#0d1117;border-radius:5px;border:1px solid #21262d;color:#8b949e;display:flex;font-size:12px;gap:8px;padding:8px 10px;">
+          <svg fill="none" height="12" id="awSnapStatusIcon" stroke-width="2.5" stroke="#c8a850" viewBox="0 0 24 24" width="12"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+          <span id="awSnapStatusTxt">Connecting to SnapMagic Search API...</span>
+        </div>
+        <div class="aw-actions">
+          <span class="aw-act-title" id="awDesignTitle">Schematic Symbol</span>
+          <div style="background:#0d1117;border-radius:4px;border:1px solid #21262d;display:flex;gap:4px;margin-bottom:8px;padding:4px;">
+            <button class="aw-src-btn on" data-src="snapeda"><svg fill="currentColor" height="10" style="margin-right:3px;vertical-align:middle;" viewBox="0 0 24 24" width="10"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>SnapMagic API</button>
+            <button class="aw-src-btn" data-src="local"><svg fill="none" height="10" stroke-width="2.5" stroke="currentColor" style="margin-right:3px;vertical-align:middle;" viewBox="0 0 24 24" width="10"><rect height="18" rx="2" width="18" x="3" y="3"/><path d="M3 9h18"/></svg>Local Render</button>
+          </div>
+          <div class="aw-btn-row">
+            <button class="aw-btn aw-btn-blue" id="awCanZoomIn">＋ Zoom</button>
+            <button class="aw-btn aw-btn-blue" id="awCanZoomOut">－ Zoom</button>
+            <button class="aw-btn aw-btn-blue" id="awCanReset">⊙ Reset</button>
+          </div>
+          <div id="awPartMeta" style="background:#0d1117;border-radius:4px;border:1px solid #21262d;display:none;font-size:12px;margin-top:2px;padding:7px 9px;">
+            <div id="awPartName" style="color:#e0e5ec;font-weight:700;margin-bottom:4px;"></div>
+            <div id="awPartDesc" style="color:#8b949e;line-height:1.7;"></div>
+            <div id="awPartBadges" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;"></div>
+          </div>
+          <div class="aw-btn-row" style="margin-top:4px;">
+            <button class="aw-btn aw-btn-green" id="awBtnSnapEDA"><svg fill="none" height="11" stroke-width="2.5" stroke="currentColor" style="margin-right:3px;vertical-align:middle;" viewBox="0 0 24 24" width="11"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>View on SnapMagic</button>
+            <button class="aw-btn aw-btn-gold" id="awBtnDownload"><svg fill="none" height="11" stroke-width="2.5" stroke="currentColor" style="margin-right:3px;vertical-align:middle;" viewBox="0 0 24 24" width="11"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Download</button>
+          </div>
+          <div id="awDesignInfo" style="color:#3a4a5a;font-size:13px;line-height:1.5;margin-top:2px;"></div>
+        </div>
+        <div id="awLayerLeg" style="background:#0d1117;border-radius:5px;border:1px solid #21262d;color:#8b949e;display:none;font-size:13px;line-height:1.8;padding:7px 10px;"></div>
+      </div>
+
+      <!-- DATASHEET CONTROLS -->
+      <div id="ctrl-ds" style="display:none;flex-direction:column;gap:8px;">
+        <div class="aw-ctrl-hdr"><svg fill="currentColor" height="12" style="margin-right:6px;vertical-align:middle;" viewBox="0 0 24 24" width="12"><polygon points="12,2 22,12 12,22 2,12"/></svg>Datasheet Analyzer</div>
+        <div class="aw-upload" id="awUploadArea">
+          <div style="font-size:22px;margin-bottom:6px;">📄</div>
+          <div style="color:#8b949e;font-size:14px;margin-bottom:10px;" id="awUploadLabel">IC Datasheet (.pdf)<br><span style="font-size:16px;">100% local — no data leaves your browser</span></div>
+          <input accept=".pdf" id="awPdfInput" style="display:none;" type="file">
+          <button class="aw-upload-btn" onclick="document.getElementById('awPdfInput').click()">CHOOSE PDF</button>
+          <div id="awFileInfo" style="color:#8b949e;font-size:16px;margin-top:6px;">No file selected</div>
+          <div id="awProgress" style="display:none;"><div class="aw-prog"><div class="aw-prog-bar" id="awProgressBar"></div></div></div>
+        </div>
+        <div class="aw-actions" id="awDsQuick">
+          <span class="aw-act-title" id="awQsTitle">Quick Specs</span>
+          <div id="awDsQuickBody" style="color:#8b949e;font-size:16px;line-height:1.9;"></div>
+        </div>
+        <div class="aw-actions">
+          <span class="aw-act-title">Resources</span>
+          <div class="aw-btn-row">
+            <button class="aw-btn aw-btn-blue" id="awBtnPdf">↗ Official PDF</button>
+          </div>
+          <div class="aw-btn-row">
+            <button class="aw-btn aw-btn-green" id="awLoadSample"><svg fill="currentColor" height="11" style="margin-right:4px;vertical-align:middle;" viewBox="0 0 24 24" width="11"><polygon points="5,3 19,12 5,21"/></svg>Load Sample Data</button>
+            <button class="aw-btn aw-btn-red" id="awNewUpload" style="display:none;"><svg fill="none" height="11" stroke-width="2.5" stroke="currentColor" style="margin-right:4px;vertical-align:middle;" viewBox="0 0 24 24" width="11"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>New Upload</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /aw-ctrl -->
+  </div><!-- /aw-body -->
+</div><!-- /aw -->
+<div class="aw-tt" id="awTT"></div>
+</div><!-- /a13wrap -->
+
+<!-- 4. PDF.js from CDN (shared across all pages, browser-cached) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script>if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';</script>
+
+<!-- 5. Shared engine from your CDN -->
+<script src="https://YOUR-CDN.com/ic-explorer/ic-explorer-engine.js"></script>
+
+<!-- 6. Boot: wire up dynamic header text, then init -->
+<script>
+(function(){
+  var C = window.IC_CONFIG;
+  document.getElementById('hdrTitle').textContent = C.partName;
+  document.getElementById('hdrSub').textContent = 'Interactive IC Explorer \u2022 '+C.package+' \u2022 '+C.pinCount+' pins';
+  document.getElementById('hdrBadge').textContent = C.package;
+  document.getElementById('hdrDesign').textContent = 'Design Files \u2014 '+C.partName;
+  document.getElementById('awQsTitle').textContent = 'Quick Specs \u2014 '+C.partName;
+  document.getElementById('awUploadLabel').innerHTML = C.partName+' Datasheet (.pdf)<br><span style="font-size:16px;">100% local \u2014 no data leaves your browser</span>';
+  if(C.datasheetURL) document.getElementById('awBtnPdf').onclick = function(){window.open(C.datasheetURL,'_blank');};
+  ICExplorer.init(C);
+})();
+</script>
