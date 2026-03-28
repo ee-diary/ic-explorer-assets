@@ -104,6 +104,38 @@ ICExplorer.init = function(cfg){
 
   // ── SVG setup ────────────────────────────────────────────
   var svg = document.getElementById('A13');
+  // Add to the DIP config handling section
+function getDipConfig(package, pinCount) {
+  // Handle different DIP sizes
+  if (pinCount === 8) {
+    return {
+      pinsPerSide: 4,
+      bodyX: 62,      // Centered for 8-pin
+      bodyY: 20,
+      bodyW: 76,
+      bodyH: 98,
+      notchX: 10,     // Pin 1 notch position
+      notchY: 10
+    };
+  } else if (pinCount === 28) {
+    return {
+      pinsPerSide: 14,
+      bodyX: 100,
+      bodyY: 25,
+      bodyW: 160,
+      bodyH: 490
+    };
+  } else {
+    // Default DIP-40
+    return {
+      pinsPerSide: 20,
+      bodyX: 122,
+      bodyY: 25,
+      bodyW: 260,
+      bodyH: 700
+    };
+  }
+}
   var dip = C.dipConfig || {pinsPerSide:20,bodyX:122,bodyY:25,bodyW:260,bodyH:700};
   var BX=dip.bodyX, BY=dip.bodyY, BW=dip.bodyW, BH=dip.bodyH, SIDE=dip.pinsPerSide;
   var PL=34, PW2=16, PITCH=BH/SIDE;
