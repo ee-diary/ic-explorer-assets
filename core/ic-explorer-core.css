@@ -1,0 +1,151 @@
+/* ============================================================
+   IC EXPLORER — SHARED CORE STYLES  (ic-explorer-core.css)
+   Host on any CDN (e.g. GitHub Pages, jsDelivr, Cloudflare Pages)
+   and <link> it from every Blogger post.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap');
+
+/* ── Scoped root so nothing leaks into Blogger's page ── */
+#a13wrap{all:initial;display:block;position:relative;width:100%;box-sizing:border-box;font-family:'Share Tech Mono',monospace;color:#d0d0d0;}
+#a13wrap *{box-sizing:border-box;margin:0;padding:0;}
+
+.aw{width:100%;overflow:hidden;margin:0 auto;background:#161b22;border-radius:12px;padding:12px;border:1px solid #30363d;}
+
+/* HEADER */
+.aw-hdr{display:flex;align-items:center;justify-content:space-between;background:#1c2128;border:1px solid #30363d;border-radius:8px;padding:9px 14px;margin-bottom:10px;position:relative;overflow:hidden;}
+.aw-hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#4da6ff,#88ccff,#4da6ff,transparent);}
+.aw-hdr-l{display:flex;align-items:center;gap:10px;}
+.aw-logo{width:28px;height:28px;color:#4da6ff;}
+.aw-title{font-family:'Orbitron',sans-serif;font-size:19px;font-weight:900;color:#e6edf3;letter-spacing:.12em;display:block;}
+.aw-sub{font-size:14px;color:#8b949e;margin-top:2px;display:block;}
+.aw-badge{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;color:#4da6ff;background:rgba(77,166,255,0.1);border:1px solid rgba(77,166,255,0.3);border-radius:4px;padding:3px 8px;}
+.aw-dot{width:7px;height:7px;border-radius:50%;background:#4da6ff;box-shadow:0 0 8px #4da6ff;animation:pu 2s infinite;flex-shrink:0;}
+@keyframes pu{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(.6);}}
+
+/* MAIN TABS */
+.aw-mtabs{display:flex;border-bottom:1px solid #21262d;background:#0d1117;border-radius:8px 8px 0 0;overflow:hidden;}
+.aw-mtab{flex:1;padding:12px 8px;font-size:18px;font-weight:700;cursor:pointer;color:#8b949e;border-bottom:2px solid transparent;text-align:center;font-family:'Share Tech Mono',monospace;letter-spacing:.05em;transition:all .15s;white-space:nowrap;}
+.aw-mtab:hover{color:#c0d8ff;background:rgba(77,166,255,0.05);}
+.aw-mtab.on{color:#4da6ff;border-bottom-color:#4da6ff;background:rgba(77,166,255,0.08);}
+
+/* MAIN LAYOUT */
+.aw-body{display:flex;gap:10px;align-items:stretch;}
+
+/* LEFT — screen */
+.aw-screen{flex:0 0 62%;width:62%;background:#0d1117;border:1px solid #21262d;border-radius:0 0 8px 8px;position:relative;overflow:hidden;min-height:400px;}
+.aw-screen-ic{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.aw-screen-ic svg{width:100%;height:auto;display:block;}
+.aw-screen-canvas{width:100%;height:100%;display:none;flex-direction:column;}
+.aw-screen-canvas canvas{width:100%;flex:1;display:block;}
+.aw-screen-label{position:absolute;bottom:6px;right:10px;font-size:11px;color:rgba(77,166,255,0.2);letter-spacing:.12em;text-transform:uppercase;font-family:'Share Tech Mono',monospace;pointer-events:none;}
+
+/* RIGHT — control panel */
+.aw-ctrl{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
+.aw-ctrl-hdr{background:#1c2128;border:1px solid #30363d;border-radius:8px;padding:8px 12px;font-size:14px;color:#50c8a0;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+
+/* Sub tabs */
+.aw-stabs{display:flex;flex-wrap:wrap;gap:4px;background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:5px;}
+.aw-stab{flex:1;min-width:60px;padding:5px 4px;font-size:16px;font-weight:700;cursor:pointer;color:#8b949e;border-radius:3px;text-align:center;font-family:'Share Tech Mono',monospace;letter-spacing:.04em;border:1px solid transparent;transition:all .12s;}
+.aw-stab:hover{color:#c0d8ff;background:rgba(77,166,255,0.06);}
+.aw-stab.on{color:#50c8a0;background:rgba(80,200,160,0.10);border-color:rgba(80,200,160,0.3);}
+
+/* Pin detail card */
+.aw-det{background:#1c2128;border:1px solid #30363d;border-radius:8px;overflow:hidden;}
+.aw-det-empty{padding:22px 14px;text-align:center;}
+.aw-arr{font-size:18px;display:block;margin-bottom:5px;animation:ar 1.8s infinite;}
+@keyframes ar{0%,100%{opacity:.2;transform:translateX(-4px);}50%{opacity:.8;transform:translateX(4px);}}
+.aw-det-empty p{font-size:14px;color:#8b949e;line-height:1.5;}
+.aw-dc{display:none;}.aw-dc.show{display:block;}
+.aw-dbar{display:flex;align-items:center;gap:9px;padding:8px 11px;border-bottom:1px solid #21262d;}
+.aw-dbadge{width:50px;height:50px;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;border:2px solid;gap:1px;}
+.aw-dbadge-num{font-size:15px;opacity:.6;}
+.aw-dpid{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#e6edf3;display:block;line-height:1;}
+.aw-dfull{font-size:16px;color:#8b949e;margin-top:2px;display:block;}
+.aw-funcs{display:flex;flex-wrap:wrap;gap:3px;padding:6px 11px;border-bottom:1px solid #21262d;}
+.aw-chip{padding:2px 7px;border-radius:2px;font-size:16px;font-weight:700;border:1px solid;}
+.aw-igrid{display:grid;grid-template-columns:1fr 1fr;}
+.aw-icell{padding:5px 11px;border-bottom:1px solid #21262d;border-right:1px solid #21262d;}
+.aw-icell:nth-child(2n){border-right:none;}.aw-icell:nth-last-child(-n+2){border-bottom:none;}
+.aw-ilbl{font-size:15px;color:#8b949e;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;display:block;}
+.aw-ival{font-size:15px;color:#e6edf3;font-weight:700;display:block;word-break:break-word;}
+.aw-alts{padding:6px 11px;border-top:1px solid #21262d;}
+.aw-albl{font-size:15px;color:#8b949e;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;display:block;}
+.aw-achips{display:flex;flex-wrap:wrap;gap:3px;}
+.aw-ac{padding:2px 7px;border-radius:2px;font-size:16px;background:#21262d;border:1px solid #30363d;color:#9cdcfe;}
+.aw-note{padding:7px 11px;border-top:1px solid #21262d;font-size:16px;color:#6a9fb5;line-height:1.5;}
+
+/* Filter panel */
+.aw-filt{background:#1c2128;border:1px solid #30363d;border-radius:8px;overflow:hidden;padding:7px 7px 0;}
+.aw-fpbox{border:1px solid #c8a850;border-radius:4px;padding:6px;background:#0d1117;margin-bottom:6px;}
+.aw-fplbl{font-size:16px;color:#c8a850;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;display:block;font-weight:700;}
+.aw-fbtns{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;}
+.aw-fb{display:flex;align-items:center;justify-content:center;height:28px;border-radius:2px;font-size:15px;font-weight:700;letter-spacing:.04em;font-family:'Share Tech Mono',monospace;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:#1c2128;transition:all .1s;color:#8b949e;}
+.aw-fb:hover{filter:brightness(1.4);}
+.aw-fb.on{border-color:currentColor!important;box-shadow:0 0 5px currentColor;transform:translateY(1px);}
+.aw-ltog{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;cursor:pointer;background:#161b22;border-top:1px solid #21262d;}
+.aw-ltog:hover{background:#1c2128;}
+.aw-ltog span{font-size:14px;color:#8b949e;}.aw-ltog b{color:#4da6ff;}
+.aw-plist{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.aw-plist.open{max-height:350px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#30363d transparent;}
+.aw-plist::-webkit-scrollbar{width:3px;}
+.aw-plist::-webkit-scrollbar-thumb{background:#30363d;}
+.aw-prow{display:flex;align-items:center;gap:5px;padding:3px 7px;cursor:pointer;border-bottom:1px solid rgba(48,54,61,.4);}
+.aw-prow:hover{background:rgba(255,255,255,.02);}
+.aw-prow.on{background:rgba(77,166,255,.07);border-left:2px solid #4da6ff;padding-left:5px;}
+.aw-pbadge{min-width:38px;height:22px;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;}
+.aw-pname{font-size:16px;flex:1;color:#8b949e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.aw-ptag{padding:2px 5px;border-radius:2px;font-size:15px;font-weight:700;flex-shrink:0;}
+.aw-leg{display:flex;flex-wrap:wrap;gap:5px;padding:7px 12px;border-top:1px solid #21262d;background:#161b22;}
+.aw-li{display:flex;align-items:center;gap:3px;font-size:16px;color:#8b949e;}
+.aw-ld{width:7px;height:7px;border-radius:1px;flex-shrink:0;}
+
+/* Action buttons */
+.aw-actions{background:#1c2128;border:1px solid #30363d;border-radius:8px;padding:10px;}
+.aw-act-title{font-size:16px;color:#c8a850;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;display:block;font-weight:700;}
+.aw-btn-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
+.aw-btn{padding:5px 10px;border-radius:3px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Share Tech Mono',monospace;border:1px solid;transition:all .12s;}
+.aw-btn-blue{background:rgba(77,166,255,0.1);color:#4da6ff;border-color:rgba(77,166,255,0.35);}
+.aw-btn-blue:hover{background:rgba(77,166,255,0.2);}
+.aw-btn-green{background:rgba(100,200,100,0.1);color:#78c878;border-color:rgba(100,200,100,0.3);}
+.aw-btn-green:hover{background:rgba(100,200,100,0.2);}
+.aw-btn-gold{background:rgba(200,168,80,0.1);color:#c8a850;border-color:rgba(200,168,80,0.3);}
+.aw-btn-gold:hover{background:rgba(200,168,80,0.2);}
+.aw-btn-red{background:rgba(255,107,107,0.1);color:#ff6b6b;border-color:rgba(255,107,107,0.3);}
+
+/* Datasheet upload area */
+.aw-upload{border:1px dashed #30363d;border-radius:5px;padding:16px 10px;text-align:center;background:#0d1117;}
+.aw-upload-btn{background:#4da6ff;color:#0d1117;border:none;padding:6px 16px;border-radius:3px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Share Tech Mono',monospace;}
+
+/* Spec table */
+.aw-spec-row{display:flex;align-items:center;padding:4px 9px;border-bottom:1px solid #1a2030;font-size:16px;}
+.aw-spec-row:last-child{border-bottom:none;}
+.aw-spec-p{width:90px;color:#8b949e;flex-shrink:0;}
+.aw-spec-v{width:60px;color:#c8a850;font-weight:700;font-family:'Orbitron',sans-serif;font-size:16px;text-align:right;flex-shrink:0;}
+.aw-spec-u{width:32px;color:#8b949e;margin-left:5px;flex-shrink:0;}
+.aw-spec-d{flex:1;color:#6a9fb5;font-style:italic;margin-left:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* Progress bar */
+.aw-prog{background:#21262d;border-radius:2px;height:3px;margin:6px 0;}
+.aw-prog-bar{background:#4da6ff;height:3px;width:0%;transition:width .3s;border-radius:2px;}
+
+/* Tooltip */
+.aw-tt{position:absolute;background:#1c2128;border:1px solid #30363d;border-radius:7px;padding:8px 12px;font-size:14px;pointer-events:none;z-index:9999;display:none;min-width:170px;max-width:260px;box-shadow:0 4px 20px rgba(0,0,0,.9);font-family:'Share Tech Mono',monospace;}
+.aw-tt.show{display:block;}
+.aw-tt .aw-tn{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;margin-bottom:3px;display:block;}
+.aw-tt .aw-td{color:#6a9fb5;font-size:16px;line-height:1.5;display:block;}
+
+/* Pin hover effect */
+.a13-pin .psq{transition:filter .12s,stroke-width .12s;}
+.a13-pin:hover .psq{filter:brightness(1.7) drop-shadow(0 0 5px currentColor);stroke-width:2.5px !important;}
+
+/* Source toggle button */
+.aw-src-btn{background:transparent;border-radius:3px;border:1px solid transparent;color:#8b949e;cursor:pointer;flex:1;font-family:'Share Tech Mono',monospace;font-size:11px;font-weight:700;padding:5px 4px;}
+.aw-src-btn.on{background:rgba(80,200,160,0.12);border-color:rgba(80,200,160,0.3);color:#50c8a0;}
+
+/* Responsive */
+@media(max-width:720px){
+  .aw-body{flex-direction:column;}
+  .aw-screen{flex:none;width:100%;min-height:300px;}
+  .aw-ctrl{flex:none;width:100%;}
+}
