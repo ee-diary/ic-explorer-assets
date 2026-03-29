@@ -1,12 +1,11 @@
 /**
  * IC Explorer Base Engine - Handles UI, filtering, tooltips, and tabs
- * Package-specific renderers just need to implement draw(svg, config)
  */
 
 var ICExplorer = (function() {
   'use strict';
   
-  // Shared color palette (same as before)
+  // Shared color palette
   var COLORS = {
     GPIO: {c:'#78c878',bg:'rgba(100,200,100,.10)',bd:'rgba(100,200,100,.27)'},
     PWR:  {c:'#ff6b6b',bg:'rgba(255,107,107,.14)',bd:'rgba(255,107,107,.35)'},
@@ -21,27 +20,22 @@ var ICExplorer = (function() {
     TIMER:{c:'#50c8c8',bg:'rgba(80,200,200,.10)', bd:'rgba(80,200,200,.27)'},
     INT:  {c:'#c8a850',bg:'rgba(200,168,80,.12)', bd:'rgba(200,168,80,.30)'},
     USB:  {c:'#a78bfa',bg:'rgba(167,139,250,.11)',bd:'rgba(167,139,250,.28)'},
-    JTAG: {c:'#9898d8',bg:'rgba(152,152,216,.11)',bd:'rgba(152,152,216,.28)'},
-    SDIO: {c:'#00695c',bg:'rgba(0,105,92,.12)',   bd:'rgba(0,105,92,.30)'},
-    CAN:  {c:'#d35400',bg:'rgba(211,84,0,.12)',   bd:'rgba(211,84,0,.30)'},
-    VCAP: {c:'#607d8b',bg:'rgba(96,125,139,.12)', bd:'rgba(96,125,139,.30)'},
   };
   
   function getColor(type) {
     return COLORS[type] || COLORS.GPIO;
   }
   
-  // Filter definitions (common)
+  // Filter definitions
   var FILTERS = [
-    {lbl:'GPIO',  key:'GPIO',  fn:function(p){return p.funcs.indexOf('GPIO')>=0;}},
-    {lbl:'PWM',   key:'PWM',   fn:function(p){return p.funcs.indexOf('PWM')>=0;}},
-    {lbl:'ADC',   key:'ADC',   fn:function(p){return p.funcs.indexOf('ADC')>=0;}},
-    {lbl:'SPI',   key:'SPI',   fn:function(p){return p.funcs.indexOf('SPI')>=0;}},
-    {lbl:'I2C',   key:'I2C',   fn:function(p){return p.funcs.indexOf('I2C')>=0;}},
-    {lbl:'UART',  key:'UART',  fn:function(p){return p.funcs.indexOf('UART')>=0;}},
-    {lbl:'USB',   key:'USB',   fn:function(p){return p.funcs.indexOf('USB')>=0;}},
-    {lbl:'TIMER', key:'TIMER', fn:function(p){return p.funcs.indexOf('TIMER')>=0 || p.funcs.indexOf('PWM')>=0;}},
-    {lbl:'JTAG',  key:'JTAG',  fn:function(p){return p.funcs.indexOf('JTAG')>=0;}},
+    {lbl:'GPIO',  key:'GPIO',  fn:function(p){return p.funcs && p.funcs.indexOf('GPIO')>=0;}},
+    {lbl:'PWM',   key:'PWM',   fn:function(p){return p.funcs && p.funcs.indexOf('PWM')>=0;}},
+    {lbl:'ADC',   key:'ADC',   fn:function(p){return p.funcs && p.funcs.indexOf('ADC')>=0;}},
+    {lbl:'SPI',   key:'SPI',   fn:function(p){return p.funcs && p.funcs.indexOf('SPI')>=0;}},
+    {lbl:'I2C',   key:'I2C',   fn:function(p){return p.funcs && p.funcs.indexOf('I2C')>=0;}},
+    {lbl:'UART',  key:'UART',  fn:function(p){return p.funcs && p.funcs.indexOf('UART')>=0;}},
+    {lbl:'USB',   key:'USB',   fn:function(p){return p.funcs && p.funcs.indexOf('USB')>=0;}},
+    {lbl:'TIMER', key:'TIMER', fn:function(p){return p.funcs && (p.funcs.indexOf('TIMER')>=0 || p.funcs.indexOf('PWM')>=0);}},
     {lbl:'XTAL',  key:'XTAL',  fn:function(p){return p.type==='XTAL';}},
     {lbl:'PWR',   key:'PWR',   fn:function(p){return p.type==='PWR';}},
     {lbl:'GND',   key:'GND',   fn:function(p){return p.type==='GND';}},
@@ -51,8 +45,7 @@ var ICExplorer = (function() {
   var FCLR = {
     GPIO:'#78c878', PWM:'#50c8c8', ADC:'#c8a850', SPI:'#4a9aee',
     I2C:'#9898d8', UART:'#cc6888', USB:'#a78bfa', TIMER:'#50c8c8',
-    JTAG:'#9898d8', XTAL:'#7090a8', PWR:'#ff6b6b', GND:'#a8a8a8',
-    RESET:'#ff9944'
+    XTAL:'#7090a8', PWR:'#ff6b6b', GND:'#a8a8a8', RESET:'#ff9944'
   };
   
   // Public API
@@ -62,40 +55,35 @@ var ICExplorer = (function() {
     FILTERS: FILTERS,
     FCLR: FCLR,
     
-    // Called by package-specific renderer after drawing pins
     init: function(cfg, renderer) {
       var C = cfg;
       var PINS = C.pins;
       var ALT = C.altFuncs || {};
       
-      // Store config globally for this instance
+      // Store config globally
       window._icConfig = C;
       window._icPins = PINS;
       window._icAlt = ALT;
       
-      // Set up pin click handlers
+      // Get SVG element
       var svg = document.getElementById('A13');
-      if (svg) {
-        // Clear existing and call renderer
-        while (svg.firstChild) svg.removeChild(svg.firstChild);
-        renderer.draw(svg, C);
-        
-        // Attach event listeners to pins
-        document.querySelectorAll('.ic-pin').forEach(function(pinEl) {
-          pinEl.addEventListener('click', function(e) {
-            e.stopPropagation();
-            var pinId = this.getAttribute('data-id');
-            API.selectPin(pinId);
-          });
-          pinEl.addEventListener('mouseenter', function(e) {
-            var pinId = this.getAttribute('data-id');
-            var pin = PINS.find(function(p) { return p.id === pinId; });
-            if (pin) API.showTooltip(pin, e);
-          });
-          pinEl.addEventListener('mousemove', API.moveTooltip);
-          pinEl.addEventListener('mouseleave', API.hideTooltip);
-        });
+      if (!svg) {
+        console.error('SVG element with id "A13" not found');
+        return;
       }
+      
+      // Call package-specific renderer
+      if (renderer && renderer.draw) {
+        renderer.draw(svg, C);
+      } else {
+        console.error('Renderer missing draw method');
+        return;
+      }
+      
+      // Attach event listeners
+      setTimeout(function() {
+        API.attachPinEvents();
+      }, 50);
       
       // Build filter buttons
       API.buildFilterButtons();
@@ -109,6 +97,27 @@ var ICExplorer = (function() {
       window.icToggleList = API.togglePinList;
       
       console.log('IC Explorer initialized for', C.partName, '| Package:', C.package);
+    },
+    
+    attachPinEvents: function() {
+      document.querySelectorAll('.ic-pin').forEach(function(pinEl) {
+        var pinId = pinEl.getAttribute('data-id');
+        var pin = window._icPins.find(function(p) { return p.id === pinId; });
+        
+        if (pin) {
+          pinEl.addEventListener('click', function(e) {
+            e.stopPropagation();
+            API.selectPin(pinId);
+          });
+          
+          pinEl.addEventListener('mouseenter', function(e) {
+            API.showTooltip(pin, e);
+          });
+          
+          pinEl.addEventListener('mousemove', API.moveTooltip);
+          pinEl.addEventListener('mouseleave', API.hideTooltip);
+        }
+      });
     },
     
     selectPin: function(id) {
@@ -130,12 +139,14 @@ var ICExplorer = (function() {
         
         var col = getColor(p.type);
         var sq = g.querySelector('.pin-sq');
+        if (!sq) return;
+        
         var act = selId === id;
         var mt = API.pinMatchesFilter(p);
         
         if (act) {
           sq.setAttribute('stroke', '#e74c3c');
-          sq.setAttribute('stroke-width', '3.5');
+          sq.setAttribute('stroke-width', '3');
           sq.setAttribute('filter', 'url(#pinGlow)');
           g.style.opacity = '1';
         } else if (hasFilter && !mt) {
@@ -145,12 +156,12 @@ var ICExplorer = (function() {
           g.style.opacity = '0.2';
         } else if (hasFilter && mt) {
           sq.setAttribute('stroke', col.c);
-          sq.setAttribute('stroke-width', '3');
+          sq.setAttribute('stroke-width', '2.5');
           sq.setAttribute('filter', 'url(#pinGlow)');
           g.style.opacity = '1';
         } else {
           sq.setAttribute('stroke', '#4a4f5a');
-          sq.setAttribute('stroke-width', '1.5');
+          sq.setAttribute('stroke-width', '1.2');
           sq.removeAttribute('filter');
           g.style.opacity = '1';
         }
@@ -175,7 +186,6 @@ var ICExplorer = (function() {
       if (empty) empty.style.display = 'none';
       if (content) content.className = 'aw-dc show';
       
-      // Update badge
       var badge = document.getElementById('awBADGE');
       if (badge) {
         badge.style.background = col.bg;
@@ -194,7 +204,7 @@ var ICExplorer = (function() {
       if (dfull) dfull.textContent = p.name;
       
       var funcs = document.getElementById('awFUNCS');
-      if (funcs) {
+      if (funcs && p.funcs) {
         funcs.innerHTML = p.funcs.map(function(f) {
           var fc = getColor(f) || col;
           return '<span class="aw-chip" style="background:' + fc.bg + ';color:' + fc.c + ';border-color:' + fc.bd + '">' + f + '</span>';
@@ -210,16 +220,13 @@ var ICExplorer = (function() {
           '<div class="aw-icell"><span class="aw-ilbl">Max mA</span><span class="aw-ival">' + p.curr + '</span></div>';
       }
       
-      var alts = (window._icAlt[p.id] || []);
       var altSec = document.getElementById('awALTS');
-      if (altSec) {
-        if (alts.length) {
-          altSec.style.display = 'block';
-          var achips = document.getElementById('awACHIPS');
-          if (achips) achips.innerHTML = alts.map(function(a) { return '<span class="aw-ac">' + a + '</span>'; }).join('');
-        } else {
-          altSec.style.display = 'none';
-        }
+      if (altSec && window._icAlt[p.id] && window._icAlt[p.id].length) {
+        altSec.style.display = 'block';
+        var achips = document.getElementById('awACHIPS');
+        if (achips) achips.innerHTML = window._icAlt[p.id].map(function(a) { return '<span class="aw-ac">' + a + '</span>'; }).join('');
+      } else if (altSec) {
+        altSec.style.display = 'none';
       }
       
       var note = document.getElementById('awNOTE');
@@ -302,7 +309,7 @@ var ICExplorer = (function() {
       var tt = document.getElementById('awTT');
       if (tt) {
         tt.innerHTML = '<span class="aw-tn" style="color:' + col.c + '">#' + pin.num + ' ' + pin.id + '</span>' +
-          '<span class="aw-td">' + pin.funcs.join(' · ') + ' | ' + pin.volt + '</span>';
+          '<span class="aw-td">' + (pin.funcs ? pin.funcs.join(' · ') : pin.type) + ' | ' + pin.volt + '</span>';
         tt.className = 'aw-tt show';
         API.moveTooltip(e);
       }
@@ -328,11 +335,4 @@ var ICExplorer = (function() {
   
   // Initialize global state
   window._selectedPin = null;
-  window._listOpen = false;
-  window._currentFilter = null;
-  
-  return API;
-})();
-
-// Make global
-window.ICExplorer = ICExplorer;
+  window._
