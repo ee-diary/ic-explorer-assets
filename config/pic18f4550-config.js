@@ -12,7 +12,7 @@ window.IC_CONFIG = {
   downloadURL:  'https://www.snapeda.com/parts/PIC18F4550-I%2FP/Microchip+Technology/view-part/?ref=snapeda',
   datasheetURL: 'https://ww1.microchip.com/downloads/en/DeviceDoc/39632e.pdf',
 
-  dipConfig: { pinsPerSide: 20, bodyX: 122, bodyY: 25, bodyW: 260, bodyH: 700 },
+  //dipConfig: { pinsPerSide: 20, bodyX: 122, bodyY: 25, bodyW: 260, bodyH: 700 },
 
   pins: [
     // LEFT side (pins 1-20, top to bottom)
