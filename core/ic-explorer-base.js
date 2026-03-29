@@ -1,5 +1,5 @@
 /**
- * IC Explorer Base Engine - Complete with Tab Functionality
+ * IC Explorer Base Engine - Complete with Tab Functionality--
  * Handles UI, filtering, tooltips, and ALL tabs (Pin, Design Files, Datasheet)
  */
 
