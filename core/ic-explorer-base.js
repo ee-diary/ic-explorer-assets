@@ -335,4 +335,13 @@ var ICExplorer = (function() {
   
   // Initialize global state
   window._selectedPin = null;
-  window._
+  window._listOpen = false;
+  window._currentFilter = null;
+  window._icConfig = null;
+  window._icPins = null;
+  window._icAlt = null;
+  
+  return API;
+})();
+
+window.ICExplorer = ICExplorer;
