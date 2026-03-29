@@ -1,31 +1,31 @@
 /**
- * Renderer Factory - Automatically selects the right renderer based on package
+ * Renderer Factory - Auto-selects the right renderer based on package
  */
 
 var RendererFactory = {
-  // Package type detection
-  getPackageType: function(packageName) {
-    var pkg = packageName.toUpperCase();
+  getPackageType: function(packageName, partName) {
+    var pkg = (packageName || '').toUpperCase();
+    var name = (partName || '').toUpperCase();
+    
+    // Custom boards (by name)
+    if (name.indexOf('RASPBERRY') >= 0 || name.indexOf('RPI') >= 0) return 'custom';
+    if (name.indexOf('TEENSY') >= 0) return 'custom';
+    if (name.indexOf('ARDUINO') >= 0 || name.indexOf('NANO') >= 0) return 'custom';
     
     // DIP packages
     if (pkg.indexOf('DIP') >= 0) return 'dip';
     
     // QFP/LQFP/TQFP packages
-    if (pkg.indexOf('QFP') >= 0) return 'qfp';
-    if (pkg.indexOf('LQFP') >= 0) return 'qfp';
-    if (pkg.indexOf('TQFP') >= 0) return 'qfp';
+    if (pkg.indexOf('QFP') >= 0 || pkg.indexOf('LQFP') >= 0 || pkg.indexOf('TQFP') >= 0) {
+      return 'qfp';
+    }
     
-    // Custom board layouts
-    if (pkg.indexOf('NANO') >= 0) return 'custom';
-    if (pkg.indexOf('ARDUINO') >= 0) return 'custom';
-    
-    // Default to QFP for unknown (most modern MCUs)
-    return 'qfp';
+    // Default to DIP for now
+    return 'dip';
   },
   
-  // Get the appropriate renderer
-  getRenderer: function(packageName) {
-    var type = this.getPackageType(packageName);
+  getRenderer: function(packageName, partName) {
+    var type = this.getPackageType(packageName, partName);
     
     switch(type) {
       case 'dip':
@@ -33,9 +33,9 @@ var RendererFactory = {
       case 'qfp':
         return window.QFPRenderer;
       case 'custom':
-        return window.CustomRenderer;
+        return window.CustomBoardRenderer;
       default:
-        return window.QFPRenderer;
+        return window.DIPRenderer;
     }
   }
 };
