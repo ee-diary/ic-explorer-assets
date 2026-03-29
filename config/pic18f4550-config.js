@@ -12,7 +12,7 @@ window.IC_CONFIG = {
   datasheetURL: 'https://ww1.microchip.com/downloads/en/DeviceDoc/41211D_.pdf',
 
   // Override default DIP-8 layout if needed
-  dipConfig: { pinsPerSide: 4, bodyX: 62, bodyY: 20, bodyW: 76, bodyH: 98 },
+  //dipConfig: { pinsPerSide: 4, bodyX: 62, bodyY: 20, bodyW: 76, bodyH: 98 },
 
   pins: [
     // LEFT side (pins 1-4, top to bottom)
