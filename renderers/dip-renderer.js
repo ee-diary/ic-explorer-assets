@@ -1,6 +1,5 @@
 /**
- * DIP Package Renderer
- * Supports DIP-8, DIP-20, DIP-28, DIP-40
+ * DIP Package Renderer - Handles DIP-8, DIP-20, DIP-28, DIP-40
  */
 
 var DIPRenderer = (function() {
@@ -54,18 +53,20 @@ var DIPRenderer = (function() {
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', '100%');
     
-    // Helper function
     function mk(t, a) {
       var e = document.createElementNS(NS, t);
       for (var k in a) e.setAttribute(k, a[k]);
       return e;
     }
     
+    // Clear SVG
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    
     // Defs
     var defs = mk('defs', {});
     svg.appendChild(defs);
     
-    // Gradient for body
+    // Body gradient
     var grad = mk('linearGradient', { id: 'bodyGrad', x1: '0%', y1: '0%', x2: '100%', y2: '100%' });
     grad.appendChild(mk('stop', { offset: '0%', 'stop-color': '#1e2430' }));
     grad.appendChild(mk('stop', { offset: '100%', 'stop-color': '#0d1018' }));
@@ -111,7 +112,7 @@ var DIPRenderer = (function() {
     pinCount.textContent = C.pinCount + ' PINS';
     svg.appendChild(pinCount);
     
-    // Compute pin positions and draw
+    // Compute pin positions
     var pins = C.pins;
     pins.forEach(function(pin) {
       var n = pin.num;
@@ -130,7 +131,9 @@ var DIPRenderer = (function() {
     
     // Draw each pin
     pins.forEach(function(pin) {
-      var col = ICExplorer.getColor(pin.type);
+      var col = window.ICExplorer ? window.ICExplorer.getColor(pin.type) : { bg: '#1c2128', c: '#78c878', bd: '#a5d6a7' };
+      if (!col.bg) col = { bg: '#1c2128', c: '#78c878', bd: '#a5d6a7' };
+      
       var g = mk('g', { 'class': 'ic-pin', 'data-id': pin.id });
       g.style.cursor = 'pointer';
       
@@ -165,6 +168,8 @@ var DIPRenderer = (function() {
     // Outline
     var outline = mk('rect', { x: BX, y: BY, width: BW, height: BH, rx: '4', fill: 'none', stroke: '#2a3545', 'stroke-width': '2' });
     svg.appendChild(outline);
+    
+    console.log('DIP Renderer drew', C.partName);
   }
   
   return { draw: draw };
