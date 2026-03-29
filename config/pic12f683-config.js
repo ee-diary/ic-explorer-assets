@@ -10,7 +10,7 @@ window.IC_CONFIG = {
   downloadURL: 'https://www.snapeda.com/parts/PIC12F683-I%2FP/Microchip+Technology/view-part/?ref=snapeda',
   datasheetURL: 'https://ww1.microchip.com/downloads/en/DeviceDoc/41211D_.pdf',
 
-  dipConfig: { pinsPerSide: 4, bodyX: 62, bodyY: 20, bodyW: 76, bodyH: 98 },
+  //dipConfig: { pinsPerSide: 4, bodyX: 62, bodyY: 20, bodyW: 76, bodyH: 98 },
 
   pins: [
     {num:1, id:'VDD', lbl:'VDD', name:'VDD — Power Supply', type:'PWR', funcs:['PWR'], volt:'2.0-5.5V', curr:'N/A', note:'Positive supply. Decouple with 100nF cap.'},
