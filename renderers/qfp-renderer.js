@@ -112,7 +112,7 @@ var QFPRenderer = (function () {
     var BW = VB - 2 * MARGIN, BH = BW;  // square body
 
     var pps    = Math.floor(config.pinCount / 4);
-    var CORNER = Math.max(15, Math.floor(pps * 0.3));
+    var CORNER = 15;
     var pitchV = (BH - 2 * CORNER) / (pps - 1);
     var pitchH = (BW - 2 * CORNER) / (pps - 1);
 
