@@ -86,6 +86,11 @@ var ICExplorer = (function() {
         return;
       }
       
+      // Lock SVG coordinate system before renderer draws —
+      // prevents body-jump when right-panel reflows on pin click
+      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      svg.setAttribute('overflow', 'hidden');
+
       // Call package-specific renderer
       if (renderer && renderer.draw) {
         renderer.draw(svg, C);
@@ -164,9 +169,10 @@ var ICExplorer = (function() {
         var mt = API.pinMatchesFilter(p);
         
         if (act) {
-          sq.setAttribute('stroke', '#e74c3c');
-          sq.setAttribute('stroke-width', '3');
-          sq.setAttribute('filter', 'url(#pinGlow)');
+          sq.setAttribute('fill',         col.c);
+          sq.setAttribute('stroke',       col.c);
+          sq.setAttribute('stroke-width', '2.5');
+          sq.setAttribute('filter',       'url(#pinGlow)');
           g.style.opacity = '1';
         } else if (hasFilter && !mt) {
           sq.setAttribute('stroke', '#4a4f5a');
@@ -179,7 +185,8 @@ var ICExplorer = (function() {
           sq.setAttribute('filter', 'url(#pinGlow)');
           g.style.opacity = '1';
         } else {
-          sq.setAttribute('stroke', '#4a4f5a');
+          sq.setAttribute('fill',         col.bg);
+          sq.setAttribute('stroke',       '#4a4f5a');
           sq.setAttribute('stroke-width', '1.2');
           sq.removeAttribute('filter');
           g.style.opacity = '1';
