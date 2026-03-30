@@ -85,9 +85,31 @@ var QFPRenderer = (function () {
     _cssInjected = true;
     var s = document.createElement('style');
     s.textContent =
+      /* Pin stub transitions — only filter/stroke/fill, never layout props */
       '.qfp-pin .psq{transition:filter .12s,stroke-width .12s,fill .12s;}' +
-      '.qfp-pin:hover .psq{filter:brightness(1.9) drop-shadow(0 0 6px currentColor)!important;stroke-width:2.5px!important;}' +
-      '.qfp-pin.selected .psq{filter:url(#qfpPinGlow)!important;stroke-width:2.5px!important;}';
+
+      /* Hover glow — drop-shadow radius kept small so it stays inside the SVG
+         overflow:hidden boundary set on the container below */
+      '.qfp-pin:hover .psq{filter:brightness(1.9) drop-shadow(0 0 4px currentColor)!important;stroke-width:2.5px!important;}' +
+
+      /* Selected: SVG-internal filter bounded by feGaussianBlur defs */
+      '.qfp-pin.selected .psq{filter:url(#qfpPinGlow)!important;stroke-width:2.5px!important;}' +
+
+      /* ── BODY-JUMP FIX ──────────────────────────────────────────────────
+       * Lock the SVG screen container to a stable aspect ratio so that
+       * right-panel reflows (detail panel growing/shrinking on pin click)
+       * never affect the SVG display height.
+       *
+       * The SVG is absolutely positioned inside a 1:1 aspect-ratio wrapper,
+       * so its rendered size is always derived from the container width alone
+       * and is completely immune to vertical reflow from sibling elements.
+       *
+       * This fixes DIP pages too since they share the same #awScreenIC div. */
+      '#awScreenIC{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;}' +
+      '#awScreenIC svg{position:absolute;top:0;left:0;width:100%!important;height:100%!important;}' +
+      '.aw-screen-ic{position:relative;overflow:hidden;}' +
+      /* Prevent the SVG drop-shadow filter from painting outside bounds */
+      '.aw-screen svg{overflow:hidden;}';
     document.head.appendChild(s);
   }
 
@@ -114,10 +136,24 @@ var QFPRenderer = (function () {
     var pitchV = (BH - 2 * CORNER) / (pps - 1);
     var pitchH = (BW - 2 * CORNER) / (pps - 1);
 
-    /* Prepare SVG */
-    svg.setAttribute('viewBox', '0 0 ' + VB + ' ' + VB);
-    svg.setAttribute('width',  '100%');
-    svg.setAttribute('height', 'auto');
+    /* Prepare SVG
+     *
+     * FIX — body-jump on pin click:
+     *   preserveAspectRatio='xMidYMid meet' locks the coordinate system so the
+     *   browser never re-centres content when the surrounding layout reflows
+     *   (which happens when the right-panel detail section grows/shrinks on click).
+     *
+     *   overflow='hidden' prevents the SVG glow filter from painting outside the
+     *   viewBox, which would otherwise expand the painted area and trigger reflow.
+     *
+     *   height is set to '100%' (not 'auto') so the SVG fills its fixed container
+     *   rather than deriving its own intrinsic height from the viewBox aspect ratio.
+     */
+    svg.setAttribute('viewBox',             '0 0 ' + VB + ' ' + VB);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.setAttribute('width',               '100%');
+    svg.setAttribute('height',              '100%');
+    svg.setAttribute('overflow',            'hidden');
     while (svg.firstChild) svg.removeChild(svg.firstChild);
 
     /* Defs */
