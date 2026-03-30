@@ -1,5 +1,7 @@
 /**
  * DIP Package Renderer - Handles DIP-8, DIP-20, DIP-28, DIP-40
+ * FIX: Glow filter region now covers entire possible area with padding
+ * to prevent SVG reflow when toggling the filter on/off during pin selection.
  */
 
 var DIPRenderer = (function () {
@@ -52,6 +54,8 @@ var DIPRenderer = (function () {
     svg.setAttribute('viewBox', '0 0 ' + viewBoxWidth + ' ' + viewBoxHeight);
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', '100%');
+    svg.style.overflow = 'visible';   // Let glow paint outside SVG bounds
+    svg.style.display = 'block';      // Eliminate inline-block baseline gap
 
     function mk(t, a) {
       var e = document.createElementNS(NS, t);
@@ -72,11 +76,15 @@ var DIPRenderer = (function () {
     grad.appendChild(mk('stop', { offset: '100%', 'stop-color': '#0d1018' }));
     defs.appendChild(grad);
 
-    // Glow filter — use userSpaceOnUse + absolute coords so toggling the filter
-    // on click does NOT change the SVG's intrinsic size and cause layout reflow.
+    // Glow filter — FIX: use userSpaceOnUse with padding beyond viewBox
+    // This prevents the browser from recalculating SVG bounds when the filter is toggled,
+    // which was causing the vertical shift.
+    var filterPadding = 50;
     var glow = mk('filter', {
       id: 'pinGlow', filterUnits: 'userSpaceOnUse',
-      x: '0', y: '0', width: String(viewBoxWidth), height: String(viewBoxHeight)
+      x: String(-filterPadding), y: String(-filterPadding),
+      width: String(viewBoxWidth + 2 * filterPadding),
+      height: String(viewBoxHeight + 2 * filterPadding)
     });
     glow.appendChild(mk('feGaussianBlur', { stdDeviation: '3', result: 'blur' }));
     var merge = mk('feMerge', {});
