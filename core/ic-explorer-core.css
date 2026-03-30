@@ -6,8 +6,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap');
 
-/* ── Scoped root so nothing leaks into Blogger's page ── */
-#a13wrap{all:initial;display:block;position:relative;width:100%;box-sizing:border-box;font-family:'Share Tech Mono',monospace;color:#d0d0d0;}
+/* ── Scoped root — isolates widget from Blogger's CSS completely ── */
+#a13wrap{all:initial;display:block;position:relative;width:100%;box-sizing:border-box;font-family:'Share Tech Mono',monospace;color:#d0d0d0;contain:layout style;}
 #a13wrap *{box-sizing:border-box;margin:0;padding:0;}
 
 .aw{width:100%;overflow:hidden;margin:0 auto;background:#161b22;border-radius:12px;padding:12px;border:1px solid #30363d;}
