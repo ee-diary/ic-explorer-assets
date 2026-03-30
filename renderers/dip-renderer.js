@@ -2,11 +2,11 @@
  * DIP Package Renderer - Handles DIP-8, DIP-20, DIP-28, DIP-40
  */
 
-var DIPRenderer = (function() {
+var DIPRenderer = (function () {
   'use strict';
-  
+
   var NS = 'http://www.w3.org/2000/svg';
-  
+
   function getConfig(pinCount) {
     var configs = {
       8: {
@@ -36,87 +36,89 @@ var DIPRenderer = (function() {
     };
     return configs[pinCount] || configs[40];
   }
-  
+
   function draw(svg, config) {
     var C = config;
     var dip = C.dipConfig || getConfig(C.pinCount);
-    
+
     var BX = dip.bodyX, BY = dip.bodyY, BW = dip.bodyW, BH = dip.bodyH;
     var SIDE = dip.pinsPerSide;
     var PL = dip.pinLength;
     var PW2 = dip.pinWidthHalf;
     var PITCH = BH / SIDE;
-    
+
     var viewBoxWidth = BX * 2 + BW + 40;
     var viewBoxHeight = BY * 2 + BH + 20;
     svg.setAttribute('viewBox', '0 0 ' + viewBoxWidth + ' ' + viewBoxHeight);
-    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', '100%');
-    svg.setAttribute('overflow', 'hidden');  // prevent glow filter causing reflow
-    
+
     function mk(t, a) {
       var e = document.createElementNS(NS, t);
       for (var k in a) e.setAttribute(k, a[k]);
       return e;
     }
-    
+
     // Clear SVG
     while (svg.firstChild) svg.removeChild(svg.firstChild);
-    
+
     // Defs
     var defs = mk('defs', {});
     svg.appendChild(defs);
-    
+
     // Body gradient
     var grad = mk('linearGradient', { id: 'bodyGrad', x1: '0%', y1: '0%', x2: '100%', y2: '100%' });
     grad.appendChild(mk('stop', { offset: '0%', 'stop-color': '#1e2430' }));
     grad.appendChild(mk('stop', { offset: '100%', 'stop-color': '#0d1018' }));
     defs.appendChild(grad);
-    
-    // Glow filter
-    var glow = mk('filter', { id: 'pinGlow', x: '-80%', y: '-80%', width: '260%', height: '260%' });
+
+    // Glow filter — use userSpaceOnUse + absolute coords so toggling the filter
+    // on click does NOT change the SVG's intrinsic size and cause layout reflow.
+    var glow = mk('filter', {
+      id: 'pinGlow', filterUnits: 'userSpaceOnUse',
+      x: '0', y: '0', width: String(viewBoxWidth), height: String(viewBoxHeight)
+    });
     glow.appendChild(mk('feGaussianBlur', { stdDeviation: '3', result: 'blur' }));
     var merge = mk('feMerge', {});
     merge.appendChild(mk('feMergeNode', { in: 'blur' }));
     merge.appendChild(mk('feMergeNode', { in: 'SourceGraphic' }));
     glow.appendChild(merge);
     defs.appendChild(glow);
-    
+
     // IC body
     var bodyRect = mk('rect', { x: BX, y: BY, width: BW, height: BH, rx: '6', fill: 'url(#bodyGrad)', stroke: 'none' });
     svg.appendChild(bodyRect);
-    
+
     // Pin-1 notch
     var notch = mk('circle', { cx: BX + dip.notchX, cy: BY + dip.notchY, r: dip.notchSize, fill: '#2a3040', stroke: '#4a5568', 'stroke-width': '1.5', opacity: '0.9' });
     svg.appendChild(notch);
     var notchInner = mk('circle', { cx: BX + dip.notchX, cy: BY + dip.notchY, r: dip.notchSize / 2, fill: '#5a6478', opacity: '0.7' });
     svg.appendChild(notchInner);
-    
+
     // Text labels
     var CX = BX + BW / 2;
     var CY = BY + BH / 2;
     var yOff = dip.yOffset;
-    
+
     var mfr = mk('text', { x: CX, y: CY + yOff, fill: '#3a4a5a', 'font-family': 'monospace', 'font-size': dip.textSizes.mfr, 'font-weight': 'bold', 'text-anchor': 'middle' });
     mfr.textContent = C.manufacturer || 'MICROCHIP';
     svg.appendChild(mfr);
-    
+
     var part = mk('text', { x: CX, y: CY - 4, fill: '#4a5c70', 'font-family': 'monospace', 'font-size': dip.textSizes.part, 'font-weight': 'bold', 'text-anchor': 'middle' });
     part.textContent = C.partName;
     svg.appendChild(part);
-    
+
     var pkg = mk('text', { x: CX, y: CY + 16, fill: '#2a3a48', 'font-family': 'monospace', 'font-size': dip.textSizes.pkg, 'text-anchor': 'middle' });
     pkg.textContent = C.package;
     svg.appendChild(pkg);
-    
+
     var pinCount = mk('text', { x: CX, y: CY + 36, fill: '#1e2a38', 'font-family': 'monospace', 'font-size': dip.textSizes.pinCount, 'text-anchor': 'middle' });
     pinCount.textContent = C.pinCount + ' PINS';
     svg.appendChild(pinCount);
-    
+
     // Compute pin positions
     var pins = C.pins;
-    pins.forEach(function(pin) {
+    pins.forEach(function (pin) {
       var n = pin.num;
       if (n >= 1 && n <= SIDE) {
         var slot = n - 1;
@@ -130,31 +132,31 @@ var DIPRenderer = (function() {
         pin._py = cy - PW2 / 2;
       }
     });
-    
+
     // Draw each pin
-    pins.forEach(function(pin) {
+    pins.forEach(function (pin) {
       var col = window.ICExplorer ? window.ICExplorer.getColor(pin.type) : { bg: '#1c2128', c: '#78c878', bd: '#a5d6a7' };
       if (!col.bg) col = { bg: '#1c2128', c: '#78c878', bd: '#a5d6a7' };
-      
+
       var g = mk('g', { 'class': 'ic-pin', 'data-id': pin.id });
       g.style.cursor = 'pointer';
-      
+
       var px = pin._px, py = pin._py;
       var cx = px + PL / 2, cy = py + PW2 / 2;
-      
+
       var sq = mk('rect', {
         x: px, y: py, width: PL, height: PW2, rx: '2',
         fill: col.bg, stroke: '#4a4f5a', 'stroke-width': '1.5', 'class': 'pin-sq'
       });
       g.appendChild(sq);
-      
+
       var numLabel = mk('text', {
         x: cx, y: cy + 3, 'text-anchor': 'middle', fill: col.c,
         'font-size': dip.pinNumSize, 'font-family': 'monospace', 'font-weight': 'bold', 'pointer-events': 'none'
       });
       numLabel.textContent = String(pin.num);
       g.appendChild(numLabel);
-      
+
       // Pin label
       var labelY = py - 4;
       var label = mk('text', {
@@ -163,17 +165,17 @@ var DIPRenderer = (function() {
       });
       label.textContent = pin.lbl;
       g.appendChild(label);
-      
+
       svg.appendChild(g);
     });
-    
+
     // Outline
     var outline = mk('rect', { x: BX, y: BY, width: BW, height: BH, rx: '4', fill: 'none', stroke: '#2a3545', 'stroke-width': '2' });
     svg.appendChild(outline);
-    
+
     console.log('DIP Renderer drew', C.partName);
   }
-  
+
   return { draw: draw };
 })();
 
