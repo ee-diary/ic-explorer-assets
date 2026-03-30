@@ -50,8 +50,10 @@ var DIPRenderer = (function() {
     var viewBoxWidth = BX * 2 + BW + 40;
     var viewBoxHeight = BY * 2 + BH + 20;
     svg.setAttribute('viewBox', '0 0 ' + viewBoxWidth + ' ' + viewBoxHeight);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', '100%');
+    svg.setAttribute('overflow', 'hidden');  // prevent glow filter causing reflow
     
     function mk(t, a) {
       var e = document.createElementNS(NS, t);
