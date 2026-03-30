@@ -1,5 +1,7 @@
 /**
  * QFP / LQFP / TQFP Package Renderer  (v2 — full highlight parity with DIP renderer)
+ * FIX: Glow filter region now covers entire possible area with padding
+ * to prevent SVG reflow when toggling the filter on/off during pin selection.
  *
  * Pin state visual behaviour — identical to the DIP renderer:
  *
@@ -125,11 +127,13 @@ var QFPRenderer = (function () {
     /* Defs */
     var defs = ap(svg, mk('defs', {}));
 
-    // SVG glow filter — applied to selected / filter-match pins
-    // Use userSpaceOnUse so the region is fixed in SVG coords, not relative to
-    // the filtered element's bbox — prevents layout reflow when the filter is toggled.
+    // SVG glow filter — FIX: use userSpaceOnUse with padding beyond viewBox
+    // This prevents the browser from recalculating SVG bounds when the filter is toggled,
+    // which was causing the vertical shift.
+    var filterPadding = 50;
     var gf = mk('filter', { id:'qfpPinGlow', filterUnits:'userSpaceOnUse',
-      x:'-20', y:'-20', width: String(VB + 40), height: String(VB + 40) });
+      x: String(-filterPadding), y: String(-filterPadding),
+      width: String(VB + 2 * filterPadding), height: String(VB + 2 * filterPadding) });
     var bl = mk('feGaussianBlur', { stdDeviation:'3.5', result:'blur' });
     var fm = mk('feMerge', {});
     ap(fm, mk('feMergeNode', { in:'blur' }));
