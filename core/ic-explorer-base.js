@@ -86,11 +86,6 @@ var ICExplorer = (function() {
         return;
       }
       
-      // Lock SVG coordinate system before renderer draws —
-      // prevents body-jump when right-panel reflows on pin click
-      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      svg.setAttribute('overflow', 'hidden');
-
       // Call package-specific renderer
       if (renderer && renderer.draw) {
         renderer.draw(svg, C);
@@ -146,9 +141,13 @@ var ICExplorer = (function() {
     
     selectPin: function(id) {
       window._selectedPin = (window._selectedPin === id) ? null : id;
-      API.updateBoardHighlight();
-      API.updateDetailPanel();
-      API.updatePinList();
+      // Batch all DOM mutations in a single rAF to prevent mid-paint layout thrash
+      // that causes the SVG IC body to visually jump/shift.
+      requestAnimationFrame(function() {
+        API.updateBoardHighlight();
+        API.updateDetailPanel();
+        API.updatePinListSelection();
+      });
     },
     
     updateBoardHighlight: function() {
@@ -169,10 +168,9 @@ var ICExplorer = (function() {
         var mt = API.pinMatchesFilter(p);
         
         if (act) {
-          sq.setAttribute('fill',         col.c);
-          sq.setAttribute('stroke',       col.c);
-          sq.setAttribute('stroke-width', '2.5');
-          sq.setAttribute('filter',       'url(#pinGlow)');
+          sq.setAttribute('stroke', '#e74c3c');
+          sq.setAttribute('stroke-width', '3');
+          sq.setAttribute('filter', 'url(#pinGlow)');
           g.style.opacity = '1';
         } else if (hasFilter && !mt) {
           sq.setAttribute('stroke', '#4a4f5a');
@@ -185,8 +183,7 @@ var ICExplorer = (function() {
           sq.setAttribute('filter', 'url(#pinGlow)');
           g.style.opacity = '1';
         } else {
-          sq.setAttribute('fill',         col.bg);
-          sq.setAttribute('stroke',       '#4a4f5a');
+          sq.setAttribute('stroke', '#4a4f5a');
           sq.setAttribute('stroke-width', '1.2');
           sq.removeAttribute('filter');
           g.style.opacity = '1';
@@ -268,6 +265,7 @@ var ICExplorer = (function() {
       return f ? f.fn(p) : true;
     },
     
+    // Full rebuild — called on filter changes and on init.
     updatePinList: function() {
       var pins = window._icPins.filter(API.pinMatchesFilter);
       var rowsDiv = document.getElementById('awROWS');
@@ -284,6 +282,24 @@ var ICExplorer = (function() {
       }
       var cntSpan = document.getElementById('awCNT');
       if (cntSpan) cntSpan.textContent = pins.length + (pins.length < window._icPins.length ? ' / ' + window._icPins.length : '');
+    },
+
+    // Lightweight selection-only update — only toggles the .on class,
+    // does NOT rebuild innerHTML, so no layout reflow is triggered.
+    updatePinListSelection: function() {
+      var rowsDiv = document.getElementById('awROWS');
+      if (!rowsDiv) return;
+      var selId = window._selectedPin;
+      var rows = rowsDiv.querySelectorAll('.aw-prow');
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var isSelected = row.getAttribute('data-id') === selId;
+        if (isSelected) {
+          row.classList.add('on');
+        } else {
+          row.classList.remove('on');
+        }
+      }
     },
     
     updateLegend: function() {
