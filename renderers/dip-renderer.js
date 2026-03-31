@@ -108,8 +108,15 @@ var DIPRenderer = (function () {
     var CY = BY + BH / 2;
     var yOff = dip.yOffset;
 
+    var mfrParts = (C.manufacturer || 'MICROCHIP').split(' ');
     var mfr = mk('text', { x: CX, y: CY + yOff, fill: '#3a4a5a', 'font-family': 'monospace', 'font-size': dip.textSizes.mfr, 'font-weight': 'bold', 'text-anchor': 'middle' });
-    mfr.textContent = C.manufacturer || 'MICROCHIP';
+    mfrParts.forEach(function(word, i) {
+      var ts = document.createElementNS(NS, 'tspan');
+      ts.setAttribute('x', CX);
+      ts.setAttribute('dy', i === 0 ? '0' : '1.2em');
+      ts.textContent = word;
+      mfr.appendChild(ts);
+    });
     svg.appendChild(mfr);
 
     var part = mk('text', { x: CX, y: CY - 4, fill: '#4a5c70', 'font-family': 'monospace', 'font-size': dip.textSizes.part, 'font-weight': 'bold', 'text-anchor': 'middle' });
