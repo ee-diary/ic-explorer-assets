@@ -16,7 +16,7 @@ window.IC_CONFIG = {
   dipConfig: {
     pinsPerSide:  4,
     bodyX:        150,  bodyY: 100,  bodyW: 100,  bodyH: 140,
-    pinLength:    21,   pinWidthHalf: 7,
+    pinLength:    21,   pinWidthHalf: 10,
     notchSize:    4,    notchX: 12,  notchY: 12,
     textSizes:    { mfr: 12, part: 18, pkg: 10, pinCount: 10 },
     labelSize:    9.5,  pinNumSize: 8,   yOffset: -60,
