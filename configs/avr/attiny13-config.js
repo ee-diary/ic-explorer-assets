@@ -3,7 +3,7 @@ window.IC_CONFIG = {
   // ── IDENTITY ──────────────────────────────────────────────────
   partName:     'ATtiny13',
   partMPN:      'ATtiny13-20SU',
-  manufacturer: 'Microchip (Atmel)',
+  manufacturer: 'Microchip Atmel',
   package:      'DIP-8',
   pinCount:     8,
 
