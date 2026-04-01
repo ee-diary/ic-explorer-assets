@@ -13,10 +13,14 @@ window.IC_CONFIG = {
   datasheetURL: 'https://www.ti.com/lit/ds/symlink/sn74hc595.pdf',
 
   // ── LAYOUT HINT (DIP only) ────────────────────────────────────
+  // INCREASED PIN SIZE:
+  // - pinLength: 34 → 44 (longer pins)
+  // - pinWidthHalf: 16 → 22 (wider pins)
   dipConfig: {
     pinsPerSide: 8,        // half of pinCount (16/2 = 8)
     bodyX: 122, bodyY: 25, bodyW: 260, bodyH: 700,
-    pinLength: 34, pinWidthHalf: 16,
+    pinLength: 44,         // was 34 — extended length
+    pinWidthHalf: 22,      // was 16 — wider pins
     notchSize: 8, notchX: 14, notchY: 14,
     textSizes: { mfr: 14, part: 24, pkg: 16, pinCount: 12 },
     labelSize: 11, pinNumSize: 14, yOffset: -60
@@ -125,7 +129,7 @@ window.IC_CONFIG = {
       volt: 'VCC',
       curr: '35 mA',
       note: "Serial output directly from the shift register (not latched). Connect to DS of the next 74HC595 to chain multiple ICs and expand parallel outputs indefinitely using the same 3 control lines.",
-      _rightSlot: 7   // bottom-most right side (since right side order is reversed)
+      _rightSlot: 7   // bottom-most right side
     },
     {
       num:  10,
