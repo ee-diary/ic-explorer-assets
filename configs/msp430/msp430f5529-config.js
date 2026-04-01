@@ -1,0 +1,206 @@
+// configs/msp430f5529-config.js
+window.IC_CONFIG = {
+  // ── IDENTITY ──────────────────────────────────────────────────
+  partName:     'MSP430F5529',
+  partMPN:      'MSP430F5529IRGC',
+  manufacturer: 'Texas Instruments',
+  package:      'LQFP-80',
+  pinCount:     80,
+
+  // ── LINKS ─────────────────────────────────────────────────────
+  snapPageURL:  'https://www.snapeda.com/parts/MSP430F5529IRGC/Texas%20Instruments/view-part/',
+  downloadURL:  'https://www.snapeda.com/parts/MSP430F5529IRGC/Texas%20Instruments/download/',
+  datasheetURL: 'https://www.ti.com/lit/ds/symlink/msp430f5529.pdf',
+
+  // ── LAYOUT HINT (QFP only) ────────────────────────────────────
+  // QFP pins: 20 per side (80/4 = 20)
+  qfpConfig: {
+    pinsPerSide: 20,
+    bodySize: 400,
+    pinLength: 24,
+    pinWidth: 14,
+    pinGap: 2
+  },
+
+  // ── PINS ──────────────────────────────────────────────────────
+  // QFP ordering: LEFT (pins 1-20, top→bottom), BOTTOM (pins 21-40, left→right),
+  //               RIGHT (pins 41-60, bottom→top), TOP (pins 61-80, right→left)
+  pins: [
+    // ========== LEFT SIDE: pins 1-20 (top to bottom) ==========
+    { num: 1,  id: 'P2.0',  lbl: 'P2.0',  name: 'P2.0 / PM_UCA0CLK / PM_UCB0STE', type: 'GPIO',  funcs: ['GPIO', 'UART', 'SPI', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 2.0. Port-mapped: USCI_A0 CLK or USCI_B0 STE.' },
+    { num: 2,  id: 'P2.1',  lbl: 'P2.1',  name: 'P2.1 / PM_UCA0TXD / PM_UCB0CLK', type: 'GPIO',  funcs: ['GPIO', 'UART', 'SPI', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 2.1. Port-mapped: USCI_A0 TXD (UART) or USCI_B0 CLK (SPI).' },
+    { num: 3,  id: 'P2.2',  lbl: 'P2.2',  name: 'P2.2 / PM_UCA0RXD / PM_UCB0SOMI', type: 'GPIO',  funcs: ['GPIO', 'UART', 'SPI', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 2.2. Port-mapped: USCI_A0 RXD (UART) or USCI_B0 SOMI (SPI).' },
+    { num: 4,  id: 'P2.3',  lbl: 'P2.3',  name: 'P2.3 / PM_UCB0SIMO / PM_UCA0STE', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'UART', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 2.3. Port-mapped: USCI_B0 SIMO (SPI) or USCI_A0 STE.' },
+    { num: 5,  id: 'P2.4',  lbl: 'P2.4',  name: 'P2.4 / PM_TA0.4 / PM_TB0.4', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 2.4. Port-mapped: TimerA0 CCR4 or TimerB0 CCR4 PWM output.' },
+    { num: 6,  id: 'P2.5',  lbl: 'P2.5',  name: 'P2.5 / PM_TA0.3 / PM_TB0.3', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 2.5. Port-mapped: TimerA0 CCR3 or TimerB0 CCR3 PWM output.' },
+    { num: 7,  id: 'P2.6',  lbl: 'P2.6',  name: 'P2.6 / PM_TA0.2 / PM_TB0.2', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 2.6. Port-mapped: TimerA0 CCR2 or TimerB0 CCR2 PWM output.' },
+    { num: 8,  id: 'P2.7',  lbl: 'P2.7',  name: 'P2.7 / PM_TA0.1 / PM_TB0.1', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 2.7. Port-mapped: TimerA0 CCR1 or TimerB0 CCR1 PWM output.' },
+    { num: 9,  id: 'DVCC1', lbl: 'VCC',  name: 'DVCC1 — Digital Power Supply 1', type: 'PWR',   funcs: ['PWR'], volt: '3.3V', curr: 'N/A', note: 'Digital power supply 1. Decouple with 100nF + 10µF capacitors close to pin.' },
+    { num: 10, id: 'DVSS1', lbl: 'GND',  name: 'DVSS1 — Digital Ground 1', type: 'GND',   funcs: ['GND'], volt: '0V',   curr: 'N/A', note: 'Digital ground 1. Connect to system ground plane.' },
+    { num: 11, id: 'P1.0',  lbl: 'P1.0',  name: 'P1.0 / TA0CLK / CBOUT / DMAE0', type: 'GPIO',  funcs: ['GPIO', 'ACMP', 'TIMER'], volt: '3.3V', curr: '4 mA', note: 'Port 1.0. TimerA0 external clock input. Comparator_B output. DMA external trigger.' },
+    { num: 12, id: 'P1.1',  lbl: 'P1.1',  name: 'P1.1 / TA0.0 / CBOUT', type: 'GPIO',  funcs: ['GPIO', 'ACMP', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 1.1. TimerA0 CCR0 PWM output. Comparator_B output.' },
+    { num: 13, id: 'P1.2',  lbl: 'P1.2',  name: 'P1.2 / TA1CLK / CAOUT', type: 'GPIO',  funcs: ['GPIO', 'ACMP', 'TIMER'], volt: '3.3V', curr: '4 mA', note: 'Port 1.2. TimerA1 external clock input. Comparator output.' },
+    { num: 14, id: 'P1.3',  lbl: 'P1.3',  name: 'P1.3 / TA1.0 / CB3', type: 'GPIO',  funcs: ['GPIO', 'ACMP', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 1.3. TimerA1 CCR0 PWM output. Comparator_B input CB3.' },
+    { num: 15, id: 'P1.4',  lbl: 'P1.4',  name: 'P1.4 / TA1.1 / CB4', type: 'GPIO',  funcs: ['GPIO', 'ACMP', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 1.4. TimerA1 CCR1 PWM output. Comparator_B input CB4.' },
+    { num: 16, id: 'P1.5',  lbl: 'P1.5',  name: 'P1.5 / TA1.2 / CB5', type: 'GPIO',  funcs: ['GPIO', 'ACMP', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 1.5. TimerA1 CCR2 PWM output. Comparator_B input CB5.' },
+    { num: 17, id: 'P1.6',  lbl: 'P1.6',  name: 'P1.6 / TA1.1 / UCB0SDA / CB6', type: 'GPIO',  funcs: ['GPIO', 'I2C', 'ACMP', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 1.6. TimerA1 CCR1 PWM. USCI_B0 I2C SDA. Comparator_B input CB6.' },
+    { num: 18, id: 'P1.7',  lbl: 'P1.7',  name: 'P1.7 / TA1.2 / UCB0SCL / CB7', type: 'GPIO',  funcs: ['GPIO', 'I2C', 'ACMP', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 1.7. TimerA1 CCR2 PWM. USCI_B0 I2C SCL. Comparator_B input CB7.' },
+    { num: 19, id: 'AVSS1', lbl: 'AGND', name: 'AVSS1 — Analog Ground 1', type: 'GND',   funcs: ['GND'], volt: '0V',   curr: 'N/A', note: 'Analog ground reference 1.' },
+    { num: 20, id: 'AVCC1', lbl: 'AVCC', name: 'AVCC1 — Analog Power Supply 1', type: 'PWR',   funcs: ['PWR'], volt: '3.3V', curr: 'N/A', note: 'Analog power supply 1. Decouple with 100nF + 1µF caps.' },
+
+    // ========== BOTTOM SIDE: pins 21-40 (left to right) ==========
+    { num: 21, id: 'P6.0',  lbl: 'P6.0',  name: 'P6.0 / A0 / CB0', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'ACMP'], volt: '3.3V', curr: '4 mA', note: 'Port 6.0. ADC12 channel A0. Comparator_B input CB0.' },
+    { num: 22, id: 'P6.1',  lbl: 'P6.1',  name: 'P6.1 / A1 / CB1', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'ACMP'], volt: '3.3V', curr: '4 mA', note: 'Port 6.1. ADC12 channel A1. Comparator_B input CB1.' },
+    { num: 23, id: 'P6.2',  lbl: 'P6.2',  name: 'P6.2 / A2 / CB2', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'ACMP'], volt: '3.3V', curr: '4 mA', note: 'Port 6.2. ADC12 channel A2. Comparator_B input CB2.' },
+    { num: 24, id: 'P6.3',  lbl: 'P6.3',  name: 'P6.3 / A3 / CB3', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'ACMP'], volt: '3.3V', curr: '4 mA', note: 'Port 6.3. ADC12 channel A3. Comparator_B input CB3.' },
+    { num: 25, id: 'P6.4',  lbl: 'P6.4',  name: 'P6.4 / A4 / CB4', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'ACMP'], volt: '3.3V', curr: '4 mA', note: 'Port 6.4. ADC12 channel A4. Comparator_B input CB4.' },
+    { num: 26, id: 'P6.5',  lbl: 'P6.5',  name: 'P6.5 / A5 / CB5', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'ACMP'], volt: '3.3V', curr: '4 mA', note: 'Port 6.5. ADC12 channel A5. Comparator_B input CB5.' },
+    { num: 27, id: 'P6.6',  lbl: 'P6.6',  name: 'P6.6 / A6 / CB6 / VREF+', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'ACMP'], volt: '3.3V', curr: '4 mA', note: 'Port 6.6. ADC12 A6. Comparator_B CB6. External ADC reference VREF+.' },
+    { num: 28, id: 'P6.7',  lbl: 'P6.7',  name: 'P6.7 / A7 / CB7 / VREF-', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'ACMP'], volt: '3.3V', curr: '4 mA', note: 'Port 6.7. ADC12 A7. Comparator_B CB7. External ADC reference VREF-.' },
+    { num: 29, id: 'AVSS2', lbl: 'AGND', name: 'AVSS2 — Analog Ground 2', type: 'GND',   funcs: ['GND'], volt: '0V',   curr: 'N/A', note: 'Analog ground reference 2.' },
+    { num: 30, id: 'AVCC2', lbl: 'AVCC', name: 'AVCC2 — Analog Power Supply 2', type: 'PWR',   funcs: ['PWR'], volt: '3.3V', curr: 'N/A', note: 'Analog power supply 2. Decouple with 100nF + 1µF caps.' },
+    { num: 31, id: 'P5.0',  lbl: 'P5.0',  name: 'P5.0 / A8 / VREF+ / VeREF+', type: 'GPIO',  funcs: ['GPIO', 'ADC'], volt: '3.3V', curr: '4 mA', note: 'Port 5.0. ADC12 channel A8. External positive reference input.' },
+    { num: 32, id: 'P5.1',  lbl: 'P5.1',  name: 'P5.1 / A9 / VREF- / VeREF-', type: 'GPIO',  funcs: ['GPIO', 'ADC'], volt: '3.3V', curr: '4 mA', note: 'Port 5.1. ADC12 channel A9. External negative reference input.' },
+    { num: 33, id: 'P5.2',  lbl: 'P5.2',  name: 'P5.2 / UCB1SOMI / UCA1RXD', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'UART'], volt: '3.3V', curr: '4 mA', note: 'Port 5.2. USCI_B1 SOMI (SPI) or USCI_A1 RXD (UART).' },
+    { num: 34, id: 'P5.3',  lbl: 'P5.3',  name: 'P5.3 / UCB1SIMO / UCA1TXD', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'UART'], volt: '3.3V', curr: '4 mA', note: 'Port 5.3. USCI_B1 SIMO (SPI) or USCI_A1 TXD (UART).' },
+    { num: 35, id: 'P5.4',  lbl: 'XIN',   name: 'P5.4 / XIN', type: 'XTAL',  funcs: ['XTAL', 'GPIO'], volt: '3.3V', curr: 'N/A', note: 'Port 5.4. XT1 crystal oscillator input. 32.768 kHz watch crystal.' },
+    { num: 36, id: 'P5.5',  lbl: 'XOUT',  name: 'P5.5 / XOUT', type: 'XTAL',  funcs: ['XTAL', 'GPIO'], volt: '3.3V', curr: 'N/A', note: 'Port 5.5. XT1 crystal oscillator output.' },
+    { num: 37, id: 'XT2IN', lbl: 'XT2IN', name: 'XT2IN — HF Crystal Input', type: 'XTAL',  funcs: ['XTAL'], volt: '3.3V', curr: 'N/A', note: 'High-frequency crystal oscillator input. Required for USB (4–32 MHz).' },
+    { num: 38, id: 'XT2OUT',lbl: 'XT2OUT',name: 'XT2OUT — HF Crystal Output', type: 'XTAL',  funcs: ['XTAL'], volt: '3.3V', curr: 'N/A', note: 'High-frequency crystal oscillator output.' },
+    { num: 39, id: 'DVSS2', lbl: 'GND',  name: 'DVSS2 — Digital Ground 2', type: 'GND',   funcs: ['GND'], volt: '0V',   curr: 'N/A', note: 'Digital ground 2.' },
+    { num: 40, id: 'DVCC2', lbl: 'VCC',  name: 'DVCC2 — Digital Power Supply 2', type: 'PWR',   funcs: ['PWR'], volt: '3.3V', curr: 'N/A', note: 'Digital power supply 2.' },
+
+    // ========== RIGHT SIDE: pins 41-60 (bottom to top) ==========
+    { num: 41, id: 'P3.0',  lbl: 'P3.0',  name: 'P3.0 / UCB0STE / UCA0CLK', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'UART'], volt: '3.3V', curr: '4 mA', note: 'Port 3.0. USCI_B0 STE or USCI_A0 CLK.' },
+    { num: 42, id: 'P3.1',  lbl: 'P3.1',  name: 'P3.1 / UCB0CLK / UCB0SCL / UCA0STE', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'I2C', 'UART'], volt: '3.3V', curr: '4 mA', note: 'Port 3.1. USCI_B0 CLK/SCL or USCI_A0 STE.' },
+    { num: 43, id: 'P3.2',  lbl: 'P3.2',  name: 'P3.2 / UCB0SIMO / UCB0SDA / UCA0RXD', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'I2C', 'UART'], volt: '3.3V', curr: '4 mA', note: 'Port 3.2. USCI_B0 SIMO/SDA or USCI_A0 RXD.' },
+    { num: 44, id: 'P3.3',  lbl: 'P3.3',  name: 'P3.3 / UCB0SOMI / UCA0TXD', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'UART'], volt: '3.3V', curr: '4 mA', note: 'Port 3.3. USCI_B0 SOMI or USCI_A0 TXD.' },
+    { num: 45, id: 'P3.4',  lbl: 'P3.4',  name: 'P3.4 / UCA0RXD', type: 'GPIO',  funcs: ['GPIO', 'UART'], volt: '3.3V', curr: '4 mA', note: 'Port 3.4. USCI_A0 RXD (UART).' },
+    { num: 46, id: 'P3.5',  lbl: 'P3.5',  name: 'P3.5 / TB0.5', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 3.5. TimerB0 CCR5 PWM output.' },
+    { num: 47, id: 'P3.6',  lbl: 'P3.6',  name: 'P3.6 / TB0.6', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 3.6. TimerB0 CCR6 PWM output.' },
+    { num: 48, id: 'P3.7',  lbl: 'P3.7',  name: 'P3.7 / TB0CLK / SMCLK', type: 'GPIO',  funcs: ['GPIO', 'TIMER'], volt: '3.3V', curr: '4 mA', note: 'Port 3.7. TimerB0 external clock or SMCLK output.' },
+    { num: 49, id: 'DVSS3', lbl: 'GND',  name: 'DVSS3 — Digital Ground 3', type: 'GND',   funcs: ['GND'], volt: '0V',   curr: 'N/A', note: 'Digital ground 3.' },
+    { num: 50, id: 'DVCC3', lbl: 'VCC',  name: 'DVCC3 — Digital Power Supply 3', type: 'PWR',   funcs: ['PWR'], volt: '3.3V', curr: 'N/A', note: 'Digital power supply 3.' },
+    { num: 51, id: 'P4.0',  lbl: 'P4.0',  name: 'P4.0 / UCB1STE / UCA1CLK', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'UART'], volt: '3.3V', curr: '4 mA', note: 'Port 4.0. USCI_B1 STE or USCI_A1 CLK.' },
+    { num: 52, id: 'P4.1',  lbl: 'P4.1',  name: 'P4.1 / UCB1SIMO / UCB1SDA', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'I2C'], volt: '3.3V', curr: '4 mA', note: 'Port 4.1. USCI_B1 SIMO or I2C SDA.' },
+    { num: 53, id: 'P4.2',  lbl: 'P4.2',  name: 'P4.2 / UCB1SOMI / UCB1SCL', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'I2C'], volt: '3.3V', curr: '4 mA', note: 'Port 4.2. USCI_B1 SOMI or I2C SCL.' },
+    { num: 54, id: 'P4.3',  lbl: 'P4.3',  name: 'P4.3 / UCB1CLK / UCA1STE', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'UART'], volt: '3.3V', curr: '4 mA', note: 'Port 4.3. USCI_B1 CLK or USCI_A1 STE.' },
+    { num: 55, id: 'P4.4',  lbl: 'P4.4',  name: 'P4.4 / UCA1TXD / UCA1SIMO', type: 'GPIO',  funcs: ['GPIO', 'UART', 'SPI'], volt: '3.3V', curr: '4 mA', note: 'Port 4.4. USCI_A1 TXD or SIMO.' },
+    { num: 56, id: 'P4.5',  lbl: 'P4.5',  name: 'P4.5 / UCA1RXD / UCA1SOMI', type: 'GPIO',  funcs: ['GPIO', 'UART', 'SPI'], volt: '3.3V', curr: '4 mA', note: 'Port 4.5. USCI_A1 RXD or SOMI.' },
+    { num: 57, id: 'P4.6',  lbl: 'P4.6',  name: 'P4.6 / PM_TB0.6', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 4.6. TimerB0 CCR6 PWM via port mapping.' },
+    { num: 58, id: 'P4.7',  lbl: 'P4.7',  name: 'P4.7 / PM_TBCLK', type: 'GPIO',  funcs: ['GPIO', 'TIMER'], volt: '3.3V', curr: '4 mA', note: 'Port 4.7. TimerB0 external clock via port mapping.' },
+    { num: 59, id: 'P7.7',  lbl: 'P7.7',  name: 'P7.7 / PM_MCLK / PM_SMCLK', type: 'GPIO',  funcs: ['GPIO', 'TIMER'], volt: '3.3V', curr: '4 mA', note: 'Port 7.7. MCLK or SMCLK output via port mapping.' },
+    { num: 60, id: 'P7.6',  lbl: 'P7.6',  name: 'P7.6 / PM_TA2.2', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 7.6. TimerA2 CCR2 PWM via port mapping.' },
+
+    // ========== TOP SIDE: pins 61-80 (right to left) ==========
+    { num: 61, id: 'P7.5',  lbl: 'P7.5',  name: 'P7.5 / PM_TA2.1', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 7.5. TimerA2 CCR1 PWM via port mapping.' },
+    { num: 62, id: 'P7.4',  lbl: 'P7.4',  name: 'P7.4 / PM_TA2.0', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 7.4. TimerA2 CCR0 PWM via port mapping.' },
+    { num: 63, id: 'P7.3',  lbl: 'P7.3',  name: 'P7.3 / PM_TA1.2 / A15', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 7.3. TimerA1 CCR2 PWM. ADC12 channel A15.' },
+    { num: 64, id: 'P7.2',  lbl: 'P7.2',  name: 'P7.2 / PM_TA1.1 / A14', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 7.2. TimerA1 CCR1 PWM. ADC12 channel A14.' },
+    { num: 65, id: 'P7.1',  lbl: 'P7.1',  name: 'P7.1 / PM_TA1.0 / A13', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 7.1. TimerA1 CCR0 PWM. ADC12 channel A13.' },
+    { num: 66, id: 'P7.0',  lbl: 'P7.0',  name: 'P7.0 / PM_TA0.4 / A12', type: 'GPIO',  funcs: ['GPIO', 'ADC', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 7.0. TimerA0 CCR4 PWM. ADC12 channel A12.' },
+    { num: 67, id: 'RST',   lbl: 'RST',   name: 'RST / NMI / SBWTDIO', type: 'RESET', funcs: ['RESET', 'INT'], volt: '3.3V', curr: 'N/A', note: 'Active-low device reset. Non-maskable interrupt. Spy-Bi-Wire data. Pull up via 47kΩ to DVCC.' },
+    { num: 68, id: 'TEST',  lbl: 'TEST',  name: 'TEST / SBWTCK', type: 'RESET', funcs: ['RESET'], volt: '3.3V', curr: 'N/A', note: 'JTAG test clock / Spy-Bi-Wire clock. Pull to GND via 100Ω for normal operation.' },
+    { num: 69, id: 'P5.6',  lbl: 'P5.6',  name: 'P5.6 / TB0.0', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 5.6. TimerB0 CCR0 output.' },
+    { num: 70, id: 'P5.7',  lbl: 'P5.7',  name: 'P5.7 / TB0.1', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 5.7. TimerB0 CCR1 output.' },
+    { num: 71, id: 'DVSS4', lbl: 'GND',  name: 'DVSS4 — Digital Ground 4', type: 'GND',   funcs: ['GND'], volt: '0V',   curr: 'N/A', note: 'Digital ground 4.' },
+    { num: 72, id: 'DVCC4', lbl: 'VCC',  name: 'DVCC4 — Digital Power Supply 4', type: 'PWR',   funcs: ['PWR'], volt: '3.3V', curr: 'N/A', note: 'Digital power supply 4.' },
+    { num: 73, id: 'PU.0',  lbl: 'DP',    name: 'PU.0 / DP — USB D+', type: 'USB',   funcs: ['USB'], volt: '3.3V', curr: 'N/A', note: 'USB D+ data line. Connect to USB connector via 22Ω series resistor.' },
+    { num: 74, id: 'PU.1',  lbl: 'DM',    name: 'PU.1 / DM — USB D-', type: 'USB',   funcs: ['USB'], volt: '3.3V', curr: 'N/A', note: 'USB D- data line. Connect to USB connector via 22Ω series resistor.' },
+    { num: 75, id: 'VUSB',  lbl: 'VUSB',  name: 'VUSB — USB Power Supply', type: 'PWR',   funcs: ['PWR'], volt: '3.3V', curr: 'N/A', note: 'USB module power supply. Decouple with 100nF cap.' },
+    { num: 76, id: 'V18',   lbl: 'V18',   name: 'V18 — USB LDO 1.8V Output', type: 'PWR',   funcs: ['PWR'], volt: '1.8V', curr: 'N/A', note: 'Internal USB LDO regulator 1.8V output. Decouple with 1µF cap.' },
+    { num: 77, id: 'P8.2',  lbl: 'P8.2',  name: 'P8.2 / TA2.2', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 8.2. TimerA2 CCR2 output.' },
+    { num: 78, id: 'P8.1',  lbl: 'P8.1',  name: 'P8.1 / TA2.1', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 8.1. TimerA2 CCR1 output.' },
+    { num: 79, id: 'P8.0',  lbl: 'P8.0',  name: 'P8.0 / TA2.0', type: 'GPIO',  funcs: ['GPIO', 'TIMER', 'PWM'], volt: '3.3V', curr: '4 mA', note: 'Port 8.0. TimerA2 CCR0 output.' },
+    { num: 80, id: 'P5.8',  lbl: 'P5.8',  name: 'P5.8 / UCB1CLK / UCA1STE', type: 'GPIO',  funcs: ['GPIO', 'SPI', 'UART'], volt: '3.3V', curr: '4 mA', note: 'Port 5.8. USCI_B1 CLK or USCI_A1 STE.' }
+  ],
+
+  // ── ALTERNATE FUNCTIONS ───────────────────────────────────────
+  altFuncs: {
+    'P1.0': ['TA0CLK', 'CBOUT', 'DMAE0'], 'P1.1': ['TA0.0', 'CBOUT'], 'P1.2': ['TA1CLK', 'CAOUT'],
+    'P1.3': ['TA1.0', 'CB3'], 'P1.4': ['TA1.1', 'CB4'], 'P1.5': ['TA1.2', 'CB5'],
+    'P1.6': ['TA1.1', 'UCB0SDA', 'CB6'], 'P1.7': ['TA1.2', 'UCB0SCL', 'CB7'],
+    'P2.0': ['PM_UCA0CLK', 'PM_UCB0STE'], 'P2.1': ['PM_UCA0TXD', 'PM_UCB0CLK'],
+    'P2.2': ['PM_UCA0RXD', 'PM_UCB0SOMI'], 'P2.3': ['PM_UCB0SIMO', 'PM_UCA0STE'],
+    'P2.4': ['PM_TA0.4', 'PM_TB0.4'], 'P2.5': ['PM_TA0.3', 'PM_TB0.3'],
+    'P2.6': ['PM_TA0.2', 'PM_TB0.2'], 'P2.7': ['PM_TA0.1', 'PM_TB0.1'],
+    'P3.0': ['UCB0STE', 'UCA0CLK'], 'P3.1': ['UCB0CLK', 'UCB0SCL', 'UCA0STE'],
+    'P3.2': ['UCB0SIMO', 'UCB0SDA', 'UCA0RXD'], 'P3.3': ['UCB0SOMI', 'UCA0TXD'],
+    'P3.4': ['UCA0RXD'], 'P3.5': ['TB0.5'], 'P3.6': ['TB0.6'], 'P3.7': ['TB0CLK', 'SMCLK'],
+    'P4.0': ['UCB1STE', 'UCA1CLK'], 'P4.1': ['UCB1SIMO', 'UCB1SDA'],
+    'P4.2': ['UCB1SOMI', 'UCB1SCL'], 'P4.3': ['UCB1CLK', 'UCA1STE'],
+    'P4.4': ['UCA1TXD', 'UCA1SIMO'], 'P4.5': ['UCA1RXD', 'UCA1SOMI'],
+    'P4.6': ['PM_TB0.6'], 'P4.7': ['PM_TBCLK'],
+    'P5.0': ['A8', 'VREF+', 'VeREF+'], 'P5.1': ['A9', 'VREF-', 'VeREF-'],
+    'P5.2': ['UCB1SOMI', 'UCA1RXD'], 'P5.3': ['UCB1SIMO', 'UCA1TXD'],
+    'P5.4': ['XIN'], 'P5.5': ['XOUT'], 'P5.6': ['TB0.0'], 'P5.7': ['TB0.1'], 'P5.8': ['UCB1CLK', 'UCA1STE'],
+    'P6.0': ['A0', 'CB0'], 'P6.1': ['A1', 'CB1'], 'P6.2': ['A2', 'CB2'], 'P6.3': ['A3', 'CB3'],
+    'P6.4': ['A4', 'CB4'], 'P6.5': ['A5', 'CB5'], 'P6.6': ['A6', 'CB6', 'VREF+'], 'P6.7': ['A7', 'CB7', 'VREF-'],
+    'P7.0': ['PM_TA0.4', 'A12'], 'P7.1': ['PM_TA1.0', 'A13'], 'P7.2': ['PM_TA1.1', 'A14'],
+    'P7.3': ['PM_TA1.2', 'A15'], 'P7.4': ['PM_TA2.0'], 'P7.5': ['PM_TA2.1'],
+    'P7.6': ['PM_TA2.2'], 'P7.7': ['PM_MCLK', 'PM_SMCLK'],
+    'P8.0': ['TA2.0'], 'P8.1': ['TA2.1'], 'P8.2': ['TA2.2'],
+    'PU.0': ['DP'], 'PU.1': ['DM'],
+    'RST': ['NMI', 'SBWTDIO'], 'TEST': ['SBWTCK'],
+    'XT2IN': ['XT2CLK'], 'XT2OUT': ['XT2CLK']
+  },
+
+  // ── QUICK SPECS (right-panel sidebar summary) ─────────────────
+  quickSpecs: [
+    { label: 'Architecture',  value: '16-bit RISC MSP430',     color: '#e0e5ec' },
+    { label: 'Flash',         value: '128 KB',                 color: '#e0e5ec' },
+    { label: 'RAM',           value: '8 KB',                   color: '#e0e5ec' },
+    { label: 'Max Freq',      value: '25 MHz',                 color: '#c8a850' },
+    { label: 'Supply',        value: '1.8–3.6V',               color: '#78c878' },
+    { label: 'I/O Pins',      value: '63',                     color: '#e0e5ec' },
+    { label: 'ADC',           value: '12-bit, 8ch (ADC12)',    color: '#c8a850' },
+    { label: 'USB',           value: 'Full-Speed USB 2.0',     color: '#a78bfa' },
+    { label: 'USCI',          value: '2× UART/SPI + 2× I2C',   color: '#4a9aee' },
+    { label: 'Timers',        value: 'TA0(5) TA1(3) TA2(3) TB0(7)', color: '#50c8c8' },
+    { label: 'Package',       value: 'LQFP-80',                color: '#e0e5ec' }
+  ],
+
+  // ── DETAILED SPECS (Datasheet tab table) ──────────────────────
+  dsSpecs: [
+    { label: 'Architecture',      value: '16-bit RISC, 27 instructions' },
+    { label: 'Flash Memory',      value: '128 KB (organized as 64K × 16-bit)' },
+    { label: 'RAM',               value: '8 KB' },
+    { label: 'BSL ROM',           value: '2 KB' },
+    { label: 'Max Frequency',     value: '25 MHz (calibrated DCO)' },
+    { label: 'Supply Voltage',    value: '1.8V – 3.6V' },
+    { label: 'Active Current',    value: '~230 µA/MHz, 6 mA @ 25 MHz with USB' },
+    { label: 'LPM3 Current',      value: '2.5 µA typical' },
+    { label: 'LPM4 Current',      value: '1.1 µA typical' },
+    { label: 'I/O Pins',          value: '63 (P1–P8, PU), all interrupt-capable' },
+    { label: 'ADC12',             value: '12-bit, 8 external + 4 internal channels, 200 ksps' },
+    { label: 'Timers',            value: 'TimerA0 (5 CCR), TimerA1 (3 CCR), TimerA2 (3 CCR), TimerB0 (7 CCR)' },
+    { label: 'USCI_A0/A1',        value: 'UART, IrDA, SPI' },
+    { label: 'USCI_B0/B1',        value: 'I2C, SPI' },
+    { label: 'USB',               value: 'Full-Speed USB 2.0 (12 Mbps), internal PHY and LDO' },
+    { label: 'Comparator_B',      value: '12 inputs, programmable reference' },
+    { label: 'Port Mapping',      value: 'P2 and P4 pins freely assignable' },
+    { label: 'Programming',       value: 'Spy-Bi-Wire (2-pin) and JTAG (4-pin)' },
+    { label: 'Operating Temp',    value: '-40 to +85 °C' },
+    { label: 'Storage Temp',      value: '-55 to +150 °C' }
+  ],
+
+  // ── KEY FEATURES (Datasheet tab list) ────────────────────────
+  dsFeatures: [
+    'Full-Speed USB 2.0 (12 Mbps) with internal USB PHY and integrated LDO regulator',
+    '25 MHz max CPU clock — fastest in MSP430 value-line family',
+    'Port mapping controller: P2 and P4 pins freely assignable to peripherals',
+    'Four timers: TimerA0 (5 CCR), TimerA1 (3 CCR), TimerA2 (3 CCR), TimerB0 (7 CCR)',
+    'ADC12: 12-bit SAR, 200 ksps, 8 external channels + temperature sensor + AVCC/2',
+    '2× USCI_A (UART/SPI/IrDA) and 2× USCI_B (I2C/SPI) — flexible communication',
+    'Comparator_B with 12 inputs and programmable reference generator',
+    'Ultra-low-power: 5 low-power modes (LPM0–LPM4) down to 1.1 µA in LPM4',
+    '128 KB Flash + 8 KB RAM + 2 KB BSL ROM',
+    'JTAG (4-pin) and Spy-Bi-Wire (2-pin) debug and programming',
+    'XT1 (32.768 kHz) and XT2 (4–32 MHz) crystal support for high-accuracy clocking',
+    'DMA controller with 3 channels for memory-to-memory transfers',
+    'Hardware multiplier (16-bit, 32-bit operations)',
+    'Brownout reset (BOR) for reliable power-on reset',
+    'Watchdog timer with interval and watchdog modes',
+    'Typical applications: USB-enabled sensors, portable medical devices, USB data acquisition, industrial control'
+  ]
+};
