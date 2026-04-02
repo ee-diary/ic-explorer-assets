@@ -1,516 +1,219 @@
-/**
- * Custom Board Renderer - For Raspberry Pi, Teensy, Arduino, etc.
- * Renders the physical board layout with all components
- */
+// ============================================================
+//  configs/teensy41-config.js
+//  Teensy 4.1 — IC Explorer config
+//  Board: PJRC Teensy 4.1  Processor: NXP iMXRT1062 (600 MHz Cortex-M7)
+// ============================================================
 
-var CustomBoardRenderer = (function() {
-  'use strict';
-  
-  var NS = 'http://www.w3.org/2000/svg';
-  
-  // Registry of board-specific drawing functions
-  var boardDrawers = {
-    'RASPBERRY PI 3': function(svg, config) {
-      drawRaspberryPi3(svg, config);
-    },
-    'TEENSY 4.1': function(svg, config) {
-      drawTeensy41(svg, config);
-    },
-    'TEENSY41': function(svg, config) {
-      drawTeensy41(svg, config);
-    },
-    'TEENSY 4.1 BOARD': function(svg, config) {
-      drawTeensy41(svg, config);
-    },
-    'ARDUINO NANO': function(svg, config) {
-      drawArduinoNano(svg, config);
-    }
-  };
-  
-  function draw(svg, config) {
-    var boardName = config.boardType || config.partName;
-    var drawer = boardDrawers[boardName.toUpperCase()];
-    
-    if (drawer) {
-      drawer(svg, config);
-    } else {
-      drawGenericBoard(svg, config);
-    }
-    
-    attachPinInteractivity(svg, config);
-  }
-  
-  // ============================================================
-  // TEENSY 4.1 BOARD DRAWING
-  // ============================================================
-  function drawTeensy41(svg, config) {
-    // Clear SVG
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-    
-    svg.setAttribute('viewBox', '0 -60 220 700');
-    svg.setAttribute('width', '100%');
-    svg.setAttribute('height', '100%');
-    
-    // Helper function
-    function mk(tag, attrs) {
-      var el = document.createElementNS(NS, tag);
-      for (var k in attrs) el.setAttribute(k, attrs[k]);
-      return el;
-    }
-    
-    function app(parent, child) {
-      parent.appendChild(child);
-      return child;
-    }
-    
-    function txt(str, attrs) {
-      var t = mk('text', attrs);
-      t.textContent = str;
-      return t;
-    }
-    
-    // ── DEFS ──
-    var defs = app(svg, mk('defs', {}));
-    
-    function linGrad(id, x1, y1, x2, y2, stops) {
-      var g = mk('linearGradient', { id: id, x1: x1, y1: y1, x2: x2, y2: y2 });
-      stops.forEach(function(s) {
-        var st = mk('stop', { offset: s[0] });
-        st.setAttribute('stop-color', s[1]);
-        g.appendChild(st);
-      });
-      defs.appendChild(g);
-    }
-    
-    // Gradients
-    linGrad('t41PcbG', '0', '0', '1', '1', [['0%', '#1a3a1a'], ['50%', '#122810'], ['100%', '#0c1e0c']]);
-    linGrad('t41ChipG', '0', '0', '1', '1', [['0%', '#1e1e1e'], ['100%', '#080808']]);
-    linGrad('t41SilvG', '0', '0', '0', '1', [['0%', '#d8d8d8'], ['50%', '#a8a8a8'], ['100%', '#787878']]);
-    linGrad('t41UsbG', '0', '0', '1', '0', [['0%', '#e0e0e0'], ['30%', '#ffffff'], ['60%', '#d0d0d0'], ['100%', '#b0b0b0']]);
-    
-    // Green dot pattern (PCB style)
-    var pat = mk('pattern', { id: 't41Dots', width: '16', height: '16', patternUnits: 'userSpaceOnUse' });
-    app(pat, mk('circle', { cx: '8', cy: '8', r: '0.6', fill: 'rgba(100,220,100,0.10)' }));
-    defs.appendChild(pat);
-    
-    // Glow filter for selected pins
-    var filt = mk('filter', { id: 't41PinGlow', x: '-50%', y: '-50%', width: '200%', height: '200%' });
-    var fgb = mk('feGaussianBlur', { stdDeviation: '3.5', result: 'blur' });
-    filt.appendChild(fgb);
-    var fm = mk('feMerge', {});
-    app(fm, mk('feMergeNode', { in: 'blur' }));
-    app(fm, mk('feMergeNode', { in: 'SourceGraphic' }));
-    filt.appendChild(fm);
-    defs.appendChild(filt);
-    
-    // Board outline — green PCB
-    app(svg, mk('rect', { x: '0', y: '0', width: '220', height: '600', rx: '0', fill: 'url(#t41PcbG)', stroke: '#0a1f0a', 'stroke-width': '2' }));
-    app(svg, mk('rect', { x: '0', y: '0', width: '220', height: '600', rx: '0', fill: 'url(#t41Dots)' }));
-    app(svg, mk('rect', { x: '1', y: '1', width: '218', height: '598', rx: '0', fill: 'none', stroke: 'rgba(100,220,100,0.09)', 'stroke-width': '1' }));
-    
-    // USB-C connector — top centre
-    var ucx = 60, ucy = -12, ucw = 100, uch = 55;
-    app(svg, mk('rect', { x: ucx, y: ucy, width: ucw, height: uch, rx: '5', fill: 'url(#t41UsbG)', stroke: '#999', 'stroke-width': '1.5' }));
-    app(svg, mk('rect', { x: ucx + 3, y: ucy + 3, width: ucw - 6, height: uch - 6, rx: '3', fill: 'url(#t41UsbG)' }));
-    app(svg, mk('ellipse', { cx: ucx + ucw / 2, cy: ucy + uch - 7, rx: '16', ry: '9', fill: '#111', stroke: '#666', 'stroke-width': '1' }));
-    app(svg, txt('USB-C', { fill: '#555', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '' + (ucx + ucw / 2), y: '' + (ucy + 15) }));
-    
-    // MKL02Z32VFG4 MCU (Bootloader)
-    var mcuG = app(svg, mk('g', { 'class': 'board-chip', 'data-id': 'MKL02' }));
-    var mcuW = 38, mcuH = 36, mcuX = 125, mcuY = 70;
-    app(mcuG, mk('rect', { x: mcuX, y: mcuY, width: mcuW, height: mcuH, rx: '2', fill: 'url(#t41ChipG)', stroke: '#2a3a2a', 'stroke-width': '1.2', 'class': 'chip-shape' }));
-    app(mcuG, mk('circle', { cx: mcuX + 6, cy: mcuY + 6, r: '2', fill: '#1a2a1a' }));
-    app(mcuG, txt('MKL02', { fill: 'rgba(255,255,255,0.6)', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: mcuX + mcuW / 2, y: mcuY + mcuH / 2 + 2 }));
-    
-    // TLV75733P LDO
-    var ldoG = app(svg, mk('g', { 'class': 'board-chip', 'data-id': 'TLV75733P' }));
-    var ldoW = 24, ldoH = 28, ldoX = 73, ldoY = 118;
-    for (var i = 0; i < 3; i++) {
-      app(ldoG, mk('rect', { x: ldoX - 2, y: ldoY + 4 + i * 8, width: '4', height: '4', rx: '0.5', fill: 'url(#t41SilvG)' }));
-    }
-    for (i = 0; i < 2; i++) {
-      app(ldoG, mk('rect', { x: ldoX + ldoW - 2, y: ldoY + 4 + i * 16, width: '4', height: '4', rx: '0.5', fill: 'url(#t41SilvG)' }));
-    }
-    app(ldoG, mk('rect', { x: ldoX, y: ldoY, width: ldoW, height: ldoH, rx: '1', fill: 'url(#t41ChipG)', stroke: '#2a3a2a', 'stroke-width': '1', 'class': 'chip-shape' }));
-    app(ldoG, txt('LDO', { fill: 'rgba(255,255,255,0.5)', 'font-family': 'monospace', 'font-size': '4', 'text-anchor': 'middle', x: ldoX + ldoW / 2, y: ldoY + ldoH / 2 + 2 }));
-    
-    // DMG2305UX P-MOSFET
-    var dmgG = app(svg, mk('g', { 'class': 'board-chip', 'data-id': 'DMG2305UX' }));
-    var dmgX = 90, dmgY = 65, dmgW = 22, dmgH = 28;
-    for (i = 0; i < 2; i++) {
-      app(dmgG, mk('rect', { x: dmgX - 3, y: dmgY + 6 + i * 16, width: '4', height: '2', rx: '0.3', fill: 'url(#t41SilvG)' }));
-    }
-    app(dmgG, mk('rect', { x: dmgX + dmgW - 1, y: dmgY + dmgH / 2 - 1, width: '4', height: '2', rx: '0.3', fill: 'url(#t41SilvG)' }));
-    app(dmgG, mk('rect', { x: dmgX, y: dmgY, width: dmgW, height: dmgH, rx: '1', fill: 'url(#t41ChipG)', stroke: '#1a2a1a', 'stroke-width': '0.8', 'class': 'chip-shape' }));
-    app(dmgG, txt('DMG2305UX', { fill: 'rgba(255,255,255,0.4)', 'font-family': 'monospace', 'font-size': '4', 'text-anchor': 'middle', x: dmgX + dmgW / 2, y: dmgY + dmgH / 2 + 1 }));
-    
-    // USB Host Header (5 holes)
-    var uhG = app(svg, mk('g', { 'class': 'board-connector', 'data-id': 'USB_HOST_HDR' }));
-    var uhX = 52, uhYstart = 60, uhYend = 185;
-    app(uhG, mk('rect', { x: uhX - 10, y: uhYstart - 14, width: '20', height: uhYend - uhYstart + 26, rx: '2', fill: 'none', stroke: 'rgba(255,255,255,0.2)', 'stroke-width': '0.6' }));
-    for (i = 0; i < 5; i++) {
-      var uhY = uhYstart + i * ((uhYend - uhYstart) / 4);
-      app(uhG, mk('circle', { cx: uhX, cy: uhY, r: '5', fill: '#c8a040', stroke: '#9a7c20', 'stroke-width': '1' }));
-      app(uhG, mk('circle', { cx: uhX, cy: uhY, r: '2.5', fill: '#0a1a0a' }));
-    }
-    app(uhG, txt('USB HOST', { fill: 'rgba(255,255,255,0.4)', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: uhX, y: uhYstart - 8 }));
-    
-    // ETH 2×3 through-hole pads
-    var ethG = app(svg, mk('g', { 'class': 'board-connector', 'data-id': 'ETH_HDR' }));
-    var ethPS = 28.25, ethPX = 112.5, ethPY = 143;
-    app(ethG, mk('rect', { x: ethPX - 10, y: ethPY - 15, width: 2 * ethPS + 20, height: ethPS + 25, rx: '2', fill: 'none', stroke: 'rgba(255,255,255,0.2)', 'stroke-width': '0.6' }));
-    var ethPositions = [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]];
-    ethPositions.forEach(function(ep) {
-      var epx = ethPX + ep[0] * ethPS, epy = ethPY + (ep[1] === 1 ? ethPS - 3 : 0);
-      app(ethG, mk('circle', { cx: epx, cy: epy, r: '5', fill: '#c8a040', stroke: '#9a7c20', 'stroke-width': '1' }));
-      app(ethG, mk('circle', { cx: epx, cy: epy, r: '2.5', fill: '#0a1a0a' }));
-    });
-    app(ethG, txt('ETH', { fill: 'rgba(180,230,180,0.55)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: ethPX + ethPS, y: ethPY - 7 }));
-    
-    // TPD3S014 USB Power Switch
-    var tpdG = app(svg, mk('g', { 'class': 'board-chip', 'data-id': 'TPD3S014' }));
-    var tpdX = 68, tpdY = 170, tpdW = 32, tpdH = 20;
-    for (i = 0; i < 3; i++) {
-      var tpx = tpdX + 6 + i * 10;
-      app(tpdG, mk('rect', { x: tpx - 1.5, y: tpdY - 4, width: '3', height: '5', rx: '0.3', fill: 'url(#t41SilvG)' }));
-      app(tpdG, mk('rect', { x: tpx - 1.5, y: tpdY + tpdH - 1, width: '3', height: '5', rx: '0.3', fill: 'url(#t41SilvG)' }));
-    }
-    app(tpdG, mk('rect', { x: tpdX, y: tpdY, width: tpdW, height: tpdH, rx: '1.5', fill: 'url(#t41ChipG)', stroke: '#1a2a1a', 'stroke-width': '0.8', 'class': 'chip-shape' }));
-    app(tpdG, mk('circle', { cx: tpdX + 4, cy: tpdY + 4, r: '1.2', fill: '#1a2a1a' }));
-    app(tpdG, txt('TPD3S014', { fill: 'rgba(255,255,255,0.45)', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: tpdX + tpdW / 2, y: tpdY + tpdH / 2 + 2 }));
-    
-    // DP83825I Ethernet PHY — QFN-32
-    var dpG = app(svg, mk('g', { 'class': 'board-chip', 'data-id': 'DP83825I' }));
-    var dpX = 132, dpY = 188, dpW = 32, dpH = 32;
-    var dpPad = 3, dpPitch = 4, dpPads = 8;
-    var dpOff = (dpW - (dpPads - 1) * dpPitch) / 2;
-    
-    app(dpG, mk('rect', { x: dpX + 7, y: dpY + 7, width: dpW - 14, height: dpH - 14, rx: '1', fill: '#2a2a2a', stroke: '#3a3a3a', 'stroke-width': '0.6' }));
-    app(dpG, mk('rect', { x: dpX, y: dpY, width: dpW, height: dpH, rx: '2', fill: 'url(#t41ChipG)', stroke: '#2a3a2a', 'stroke-width': '1.2', 'class': 'chip-shape' }));
-    app(dpG, mk('rect', { x: dpX + 3, y: dpY + 3, width: dpW - 6, height: dpH - 6, rx: '1.5', fill: 'none', stroke: '#252525', 'stroke-width': '0.5', 'stroke-dasharray': '2,2' }));
-    app(dpG, mk('circle', { cx: dpX + 5, cy: dpY + 5, r: '1.8', fill: '#c8d8e8' }));
-    
-    for (i = 0; i < dpPads; i++) {
-      var dpy = dpY + dpOff + i * dpPitch;
-      app(dpG, mk('rect', { x: dpX - 4, y: dpy - dpPad / 2, width: '4', height: dpPad, rx: '0.3', fill: 'url(#t41SilvG)', stroke: '#bbb', 'stroke-width': '0.35' }));
-      app(dpG, mk('rect', { x: dpX + dpW, y: dpy - dpPad / 2, width: '4', height: dpPad, rx: '0.3', fill: 'url(#t41SilvG)', stroke: '#bbb', 'stroke-width': '0.35' }));
-    }
-    for (i = 0; i < dpPads; i++) {
-      var dpx = dpX + dpOff + i * dpPitch;
-      app(dpG, mk('rect', { x: dpx - dpPad / 2, y: dpY - 4, width: dpPad, height: '4', rx: '0.3', fill: 'url(#t41SilvG)', stroke: '#bbb', 'stroke-width': '0.35' }));
-      app(dpG, mk('rect', { x: dpx - dpPad / 2, y: dpY + dpH, width: dpPad, height: '4', rx: '0.3', fill: 'url(#t41SilvG)', stroke: '#bbb', 'stroke-width': '0.35' }));
-    }
-    app(dpG, txt('DP83825I', { fill: 'rgba(255,255,255,0.85)', 'font-family': 'monospace', 'font-size': '5', 'font-weight': 'bold', 'text-anchor': 'middle', x: dpX + dpW / 2, y: dpY + dpH / 2 - 3 }));
-    app(dpG, txt('ETH PHY', { fill: 'rgba(100,220,100,0.50)', 'font-family': 'monospace', 'font-size': '4', 'text-anchor': 'middle', x: dpX + dpW / 2, y: dpY + dpH / 2 + 5 }));
-    
-    // Main processor: iMXRT1062 — centred on board
-    var cpuG = app(svg, mk('g', { 'class': 'board-chip', 'data-id': 'iMXRT1062' }));
-    var chipW = 140, chipH = 128;
-    var chipX = Math.round((220 - chipW) / 2), chipY = Math.round((600 - chipH) / 2);
-    app(cpuG, mk('rect', { x: chipX, y: chipY, width: chipW, height: chipH, rx: '5', fill: 'url(#t41ChipG)', stroke: '#1a2a1a', 'stroke-width': '2', 'class': 'chip-shape' }));
-    app(cpuG, mk('rect', { x: chipX + 4, y: chipY + 4, width: chipW - 8, height: chipH - 8, rx: '3', fill: 'none', stroke: '#1a1a1a', 'stroke-width': '1', 'stroke-dasharray': '4,4' }));
-    app(cpuG, mk('circle', { cx: chipX + 9, cy: chipY + 9, r: '3.5', fill: '#1a3a1a' }));
-    app(cpuG, txt('iMXRT1062', { fill: 'rgba(255,255,255,0.88)', 'font-family': 'monospace', 'font-size': '11', 'font-weight': 'bold', 'text-anchor': 'middle', x: chipX + chipW / 2, y: chipY + chipH / 2 - 18 }));
-    app(cpuG, txt('600 MHz Cortex-M7', { fill: 'rgba(100,220,100,0.65)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: chipX + chipW / 2, y: chipY + chipH / 2 + 10 }));
-    app(cpuG, txt('PJRC Teensy 4.1', { fill: 'rgba(255,255,255,0.20)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: chipX + chipW / 2, y: chipY + chipH / 2 + 23 }));
-    
-    // Crystal Oscillator (SMD Metal Can)
-    var oscX = 139, oscY = 375, oscW = 24, oscH = 18;
-    app(svg, mk('rect', { x: oscX, y: oscY, width: oscW, height: oscH, rx: '3', fill: 'url(#t41SilvG)', stroke: '#888', 'stroke-width': '1' }));
-    app(svg, mk('rect', { x: oscX + 2, y: oscY + 2, width: oscW - 4, height: oscH - 4, rx: '2', fill: 'none', stroke: 'rgba(0,0,0,0.1)', 'stroke-width': '0.5' }));
-    app(svg, txt('OSC', { fill: 'rgba(0,0,0,0.4)', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: oscX + oscW / 2, y: oscY + oscH / 2 + 2 }));
-    
-    // W25Q128 Flash
-    var flashG = app(svg, mk('g', { 'class': 'board-chip', 'data-id': 'W25Q128' }));
-    var flashW = 38, flashH = 36;
-    var flashX = 54, flashY = chipY + chipH + 20;
-    app(flashG, mk('rect', { x: flashX, y: flashY, width: flashW, height: flashH, rx: '3', fill: 'url(#t41ChipG)', stroke: '#1a2a1a', 'stroke-width': '1.5', 'class': 'chip-shape' }));
-    app(flashG, mk('rect', { x: flashX + 3, y: flashY + 3, width: flashW - 6, height: flashH - 6, rx: '2', fill: 'none', stroke: '#1a1a1a', 'stroke-width': '0.8', 'stroke-dasharray': '3,3' }));
-    app(flashG, mk('circle', { cx: flashX + 6, cy: flashY + 6, r: '2', fill: '#1a2a1a' }));
-    app(flashG, txt('W25Q128', { fill: 'rgba(255,255,255,0.70)', 'font-family': 'monospace', 'font-size': '5', 'font-weight': 'bold', 'text-anchor': 'middle', x: flashX + flashW / 2, y: flashY + 16 }));
-    app(flashG, txt('16MB', { fill: 'rgba(255,255,255,0.40)', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: flashX + flashW / 2, y: flashY + 26 }));
-    
-    // Reset Switch
-    var swG = app(svg, mk('g', { 'class': 'board-switch', 'data-id': 'RESET' }));
-    var swW = 30, swH = 44, swX = 95, swY = flashY + 14;
-    app(swG, mk('rect', { x: swX, y: swY, width: swW, height: swH, rx: '2', fill: 'url(#t41SilvG)', stroke: '#666', 'stroke-width': '1.5', 'class': 'chip-shape' }));
-    app(swG, mk('rect', { x: swX + 4, y: swY + 6, width: swW - 8, height: swH - 12, rx: '2', fill: '#1a1a1a', stroke: '#555', 'stroke-width': '0.8' }));
-    app(swG, mk('circle', { cx: swX + swW / 2, cy: swY + swH / 2, r: '8', fill: '#e0e0e0', stroke: '#666', 'stroke-width': '1' }));
-    app(swG, txt('RESET', { fill: 'rgba(255,255,255,0.7)', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: swX + swW / 2, y: swY - 6 }));
-    
-    // MicroSD slot
-    var sdW = 140, sdH = 114, sdX = Math.round((220 - sdW) / 2), sdY = 600 - sdH;
-    app(svg, mk('rect', { x: sdX, y: sdY, width: sdW, height: sdH, rx: '3', fill: '#f5f5f5', stroke: '#ccc', 'stroke-width': '1.2' }));
-    app(svg, mk('rect', { x: sdX + 2, y: sdY + 2, width: sdW - 4, height: '8', rx: '3', fill: 'rgba(255,255,255,0.90)' }));
-    app(svg, mk('rect', { x: sdX + 8, y: sdY + 14, width: sdW - 16, height: sdH - 24, rx: '2', fill: '#ececec', stroke: '#ddd', 'stroke-width': '0.8' }));
-    app(svg, mk('rect', { x: sdX + 15, y: sdY + sdH - 8, width: sdW - 30, height: '6', rx: '1', fill: '#1a1a1a' }));
-    app(svg, mk('rect', { x: sdX + 15, y: sdY + sdH - 22, width: sdW - 30, height: '20', rx: '1', fill: '#111' }));
-    for (var si = 0; si < 8; si++) {
-      var scx = sdX + 24 + si * ((sdW - 48) / 7);
-      app(svg, mk('rect', { x: scx - 4, y: sdY + sdH - 20, width: '8', height: '16', rx: '0.5', fill: '#d4a820', stroke: '#b08010', 'stroke-width': '0.5' }));
-      app(svg, mk('rect', { x: scx - 3, y: sdY + sdH - 19, width: '4', height: '4', rx: '0.3', fill: 'rgba(255,235,120,0.7)' }));
-    }
-    app(svg, txt('microSD', { fill: 'rgba(0,0,0,0.25)', 'font-family': 'monospace', 'font-size': '9', 'text-anchor': 'middle', x: sdX + sdW / 2, y: sdH / 2 + sdY - 5 }));
-    
-    // Status LED
-    app(svg, mk('rect', { x: 104, y: 378, width: 12, height: 6, rx: 1, fill: '#ffaa00', stroke: '#cc8800', 'stroke-width': '0.6' }));
-    app(svg, txt('STAT', { fill: 'rgba(255,160,0,0.5)', 'font-family': 'monospace', 'font-size': '4', 'text-anchor': 'middle', x: 110, y: 376 }));
-    
-    // Silk text
-    app(svg, txt('TEENSY 4.1', { fill: 'rgba(140,230,140,0.22)', 'font-family': 'Georgia,serif', 'font-size': '14', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '110', y: 500 }));
-    app(svg, txt('PJRC.COM', { fill: 'rgba(100,200,100,0.12)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '110', y: 514 }));
-    
-    // Expansion Header (1×5 horizontal)
-    var expG = app(svg, mk('g', { 'class': 'board-connector', 'data-id': 'EXP_HDR' }));
-    var ehX = 110, ehY = 460, ehS = 31.25;
-    app(expG, mk('rect', { x: ehX - 2 * ehS - 10, y: ehY - 14, width: 4 * ehS + 20, height: 28, rx: 2, fill: 'none', stroke: 'rgba(255,255,255,0.2)', 'stroke-width': '0.6' }));
-    app(expG, txt('EXPANSION', { fill: 'rgba(180,230,180,0.55)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: ehX, y: ehY - 18 }));
-    for (var j = -2; j <= 2; j++) {
-      var epx = ehX + j * ehS;
-      app(expG, mk('circle', { cx: epx, cy: ehY, r: '5', fill: '#c8a040', stroke: '#9a7c20', 'stroke-width': '1' }));
-      app(expG, mk('circle', { cx: epx, cy: ehY, r: '2.5', fill: '#0a1a0a' }));
-    }
-    
-    // Left + right header strips (empty areas where pins will be)
-    app(svg, mk('rect', { x: '0', y: '0', width: '20', height: '600', rx: '0', fill: '#061006', stroke: 'none' }));
-    app(svg, mk('rect', { x: '200', y: '0', width: '20', height: '600', rx: '0', fill: '#061006', stroke: 'none' }));
-    
-    // Now draw the actual pins from config
-    drawHeaderPins(svg, config);
-  }
-  
-  // Draw header pins from config data
-  function drawHeaderPins(svg, config) {
-    var pins = config.pins;
-    var leftX = 10, rightX = 210;
-    var startY = 10, spacing = 25;
-    
-    function getPinColor(type) {
-      var colors = {
-        GPIO: { c: '#4da6ff', bg: 'rgba(77,166,255,0.10)' },
-        PWM: { c: '#50c8a0', bg: 'rgba(80,200,160,0.12)' },
-        ADC: { c: '#d4a017', bg: 'rgba(212,160,23,0.12)' },
-        SPI: { c: '#4a90d9', bg: 'rgba(74,144,217,0.12)' },
-        I2C: { c: '#9898cc', bg: 'rgba(152,152,204,0.12)' },
-        UART: { c: '#c06080', bg: 'rgba(192,96,128,0.12)' },
-        CAN: { c: '#e87040', bg: 'rgba(232,112,64,0.12)' },
-        PWR: { c: '#ff6b6b', bg: 'rgba(255,107,107,0.14)' },
-        GND: { c: '#9e9e9e', bg: 'rgba(158,158,158,0.12)' }
-      };
-      return colors[type] || colors.GPIO;
-    }
-    
-    var leftPins = pins.filter(function(p) { return p.position && p.position.side === 'left'; });
-    var rightPins = pins.filter(function(p) { return p.position && p.position.side === 'right'; });
-    
-    leftPins.sort(function(a, b) { return a.position.order - b.position.order; });
-    rightPins.sort(function(a, b) { return a.position.order - b.position.order; });
-    
-    leftPins.forEach(function(pin, idx) {
-      var y = startY + idx * spacing;
-      var col = getPinColor(pin.type);
-      var g = document.createElementNS(NS, 'g');
-      g.setAttribute('class', 'board-pin');
-      g.setAttribute('data-id', pin.id);
-      g.style.cursor = 'pointer';
-      
-      var bg = document.createElementNS(NS, 'rect');
-      bg.setAttribute('x', leftX - 12);
-      bg.setAttribute('y', y - 12);
-      bg.setAttribute('width', '24');
-      bg.setAttribute('height', '24');
-      bg.setAttribute('rx', '4');
-      bg.setAttribute('fill', 'rgba(100,200,100,0.08)');
-      g.appendChild(bg);
-      
-      var pad = document.createElementNS(NS, 'rect');
-      pad.setAttribute('x', leftX - 10);
-      pad.setAttribute('y', y - 10);
-      pad.setAttribute('width', '20');
-      pad.setAttribute('height', '20');
-      pad.setAttribute('rx', '3');
-      pad.setAttribute('fill', col.bg);
-      pad.setAttribute('stroke', col.c);
-      pad.setAttribute('stroke-width', '1.5');
-      pad.setAttribute('class', 'pin-sq');
-      g.appendChild(pad);
-      
-      var hole = document.createElementNS(NS, 'circle');
-      hole.setAttribute('cx', leftX);
-      hole.setAttribute('cy', y);
-      hole.setAttribute('r', '3.5');
-      hole.setAttribute('fill', '#040e04');
-      g.appendChild(hole);
-      
-      var label = document.createElementNS(NS, 'text');
-      label.setAttribute('x', leftX + 13);
-      label.setAttribute('y', y + 4);
-      label.setAttribute('fill', 'rgba(255,255,255,0.80)');
-      label.setAttribute('font-size', '8');
-      label.setAttribute('font-family', 'monospace');
-      label.textContent = pin.lbl;
-      g.appendChild(label);
-      
-      svg.appendChild(g);
-    });
-    
-    rightPins.forEach(function(pin, idx) {
-      var y = startY + idx * spacing;
-      var col = getPinColor(pin.type);
-      var g = document.createElementNS(NS, 'g');
-      g.setAttribute('class', 'board-pin');
-      g.setAttribute('data-id', pin.id);
-      g.style.cursor = 'pointer';
-      
-      var bg = document.createElementNS(NS, 'rect');
-      bg.setAttribute('x', rightX - 12);
-      bg.setAttribute('y', y - 12);
-      bg.setAttribute('width', '24');
-      bg.setAttribute('height', '24');
-      bg.setAttribute('rx', '4');
-      bg.setAttribute('fill', 'rgba(100,200,100,0.08)');
-      g.appendChild(bg);
-      
-      var pad = document.createElementNS(NS, 'rect');
-      pad.setAttribute('x', rightX - 10);
-      pad.setAttribute('y', y - 10);
-      pad.setAttribute('width', '20');
-      pad.setAttribute('height', '20');
-      pad.setAttribute('rx', '3');
-      pad.setAttribute('fill', col.bg);
-      pad.setAttribute('stroke', col.c);
-      pad.setAttribute('stroke-width', '1.5');
-      pad.setAttribute('class', 'pin-sq');
-      g.appendChild(pad);
-      
-      var hole = document.createElementNS(NS, 'circle');
-      hole.setAttribute('cx', rightX);
-      hole.setAttribute('cy', y);
-      hole.setAttribute('r', '3.5');
-      hole.setAttribute('fill', '#040e04');
-      g.appendChild(hole);
-      
-      var label = document.createElementNS(NS, 'text');
-      label.setAttribute('x', rightX - 13);
-      label.setAttribute('y', y + 4);
-      label.setAttribute('fill', 'rgba(255,255,255,0.80)');
-      label.setAttribute('font-size', '8');
-      label.setAttribute('font-family', 'monospace');
-      label.setAttribute('text-anchor', 'end');
-      label.textContent = pin.lbl;
-      g.appendChild(label);
-      
-      svg.appendChild(g);
-    });
-  }
-  
-  function drawRaspberryPi3(svg, config) {
-    drawGenericBoard(svg, config);
-  }
-  
-  function drawArduinoNano(svg, config) {
-    drawGenericBoard(svg, config);
-  }
-  
-  function drawGenericBoard(svg, config) {
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-    
-    svg.setAttribute('viewBox', '0 0 400 600');
-    svg.setAttribute('width', '100%');
-    svg.setAttribute('height', '100%');
-    
-    var rect = document.createElementNS(NS, 'rect');
-    rect.setAttribute('x', '0');
-    rect.setAttribute('y', '0');
-    rect.setAttribute('width', '400');
-    rect.setAttribute('height', '600');
-    rect.setAttribute('fill', '#1a2a1a');
-    rect.setAttribute('stroke', '#2a3a2a');
-    rect.setAttribute('stroke-width', '2');
-    svg.appendChild(rect);
-    
-    var pins = config.pins;
-    var leftX = 20, rightX = 380, startY = 50, stepY = 25;
-    
-    pins.forEach(function(pin, i) {
-      var isLeft = (pin.position && pin.position.side === 'left') || (pin.side === 'left');
-      var x = isLeft ? leftX : rightX;
-      var y = startY + i * stepY;
-      
-      function getPinColor(type) {
-        var colors = {
-          GPIO: '#4da6ff', PWM: '#50c8a0', ADC: '#d4a017',
-          SPI: '#4a90d9', I2C: '#9898cc', UART: '#c06080',
-          PWR: '#ff6b6b', GND: '#9e9e9e'
-        };
-        return colors[type] || '#4da6ff';
-      }
-      
-      var col = getPinColor(pin.type);
-      var g = document.createElementNS(NS, 'g');
-      g.setAttribute('class', 'board-pin');
-      g.setAttribute('data-id', pin.id);
-      g.style.cursor = 'pointer';
-      
-      var pad = document.createElementNS(NS, 'rect');
-      pad.setAttribute('x', x - 10);
-      pad.setAttribute('y', y - 8);
-      pad.setAttribute('width', '20');
-      pad.setAttribute('height', '16');
-      pad.setAttribute('rx', '3');
-      pad.setAttribute('fill', col + '22');
-      pad.setAttribute('stroke', col);
-      pad.setAttribute('stroke-width', '1.5');
-      pad.setAttribute('class', 'pin-sq');
-      g.appendChild(pad);
-      
-      var label = document.createElementNS(NS, 'text');
-      label.setAttribute('x', x);
-      label.setAttribute('y', y + 3);
-      label.setAttribute('text-anchor', 'middle');
-      label.setAttribute('fill', col);
-      label.setAttribute('font-size', '10');
-      label.setAttribute('font-family', 'monospace');
-      label.textContent = pin.lbl;
-      g.appendChild(label);
-      
-      svg.appendChild(g);
-    });
-  }
-  
-  function attachPinInteractivity(svg, config) {
-    var pins = document.querySelectorAll('.board-pin');
-    pins.forEach(function(el) {
-      var pinId = el.getAttribute('data-id');
-      var pin = config.pins ? config.pins.find(function(p) { return p.id === pinId; }) : null;
-      
-      if (pin) {
-        el.addEventListener('click', function(e) {
-          e.stopPropagation();
-          if (window.ICExplorer && window.ICExplorer.selectPin) {
-            window.ICExplorer.selectPin(pinId);
-          }
-        });
-      }
-    });
-    
-    var chips = document.querySelectorAll('.board-chip, .board-connector, .board-switch');
-    chips.forEach(function(el) {
-      var chipId = el.getAttribute('data-id');
-      var chip = config.chips ? config.chips.find(function(c) { return c.id === chipId; }) : null;
-      
-      if (chip) {
-        el.addEventListener('click', function(e) {
-          e.stopPropagation();
-          if (window.ICExplorer && window.ICExplorer.selectComponent) {
-            window.ICExplorer.selectComponent(chipId);
-          }
-        });
-      }
-    });
-  }
-  
-  return { draw: draw };
-})();
+window.IC_CONFIG = {
 
-window.CustomBoardRenderer = CustomBoardRenderer;
+  // ── IDENTITY ──────────────────────────────────────────────
+  partName:     'Teensy 4.1',
+  partMPN:      'TEENSY41',
+  manufacturer: 'PJRC',
+  package:      'Teensy 4.1',          // matched by renderer-factory.js → Teensy41Renderer
+  pinCount:     48,                    // 24 left + 24 right (incl. power pins)
+
+  // ── LINKS ─────────────────────────────────────────────────
+  datasheetURL: 'https://www.pjrc.com/store/teensy41.html',
+  snapPageURL:  '',
+  downloadURL:  '',
+
+  // ── BOARD GEOMETRY (consumed by teensy41-renderer.js) ─────
+  boardConfig: {
+    width:    220,
+    height:   600,
+    pinSize:  20,    // PS — square pad side length
+    pinY0:    10,    // centre Y of first pin row
+    pinYStep: 25,    // vertical spacing between pin rows
+    leftX:    10,    // centre X of left column pads
+    rightX:   210,   // centre X of right column pads
+    rows:     24,    // pins per side
+  },
+
+  // ── PINS ──────────────────────────────────────────────────
+  //  LEFT column  (cx = leftX,  rows 0-23, top → bottom):
+  //    row  0 : GND_L
+  //    rows 1-13 : D0–D12
+  //    row 14 : 3V3_L
+  //    rows 15-23 : D24–D32
+  //
+  //  RIGHT column (cx = rightX, rows 0-23, top → bottom):
+  //    row  0 : VIN
+  //    row  1 : GND_R
+  //    row  2 : 3V3_R
+  //    rows 3-13 : D23 down to D13
+  //    row 14 : GND_R2
+  //    rows 15-23 : D41 down to D33
+  //
+  //  side: 'L' | 'R'   row: 0-23
+  // ──────────────────────────────────────────────────────────
+  pins: [
+
+    // ── LEFT COLUMN ──────────────────────────────────────────
+    { id:'GND_L',  lbl:'GND', num:'GND', name:'Ground',                    type:'GND',  funcs:['GND'],                   volt:'0V',       curr:'N/A',   note:'Ground reference pin on the left header.',                                   side:'L', row:0  },
+    { id:'D0',     lbl:'0',   num:'0',   name:'Digital 0 / TX6',           type:'GPIO', funcs:['GPIO','UART'],            volt:'3.3V',     curr:'4mA',   note:'General-purpose I/O. UART6 transmit (TX). Also routed to FlexSPI2 SCLK.',   side:'L', row:1  },
+    { id:'D1',     lbl:'1',   num:'1',   name:'Digital 1 / RX6',           type:'GPIO', funcs:['GPIO','UART'],            volt:'3.3V',     curr:'4mA',   note:'General-purpose I/O. UART6 receive (RX). Also routed to FlexSPI2 SS0.',     side:'L', row:2  },
+    { id:'D2',     lbl:'2',   num:'2',   name:'Digital 2',                 type:'PWM',  funcs:['GPIO','PWM','UART'],      volt:'3.3V',     curr:'4mA',   note:'FlexPWM output. UART5 TX alternate. FlexSPI2 MOSI alternate.',              side:'L', row:3  },
+    { id:'D3',     lbl:'3',   num:'3',   name:'Digital 3',                 type:'PWM',  funcs:['GPIO','PWM','UART'],      volt:'3.3V',     curr:'4mA',   note:'FlexPWM output. UART5 RX alternate. FlexSPI2 MISO alternate.',              side:'L', row:4  },
+    { id:'D4',     lbl:'4',   num:'4',   name:'Digital 4',                 type:'PWM',  funcs:['GPIO','PWM'],             volt:'3.3V',     curr:'4mA',   note:'FlexPWM 2.2 output. UART1 TX alternate.',                                   side:'L', row:5  },
+    { id:'D5',     lbl:'5',   num:'5',   name:'Digital 5',                 type:'PWM',  funcs:['GPIO','PWM'],             volt:'3.3V',     curr:'4mA',   note:'FlexPWM 2.2B output. UART1 RX alternate.',                                  side:'L', row:6  },
+    { id:'D6',     lbl:'6',   num:'6',   name:'Digital 6',                 type:'PWM',  funcs:['GPIO','PWM'],             volt:'3.3V',     curr:'4mA',   note:'FlexPWM 2.3B output. UART1 CTS alternate.',                                 side:'L', row:7  },
+    { id:'D7',     lbl:'7',   num:'7',   name:'Digital 7 / TX4',           type:'GPIO', funcs:['GPIO','UART','SPI'],      volt:'3.3V',     curr:'4mA',   note:'UART4 transmit (TX). SPI1 clock (SCK) alternate.',                          side:'L', row:8  },
+    { id:'D8',     lbl:'8',   num:'8',   name:'Digital 8 / RX4',           type:'GPIO', funcs:['GPIO','UART','SPI'],      volt:'3.3V',     curr:'4mA',   note:'UART4 receive (RX). SPI1 MISO alternate.',                                  side:'L', row:9  },
+    { id:'D9',     lbl:'9',   num:'9',   name:'Digital 9',                 type:'PWM',  funcs:['GPIO','PWM','SPI'],       volt:'3.3V',     curr:'4mA',   note:'FlexPWM 2.1 output. SPI1 MOSI alternate.',                                  side:'L', row:10 },
+    { id:'D10',    lbl:'10',  num:'10',  name:'Digital 10 / CS0',          type:'SPI',  funcs:['GPIO','SPI','PWM'],       volt:'3.3V',     curr:'4mA',   note:'SPI0 chip select (CS). FlexPWM 4.2 alternate.',                             side:'L', row:11 },
+    { id:'D11',    lbl:'11',  num:'11',  name:'Digital 11 / MOSI0',        type:'SPI',  funcs:['GPIO','SPI','PWM'],       volt:'3.3V',     curr:'4mA',   note:'SPI0 master out slave in (MOSI). FlexPWM 4.1 alternate.',                   side:'L', row:12 },
+    { id:'D12',    lbl:'12',  num:'12',  name:'Digital 12 / MISO0',        type:'SPI',  funcs:['GPIO','SPI'],             volt:'3.3V',     curr:'4mA',   note:'SPI0 master in slave out (MISO).',                                           side:'L', row:13 },
+    { id:'P3V3_L', lbl:'3V3', num:'3V3', name:'3.3V Power Output',         type:'PWR',  funcs:['PWR'],                   volt:'3.3V',     curr:'250mA', note:'3.3V regulated output from the onboard TLV75733P LDO. Max ~250 mA shared total across both 3V3 pins.', side:'L', row:14 },
+    { id:'D24',    lbl:'24',  num:'24',  name:'Digital 24 / A10',          type:'ADC',  funcs:['GPIO','ADC','I2C','CAN'], volt:'3.3V',     curr:'4mA',   note:'Analog input A10. CAN2 transmit. I2C2 clock (SCL).',                        side:'L', row:15 },
+    { id:'D25',    lbl:'25',  num:'25',  name:'Digital 25 / A11',          type:'ADC',  funcs:['GPIO','ADC','I2C','CAN'], volt:'3.3V',     curr:'4mA',   note:'Analog input A11. CAN2 receive. I2C2 data (SDA).',                          side:'L', row:16 },
+    { id:'D26',    lbl:'26',  num:'26',  name:'Digital 26 / A12',          type:'ADC',  funcs:['GPIO','ADC','I2C','CAN'], volt:'3.3V',     curr:'4mA',   note:'Analog input A12. CAN1 transmit. I2C3 clock (SCL).',                        side:'L', row:17 },
+    { id:'D27',    lbl:'27',  num:'27',  name:'Digital 27 / A13',          type:'ADC',  funcs:['GPIO','ADC','I2C','CAN'], volt:'3.3V',     curr:'4mA',   note:'Analog input A13. CAN1 receive. I2C3 data (SDA).',                          side:'L', row:18 },
+    { id:'D28',    lbl:'28',  num:'28',  name:'Digital 28',                type:'PWM',  funcs:['GPIO','PWM','CAN'],       volt:'3.3V',     curr:'4mA',   note:'FlexPWM 3.1 output. CAN2 TX alternate. I2S SDO.',                           side:'L', row:19 },
+    { id:'D29',    lbl:'29',  num:'29',  name:'Digital 29',                type:'PWM',  funcs:['GPIO','PWM'],             volt:'3.3V',     curr:'4mA',   note:'FlexPWM 3.0 output. I2S SDI alternate.',                                    side:'L', row:20 },
+    { id:'D30',    lbl:'30',  num:'30',  name:'Digital 30',                type:'GPIO', funcs:['GPIO','SPI','UART'],      volt:'3.3V',     curr:'4mA',   note:'SPI1 chip select 2 (CS2). UART5 TX alternate.',                             side:'L', row:21 },
+    { id:'D31',    lbl:'31',  num:'31',  name:'Digital 31',                type:'GPIO', funcs:['GPIO','SPI','UART'],      volt:'3.3V',     curr:'4mA',   note:'SPI1 chip select 3 (CS3). UART5 RX alternate.',                             side:'L', row:22 },
+    { id:'D32',    lbl:'32',  num:'32',  name:'Digital 32',                type:'GPIO', funcs:['GPIO','UART','PWM'],      volt:'3.3V',     curr:'4mA',   note:'SD card clock (SD_CLK). UART5 CTS alternate. FlexPWM alternate.',           side:'L', row:23 },
+
+    // ── RIGHT COLUMN (top → bottom as drawn, pin order bottom→top) ───────
+    { id:'VIN',    lbl:'VIN', num:'VIN', name:'Voltage In (3.6–5.5V)',     type:'PWR',  funcs:['PWR'],                   volt:'3.6-5.5V', curr:'N/A',   note:'Main power input when not powered via USB-C connector. Accepts 3.6–5.5 V.',  side:'R', row:0  },
+    { id:'GND_R',  lbl:'GND', num:'GND', name:'Ground',                    type:'GND',  funcs:['GND'],                   volt:'0V',       curr:'N/A',   note:'Ground reference pin on the right header, top position.',                    side:'R', row:1  },
+    { id:'P3V3_R', lbl:'3V3', num:'3V3', name:'3.3V Power Output',         type:'PWR',  funcs:['PWR'],                   volt:'3.3V',     curr:'250mA', note:'3.3V regulated output from the onboard TLV75733P LDO.',                     side:'R', row:2  },
+    { id:'D23',    lbl:'23',  num:'23',  name:'Digital 23 / A9',           type:'ADC',  funcs:['GPIO','ADC'],             volt:'3.3V',     curr:'4mA',   note:'Analog input A9. I2S2 receive (RX) alternate.',                             side:'R', row:3  },
+    { id:'D22',    lbl:'22',  num:'22',  name:'Digital 22 / A8',           type:'ADC',  funcs:['GPIO','ADC'],             volt:'3.3V',     curr:'4mA',   note:'Analog input A8. I2S2 transmit (TX) alternate.',                            side:'R', row:4  },
+    { id:'D21',    lbl:'21',  num:'21',  name:'Digital 21 / A7',           type:'ADC',  funcs:['GPIO','ADC'],             volt:'3.3V',     curr:'4mA',   note:'Analog input A7. I2S2 bit clock (BCLK). UART8 RX.',                        side:'R', row:5  },
+    { id:'D20',    lbl:'20',  num:'20',  name:'Digital 20 / A6',           type:'ADC',  funcs:['GPIO','ADC'],             volt:'3.3V',     curr:'4mA',   note:'Analog input A6. I2S2 master clock (MCLK). UART8 TX.',                     side:'R', row:6  },
+    { id:'D19',    lbl:'19',  num:'19',  name:'Digital 19 / SCL0',         type:'I2C',  funcs:['GPIO','I2C','ADC'],       volt:'3.3V',     curr:'4mA',   note:'I2C0 clock (SCL), primary bus. Analog A5. Pull-up resistor fitted on board.', side:'R', row:7 },
+    { id:'D18',    lbl:'18',  num:'18',  name:'Digital 18 / SDA0',         type:'I2C',  funcs:['GPIO','I2C','ADC'],       volt:'3.3V',     curr:'4mA',   note:'I2C0 data (SDA), primary bus. Analog A4. Pull-up resistor fitted on board.',  side:'R', row:8 },
+    { id:'D17',    lbl:'17',  num:'17',  name:'Digital 17 / A3 / SDA1',    type:'ADC',  funcs:['GPIO','ADC','I2C'],       volt:'3.3V',     curr:'4mA',   note:'Analog input A3. I2C1 data (SDA) alternate.',                               side:'R', row:9  },
+    { id:'D16',    lbl:'16',  num:'16',  name:'Digital 16 / A2 / SCL1',    type:'ADC',  funcs:['GPIO','ADC','I2C'],       volt:'3.3V',     curr:'4mA',   note:'Analog input A2. I2C1 clock (SCL) alternate.',                              side:'R', row:10 },
+    { id:'D15',    lbl:'15',  num:'15',  name:'Digital 15 / A1',           type:'ADC',  funcs:['GPIO','ADC'],             volt:'3.3V',     curr:'4mA',   note:'Analog input A1.',                                                           side:'R', row:11 },
+    { id:'D14',    lbl:'14',  num:'14',  name:'Digital 14 / A0',           type:'ADC',  funcs:['GPIO','ADC','SPI'],       volt:'3.3V',     curr:'4mA',   note:'Analog input A0. SPI1 chip select (CS) alternate.',                         side:'R', row:12 },
+    { id:'D13',    lbl:'13',  num:'13',  name:'Digital 13 / SCK0 / LED',   type:'SPI',  funcs:['GPIO','SPI'],             volt:'3.3V',     curr:'4mA',   note:'SPI0 clock (SCK). Drives the built-in orange LED.',                         side:'R', row:13 },
+    { id:'GND_R2', lbl:'GND', num:'GND', name:'Ground',                    type:'GND',  funcs:['GND'],                   volt:'0V',       curr:'N/A',   note:'Ground reference pin on the right header, mid position.',                    side:'R', row:14 },
+    { id:'D41',    lbl:'41',  num:'41',  name:'Digital 41 / A17',          type:'ADC',  funcs:['GPIO','ADC','PWM'],       volt:'3.3V',     curr:'4mA',   note:'Analog input A17. FlexPWM alternate.',                                      side:'R', row:15 },
+    { id:'D40',    lbl:'40',  num:'40',  name:'Digital 40',                type:'PWM',  funcs:['GPIO','PWM','UART'],      volt:'3.3V',     curr:'4mA',   note:'FlexPWM output. UART8 RX alternate.',                                        side:'R', row:16 },
+    { id:'D39',    lbl:'39',  num:'39',  name:'Digital 39',                type:'PWM',  funcs:['GPIO','PWM','UART'],      volt:'3.3V',     curr:'4mA',   note:'FlexPWM output. UART8 TX alternate.',                                        side:'R', row:17 },
+    { id:'D38',    lbl:'38',  num:'38',  name:'Digital 38',                type:'GPIO', funcs:['GPIO','PWM'],             volt:'3.3V',     curr:'4mA',   note:'SD card detect (SD_CD). FlexPWM alternate.',                                side:'R', row:18 },
+    { id:'D37',    lbl:'37',  num:'37',  name:'Digital 37',                type:'PWM',  funcs:['GPIO','PWM'],             volt:'3.3V',     curr:'4mA',   note:'SD card data line 3 (SD_D3). FlexPWM alternate.',                           side:'R', row:19 },
+    { id:'D36',    lbl:'36',  num:'36',  name:'Digital 36',                type:'PWM',  funcs:['GPIO','PWM'],             volt:'3.3V',     curr:'4mA',   note:'SD card data line 2 (SD_D2). FlexPWM alternate.',                           side:'R', row:20 },
+    { id:'D35',    lbl:'35',  num:'35',  name:'Digital 35',                type:'PWM',  funcs:['GPIO','PWM'],             volt:'3.3V',     curr:'4mA',   note:'SD card data line 1 (SD_D1). FlexPWM alternate.',                           side:'R', row:21 },
+    { id:'D34',    lbl:'34',  num:'34',  name:'Digital 34',                type:'PWM',  funcs:['GPIO','PWM'],             volt:'3.3V',     curr:'4mA',   note:'SD card data line 0 (SD_D0). FlexPWM alternate.',                           side:'R', row:22 },
+    { id:'D33',    lbl:'33',  num:'33',  name:'Digital 33',                type:'GPIO', funcs:['GPIO','UART','PWM'],      volt:'3.3V',     curr:'4mA',   note:'SD card command (SD_CMD). UART5 RTS alternate. FlexPWM alternate.',          side:'R', row:23 },
+  ],
+
+  // ── ALTERNATE FUNCTIONS ───────────────────────────────────
+  altFuncs: {
+    'D0':  ['UART6_TX','FlexSPI2_A_SCLK'],
+    'D1':  ['UART6_RX','FlexSPI2_A_SS0'],
+    'D2':  ['UART5_TX','FlexSPI2_A_MOSI','PWM'],
+    'D3':  ['UART5_RX','FlexSPI2_A_MISO','PWM'],
+    'D4':  ['FlexPWM2.2','UART1_TX'],
+    'D5':  ['FlexPWM2.2B','UART1_RX'],
+    'D6':  ['FlexPWM2.3B','UART1_CTS'],
+    'D7':  ['UART4_TX','SPI1_SCK'],
+    'D8':  ['UART4_RX','SPI1_MISO'],
+    'D9':  ['FlexPWM2.1','SPI1_MOSI'],
+    'D10': ['SPI0_CS','FlexPWM4.2'],
+    'D11': ['SPI0_MOSI','FlexPWM4.1'],
+    'D12': ['SPI0_MISO'],
+    'D13': ['SPI0_SCK','LED_BUILTIN'],
+    'D14': ['ADC0','SPI1_CS','UART1_RTS'],
+    'D15': ['ADC1','UART1_RTS'],
+    'D16': ['ADC2','I2C1_SCL'],
+    'D17': ['ADC3','I2C1_SDA'],
+    'D18': ['I2C0_SDA','ADC4'],
+    'D19': ['I2C0_SCL','ADC5'],
+    'D20': ['ADC6','I2S2_MCLK','UART8_TX'],
+    'D21': ['ADC7','I2S2_BCLK','UART8_RX'],
+    'D22': ['ADC8','I2S2_TX'],
+    'D23': ['ADC9','I2S2_RX'],
+    'D24': ['ADC10','CAN2_TX','I2C2_SCL'],
+    'D25': ['ADC11','CAN2_RX','I2C2_SDA'],
+    'D26': ['ADC12','CAN1_TX','I2C3_SCL'],
+    'D27': ['ADC13','CAN1_RX','I2C3_SDA'],
+    'D28': ['FlexPWM3.1','I2S_SDO','CAN2_TX'],
+    'D29': ['FlexPWM3.0','I2S_SDI'],
+    'D30': ['SPI1_CS2','UART5_TX'],
+    'D31': ['SPI1_CS3','UART5_RX'],
+    'D32': ['SD_CLK','UART5_CTS','FlexPWM'],
+    'D33': ['SD_CMD','UART5_RTS','FlexPWM'],
+    'D34': ['SD_D0','FlexPWM'],
+    'D35': ['SD_D1','FlexPWM'],
+    'D36': ['SD_D2','FlexPWM'],
+    'D37': ['SD_D3','FlexPWM'],
+    'D38': ['SD_CD','FlexPWM'],
+    'D39': ['FlexPWM','UART8_TX'],
+    'D40': ['FlexPWM','UART8_RX'],
+    'D41': ['ADC17','FlexPWM'],
+  },
+
+  // ── ON-BOARD CHIPS (unique to Teensy — shown in component panel) ──
+  chips: [
+    { id:'iMXRT1062', name:'iMXRT1062',  full:'NXP i.MX RT1062 Crossover MCU',      type:'MCU',    specs:[['Clock','600 MHz'],['Core','Cortex-M7'],['RAM','1 MB'],['Package','BGA']],       note:'Main processor. High-performance crossover MCU with real-time functionality.' },
+    { id:'MKL02',     name:'MKL02',      full:'Kinetis KL02 (Bootloader MCU)',        type:'MCU',    specs:[['Clock','48 MHz'],['Core','Cortex-M0+'],['Function','Bootloader/USB']],          note:'Handles bootloading and USB-to-serial communication for the iMXRT.' },
+    { id:'W25Q128',   name:'W25Q128',    full:'16 MB Serial NOR Flash',               type:'FLASH',  specs:[['Capacity','16 MB'],['Interface','SPI / QPI'],['Speed','133 MHz']],              note:'External flash memory for program and data storage.' },
+    { id:'DP83825I',  name:'DP83825I',   full:'10/100 Mbps Ethernet PHY',             type:'PHY',    specs:[['Speed','10/100 Mbps'],['Interface','RMII'],['Package','QFN-32']],               note:'Physical layer transceiver for Ethernet connectivity.' },
+    { id:'TPD3S014',  name:'TPD3S014',   full:'USB Power Switch & ESD Protection',    type:'SWITCH', specs:[['Current','1.5 A'],['ESD Prot','±15 kV'],['Package','SOT-23-6']],               note:'Current-limit switch and ESD protection for the USB-C port.' },
+    { id:'TLV75733P', name:'TLV75733P',  full:'3.3V Low-Dropout Regulator (1 A)',     type:'LDO',    specs:[['Output','3.3 V'],['Max Curr','1 A'],['Dropout','225 mV']],                      note:'Regulates board power to 3.3 V for all logic and I/O.' },
+    { id:'DMG2305UX', name:'DMG2305UX',  full:'P-Channel MOSFET',                     type:'MOSFET', specs:[['Vds','-20 V'],['Id','-4.2 A'],['Package','SOT-23']],                           note:'Used for power switching and reverse polarity protection.' },
+    { id:'RESET',     name:'RESET SW',   full:'Program / Reset Pushbutton',           type:'SWITCH', specs:[['Function','Reset / Program'],['Type','Tactile Switch'],['Style','SMD']],        note:'Press to put Teensy into program mode or perform a hard reset.' },
+    { id:'USB_HOST_HDR', name:'USB Host',full:'USB Host Header (5-pin)',              type:'HEADER', specs:[['Pins','5-pin'],['Spacing','2.54 mm'],['Signal','D+/D-/GND/5V']],               note:'Connects an external USB socket for hosting HID or mass-storage devices.' },
+    { id:'ETH_HDR',   name:'Eth Header', full:'Ethernet Header (6-pin)',              type:'HEADER', specs:[['Pins','2×3 (6)'],['Speed','10/100 Mbps'],['Type','Through-Hole']],              note:'Direct connections to Ethernet jack. Requires the DP83825I PHY chip.' },
+    { id:'EXP_HDR',   name:'Exp Header', full:'Expansion Header (5-pin)',             type:'HEADER', specs:[['Pins','5-pin'],['Spacing','2.54 mm'],['Location','Between rows 27–38']],        note:'Auxiliary signal pins located between the two main pin rows.' },
+  ],
+
+  // ── QUICK SPECS ───────────────────────────────────────────
+  quickSpecs: [
+    { label:'CPU',        value:'NXP iMXRT1062',       color:'#d4d4d4' },
+    { label:'Core',       value:'Cortex-M7 @ 600 MHz', color:'#78c878' },
+    { label:'Flash',      value:'16 MB (external)',     color:'#d4a017' },
+    { label:'RAM',        value:'1 MB',                 color:'#d4a017' },
+    { label:'Supply',     value:'USB-C or 3.6–5.5V',   color:'#ff6b6b' },
+    { label:'I/O Voltage',value:'3.3V only',            color:'#c8a850' },
+    { label:'PWM Pins',   value:'35 capable',           color:'#50c8c8' },
+    { label:'Analog',     value:'18-ch 12-bit ADC',     color:'#c8a850' },
+    { label:'Ethernet',   value:'10/100 Mbps',          color:'#50c8a0' },
+    { label:'USB',        value:'USB-C (FS/HS device)', color:'#40d0c0' },
+  ],
+
+  // ── DETAILED SPECS ────────────────────────────────────────
+  dsSpecs: [
+    { label:'Processor',           value:'NXP i.MX RT1062 (IMXRT1062DVJ6B)' },
+    { label:'Architecture',        value:'ARM Cortex-M7, 32-bit' },
+    { label:'Clock Speed',         value:'600 MHz (overclock to 816+ MHz possible)' },
+    { label:'RAM',                 value:'1 MB (512 kB tightly coupled + 512 kB general)' },
+    { label:'External Flash',      value:'16 MB W25Q128 (QSPI)' },
+    { label:'Digital I/O Pins',    value:'42 (pins 0–41)' },
+    { label:'Analog Inputs',       value:'18 channels, 12-bit ADC' },
+    { label:'PWM Outputs',         value:'35 pins capable of FlexPWM / QuadTimer' },
+    { label:'UART Ports',          value:'8 hardware serial ports' },
+    { label:'SPI Ports',           value:'3 hardware SPI buses' },
+    { label:'I2C Ports',           value:'3 hardware I2C buses' },
+    { label:'CAN Bus',             value:'3 × CAN FD (CAN1, CAN2, CAN3)' },
+    { label:'USB',                 value:'USB-C, Full-Speed + High-Speed device' },
+    { label:'Ethernet',            value:'10/100 Mbps via DP83825I PHY' },
+    { label:'SD Card',             value:'Built-in MicroSD slot (4-bit SDIO)' },
+    { label:'I/O Voltage',         value:'3.3V only — not 5V tolerant' },
+    { label:'Supply Voltage',      value:'USB-C or VIN 3.6–5.5V' },
+    { label:'3.3V Output',         value:'~250 mA combined (TLV75733P LDO, max 1 A)' },
+    { label:'Dimensions',          value:'61.0 × 17.8 mm' },
+  ],
+
+  // ── KEY FEATURES ─────────────────────────────────────────
+  dsFeatures: [
+    '600 MHz ARM Cortex-M7 with double-precision FPU and DSP instructions',
+    '1 MB RAM split into tightly coupled and general-purpose banks for deterministic access',
+    '16 MB external QSPI flash (W25Q128) for program and data storage',
+    '42 digital I/O pins, all capable of GPIO; 35 support FlexPWM or QuadTimer PWM',
+    '18-channel 12-bit ADC with low noise front end',
+    '8 hardware UARTs, 3 SPI buses, 3 I2C buses, 3 CAN FD controllers',
+    'Built-in 10/100 Mbps Ethernet via DP83825I PHY — no external module needed',
+    'Built-in MicroSD card slot with 4-bit SDIO for high-speed data logging',
+    'USB-C connector with Full-Speed and High-Speed device capability',
+    '5-pin USB Host header for connecting HID keyboards, mice, or mass-storage devices',
+    'All I/O pins are 3.3V only — use level-shifters when interfacing with 5V devices',
+    'Compatible with the Arduino IDE via Teensyduino add-on from PJRC',
+  ],
+
+};
