@@ -26,6 +26,11 @@ var RendererFactory = {
   
   getRenderer: function(packageName, partName) {
     var type = this.getPackageType(packageName, partName);
+
+  // Teensy 4.1
+   if (partName && partName.toLowerCase().indexOf('teensy 4.1') >= 0) {
+      return window.Teensy41Renderer;
+    }
     
     switch(type) {
       case 'dip':
