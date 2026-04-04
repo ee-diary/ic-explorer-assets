@@ -38,10 +38,12 @@ window.IC_CONFIG = {
   ],
 
   // ── PINS ──────────────────────────────────────────────────────
-  // DIP-14 pin numbering:
-  // Pins 1-7 (left side, top→bottom), Pins 8-14 (right side, bottom→top)
+  // Physical DIP-14 layout (top view, notch up):
+  //   LEFT SIDE (pins 1-7):  top to bottom, no _rightSlot
+  //   RIGHT SIDE (pins 8-14): _rightSlot 0 = TOP (pin 14), 
+  //                           _rightSlot 6 = BOTTOM (pin 8)
   pins: [
-    // LEFT SIDE (pins 1-7, top to bottom)
+    // ========== LEFT SIDE (pins 1-7, top to bottom) ==========
     {
       num:  1,
       id:   '1A',
@@ -117,70 +119,22 @@ window.IC_CONFIG = {
       funcs: ['GND'],
       volt: '0V',
       curr: 'N/A',
-      note: 'Ground (0V) reference for all gates.',
-      _rightSlot: 0
+      note: 'Ground (0V) reference for all gates.'
     },
 
-    // RIGHT SIDE (pins 8-14, bottom to top)
+    // ========== RIGHT SIDE (pins 14 down to 8, TOP to BOTTOM in _rightSlot order) ==========
+    // _rightSlot: 0 = top-right (pin 14), 6 = bottom-right (pin 8)
     {
-      num:  8,
-      id:   '3Y',
-      lbl:  '3Y',
-      name: 'Gate 3 Output Y',
-      type: 'OUTPUT',
-      funcs: ['OUTPUT'],
+      num:  14,
+      id:   'VCC',
+      lbl:  'VCC',
+      name: 'Supply Voltage',
+      type: 'PWR',
+      funcs: ['PWR'],
       volt: '5V',
-      curr: '16 mA',
-      note: 'Output of third XOR gate. Y = A ⊕ B.',
-      _rightSlot: 1
-    },
-    {
-      num:  9,
-      id:   '3B',
-      lbl:  '3B',
-      name: 'Gate 3 Input B',
-      type: 'INPUT',
-      funcs: ['INPUT'],
-      volt: '5V',
-      curr: '-1.6 mA',
-      note: 'Input B of third XOR gate.',
-      _rightSlot: 2
-    },
-    {
-      num:  10,
-      id:   '3A',
-      lbl:  '3A',
-      name: 'Gate 3 Input A',
-      type: 'INPUT',
-      funcs: ['INPUT'],
-      volt: '5V',
-      curr: '-1.6 mA',
-      note: 'Input A of third XOR gate.',
-      _rightSlot: 3
-    },
-    {
-      num:  11,
-      id:   '4Y',
-      lbl:  '4Y',
-      name: 'Gate 4 Output Y',
-      type: 'OUTPUT',
-      funcs: ['OUTPUT'],
-      volt: '5V',
-      curr: '16 mA',
-      note: 'Output of fourth XOR gate. Y = A ⊕ B.',
-      _rightSlot: 4
-    },
-    {
-      num:  12,
-      id:   '4B',
-      lbl:  '4B',
-      name: 'Gate 4 Input B',
-      type: 'INPUT',
-      funcs: ['INPUT'],
-      volt: '5V',
-      curr: '-1.6 mA',
-      note: 'Input B of fourth XOR gate.',
-      _rightSlot: 5
+      curr: '22 mA',
+      note: 'Positive supply voltage (+5V ±5%). Bypass with 0.1µF capacitor to GND.',
+      _rightSlot: 0    // Top-right pin
     },
     {
       num:  13,
@@ -192,19 +146,67 @@ window.IC_CONFIG = {
       volt: '5V',
       curr: '-1.6 mA',
       note: 'Input A of fourth XOR gate.',
-      _rightSlot: 6
+      _rightSlot: 1    // Second from top on right side
     },
     {
-      num:  14,
-      id:   'VCC',
-      lbl:  'VCC',
-      name: 'Supply Voltage',
-      type: 'PWR',
-      funcs: ['PWR'],
+      num:  12,
+      id:   '4B',
+      lbl:  '4B',
+      name: 'Gate 4 Input B',
+      type: 'INPUT',
+      funcs: ['INPUT'],
       volt: '5V',
-      curr: '22 mA',
-      note: 'Positive supply voltage (+5V ±5%). Bypass with 0.1µF capacitor to GND.',
-      _rightSlot: 7
+      curr: '-1.6 mA',
+      note: 'Input B of fourth XOR gate.',
+      _rightSlot: 2    // Third from top on right side
+    },
+    {
+      num:  11,
+      id:   '4Y',
+      lbl:  '4Y',
+      name: 'Gate 4 Output Y',
+      type: 'OUTPUT',
+      funcs: ['OUTPUT'],
+      volt: '5V',
+      curr: '16 mA',
+      note: 'Output of fourth XOR gate. Y = A ⊕ B.',
+      _rightSlot: 3    // Fourth from top on right side
+    },
+    {
+      num:  10,
+      id:   '3A',
+      lbl:  '3A',
+      name: 'Gate 3 Input A',
+      type: 'INPUT',
+      funcs: ['INPUT'],
+      volt: '5V',
+      curr: '-1.6 mA',
+      note: 'Input A of third XOR gate.',
+      _rightSlot: 4    // Fifth from top on right side
+    },
+    {
+      num:  9,
+      id:   '3B',
+      lbl:  '3B',
+      name: 'Gate 3 Input B',
+      type: 'INPUT',
+      funcs: ['INPUT'],
+      volt: '5V',
+      curr: '-1.6 mA',
+      note: 'Input B of third XOR gate.',
+      _rightSlot: 5    // Sixth from top on right side
+    },
+    {
+      num:  8,
+      id:   '3Y',
+      lbl:  '3Y',
+      name: 'Gate 3 Output Y',
+      type: 'OUTPUT',
+      funcs: ['OUTPUT'],
+      volt: '5V',
+      curr: '16 mA',
+      note: 'Output of third XOR gate. Y = A ⊕ B.',
+      _rightSlot: 6    // Bottom-right pin
     },
   ],
 
