@@ -6,6 +6,7 @@ window.QFPRenderer = {
   currentSvg: null,
   currentConfig: null,
   currentPinElements: [],
+  currentSelectedId: null,
   
   draw: function(svg, config) {
     var self = this;
@@ -83,7 +84,7 @@ window.QFPRenderer = {
     body.setAttribute('stroke-width', '2');
     mainGroup.appendChild(body);
     
-    // Orientation dot (pin 1 indicator)
+    // Orientation dot
     var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     dot.setAttribute('cx', -bodySize/2 + 15);
     dot.setAttribute('cy', -bodySize/2 + 15);
@@ -97,7 +98,7 @@ window.QFPRenderer = {
     // Calculate pin positions
     var pinPositions = [];
     
-    // LEFT SIDE (top to bottom)
+    // LEFT SIDE
     for (var i = 0; i < pinsPerSide; i++) {
       var y = -bodySize/2 + pinStartOffset + (i * spacing);
       pinPositions.push({
@@ -109,7 +110,7 @@ window.QFPRenderer = {
       });
     }
     
-    // BOTTOM SIDE (left to right)
+    // BOTTOM SIDE
     for (var i = 0; i < pinsPerSide; i++) {
       var x = -bodySize/2 + pinStartOffset + (i * spacing);
       pinPositions.push({
@@ -121,7 +122,7 @@ window.QFPRenderer = {
       });
     }
     
-    // RIGHT SIDE (bottom to top)
+    // RIGHT SIDE
     for (var i = 0; i < pinsPerSide; i++) {
       var y = bodySize/2 - pinStartOffset - (i * spacing);
       pinPositions.push({
@@ -133,7 +134,7 @@ window.QFPRenderer = {
       });
     }
     
-    // TOP SIDE (right to left)
+    // TOP SIDE
     for (var i = 0; i < pinsPerSide; i++) {
       var x = bodySize/2 - pinStartOffset - (i * spacing);
       pinPositions.push({
@@ -190,48 +191,43 @@ window.QFPRenderer = {
         id: pin.id,
         num: pin.num,
         type: pin.type,
-        funcs: pin.funcs,
-        name: pin.name,
-        volt: pin.volt,
-        curr: pin.curr,
-        note: pin.note
+        funcs: pin.funcs
       };
       
       // Click handler
-      pinRect.addEventListener('click', (function(pinData) {
+      pinRect.addEventListener('click', (function(pinId) {
         return function(evt) {
           evt.stopPropagation();
-          // Dispatch event for ic-explorer-base.js
+          console.log('Pin clicked:', pinId); // Debug log
           var event = new CustomEvent('pinSelected', {
-            detail: { pinId: pinData.id }
+            detail: { pinId: pinId }
           });
           document.dispatchEvent(event);
         };
-      })(pinRect.pinData));
+      })(pin.id));
       
       // Hover handlers
-      pinRect.addEventListener('mouseenter', (function(rect) {
+      pinRect.addEventListener('mouseenter', (function(rect, id, num) {
         return function() {
           rect.setAttribute('filter', 'url(#pinGlow)');
           rect.setAttribute('stroke-width', '3');
           var event = new CustomEvent('pinHover', {
-            detail: { pinId: rect.pinData.id, pinNum: rect.pinData.num }
+            detail: { pinId: id, pinNum: num }
           });
           document.dispatchEvent(event);
         };
-      })(pinRect));
+      })(pinRect, pin.id, pin.num));
       
-      pinRect.addEventListener('mouseleave', (function(rect) {
+      pinRect.addEventListener('mouseleave', (function(rect, id) {
         return function() {
-          // Don't remove filter if selected
-          if (rect.pinData.id !== self.currentSelectedId) {
+          if (self.currentSelectedId !== id) {
             rect.setAttribute('filter', 'none');
           }
           rect.setAttribute('stroke-width', '1.5');
           var event = new CustomEvent('pinLeave');
           document.dispatchEvent(event);
         };
-      })(pinRect));
+      })(pinRect, pin.id));
       
       mainGroup.appendChild(pinRect);
       
@@ -266,7 +262,7 @@ window.QFPRenderer = {
       numLabel.textContent = pin.num;
       mainGroup.appendChild(numLabel);
       
-      // Pin label on IC body
+      // Pin label
       if (pin.lbl) {
         var lblLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         var lblX, lblY;
@@ -339,18 +335,13 @@ window.QFPRenderer = {
     pkgText.setAttribute('font-family', 'monospace');
     pkgText.textContent = config.package || '';
     mainGroup.appendChild(pkgText);
-    
-    // Store current selected ID
-    this.currentSelectedId = null;
   },
   
   getPinColor: function(type) {
     var colorMap = {
       'PWR': '#ff6b6b', 'GND': '#a8a8a8', 'I2C': '#9898d8',
       'INT': '#c8a850', 'AUX': '#50c8c8', 'CLK': '#7090a8',
-      'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8',
-      'MOTOR_EN': '#50c8a0', 'MOTOR_IN': '#4a9aee', 'MOTOR_OUT': '#78c878',
-      'INPUT': '#4a9aee', 'OUTPUT': '#78c878', 'ENABLE': '#50c8a0'
+      'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8'
     };
     
     if (this.currentConfig && this.currentConfig.customTypes && this.currentConfig.customTypes[type]) {
@@ -361,10 +352,14 @@ window.QFPRenderer = {
   },
   
   updatePins: function(selectedId, filterType, filterFn) {
-    // Store selected ID
+    console.log('updatePins called:', { selectedId, filterType }); // Debug log
+    
     this.currentSelectedId = selectedId;
     
-    if (!this.currentPinElements) return;
+    if (!this.currentPinElements) {
+      console.log('No pin elements found');
+      return;
+    }
     
     for (var i = 0; i < this.currentPinElements.length; i++) {
       var pinElem = this.currentPinElements[i];
@@ -380,65 +375,37 @@ window.QFPRenderer = {
       var pinColor = this.getPinColor(pinElem.type);
       
       if (isSelected) {
-        // Selected pin - solid color with glow
         pinElem.element.setAttribute('fill', pinColor);
         pinElem.element.setAttribute('stroke', pinColor);
         pinElem.element.setAttribute('stroke-width', '2');
         pinElem.element.setAttribute('filter', 'url(#pinGlow)');
         pinElem.element.setAttribute('opacity', '1');
-        if (pinElem.numLabel) {
-          pinElem.numLabel.setAttribute('fill', '#060c1a');
-          pinElem.numLabel.setAttribute('opacity', '1');
-        }
-        if (pinElem.lblLabel) {
-          pinElem.lblLabel.setAttribute('fill', '#060c1a');
-          pinElem.lblLabel.setAttribute('opacity', '1');
-        }
+        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', '#060c1a');
+        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', '#060c1a');
       } else if (isFilterMatch) {
-        // Filter matched - solid color, no glow
         pinElem.element.setAttribute('fill', pinColor);
         pinElem.element.setAttribute('stroke', pinColor);
         pinElem.element.setAttribute('stroke-width', '2');
         pinElem.element.setAttribute('filter', 'none');
         pinElem.element.setAttribute('opacity', '1');
-        if (pinElem.numLabel) {
-          pinElem.numLabel.setAttribute('fill', '#060c1a');
-          pinElem.numLabel.setAttribute('opacity', '1');
-        }
-        if (pinElem.lblLabel) {
-          pinElem.lblLabel.setAttribute('fill', '#060c1a');
-          pinElem.lblLabel.setAttribute('opacity', '1');
-        }
+        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', '#060c1a');
+        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', '#060c1a');
       } else if (filterType && !isFilterMatch) {
-        // Filter active but pin doesn't match - dimmed
         pinElem.element.setAttribute('fill', 'rgba(120,200,120,0.12)');
         pinElem.element.setAttribute('stroke', pinColor);
         pinElem.element.setAttribute('stroke-width', '1');
         pinElem.element.setAttribute('filter', 'none');
         pinElem.element.setAttribute('opacity', '0.08');
-        if (pinElem.numLabel) {
-          pinElem.numLabel.setAttribute('fill', pinColor);
-          pinElem.numLabel.setAttribute('opacity', '0.08');
-        }
-        if (pinElem.lblLabel) {
-          pinElem.lblLabel.setAttribute('fill', pinColor);
-          pinElem.lblLabel.setAttribute('opacity', '0.08');
-        }
+        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', pinColor);
+        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', pinColor);
       } else {
-        // Default state
         pinElem.element.setAttribute('fill', 'rgba(120,200,120,0.12)');
         pinElem.element.setAttribute('stroke', pinColor);
         pinElem.element.setAttribute('stroke-width', '1');
         pinElem.element.setAttribute('filter', 'none');
         pinElem.element.setAttribute('opacity', '1');
-        if (pinElem.numLabel) {
-          pinElem.numLabel.setAttribute('fill', pinColor);
-          pinElem.numLabel.setAttribute('opacity', '1');
-        }
-        if (pinElem.lblLabel) {
-          pinElem.lblLabel.setAttribute('fill', pinColor);
-          pinElem.lblLabel.setAttribute('opacity', '1');
-        }
+        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', pinColor);
+        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', pinColor);
       }
     }
   }
