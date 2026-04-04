@@ -5,7 +5,7 @@ window.IC_CONFIG = {
   partName:     'MPU6050',
   partMPN:      'MPU6050',
   manufacturer: 'TDK-InvenSense',
-  package:      'QFN-24',           // This is correct for the raw IC
+  package:      'QFN-24',
   pinCount:     24,
 
   // ── LINKS ─────────────────────────────────────────────────────
@@ -15,33 +15,24 @@ window.IC_CONFIG = {
 
   // ── LAYOUT HINT (QFN-24) ──────────────────────────────────────
   qfpConfig: {
-  pinsPerSide: 6,
-  bodySize: 320,
-  pinLength: 20,
-  pinWidth: 14,
-  pinGap: 1,
-  pinStartOffset: 16,  // Pin 1 starts 16px from corner
-  pinEndOffset: 16     // Last pin ends 16px from corner
-},
-
-window.IC_CONFIG = {
-  partName: 'MPU6050',
-  partMPN: 'MPU6050',
-  manufacturer: 'TDK-InvenSense',
-  package: 'QFN-24',
-  pinCount: 24,
-l
-  // ... links, qfpConfig ...
+    pinsPerSide: 6,
+    bodySize: 320,
+    pinLength: 20,
+    pinWidth: 14,
+    pinGap: 1,
+    pinStartOffset: 16,
+    pinEndOffset: 16
+  },
 
   // ── CUSTOM TYPE COLOURS ─────────────────────────────────────
   customTypes: {
-    PWR:     { c: '#ff6b6b', bg: 'rgba(255,107,107,0.12)', bd: 'rgba(255,107,107,0.35)' },
-    GND:     { c: '#a8a8a8', bg: 'rgba(168,168,168,0.12)', bd: 'rgba(168,168,168,0.35)' },
-    I2C:     { c: '#9898d8', bg: 'rgba(152,152,216,0.12)', bd: 'rgba(152,152,216,0.35)' },
-    INT:     { c: '#c8a850', bg: 'rgba(200,168,80,0.12)',  bd: 'rgba(200,168,80,0.35)' },
-    AUX:     { c: '#50c8c8', bg: 'rgba(80,200,200,0.12)',  bd: 'rgba(80,200,200,0.32)' },
-    CLK:     { c: '#7090a8', bg: 'rgba(112,144,168,0.12)', bd: 'rgba(112,144,168,0.35)' },
-    CPOUT:   { c: '#c078ff', bg: 'rgba(192,120,255,0.11)', bd: 'rgba(192,120,255,0.28)' },
+    PWR:      { c: '#ff6b6b', bg: 'rgba(255,107,107,0.12)', bd: 'rgba(255,107,107,0.35)' },
+    GND:      { c: '#a8a8a8', bg: 'rgba(168,168,168,0.12)', bd: 'rgba(168,168,168,0.35)' },
+    I2C:      { c: '#9898d8', bg: 'rgba(152,152,216,0.12)', bd: 'rgba(152,152,216,0.35)' },
+    INT:      { c: '#c8a850', bg: 'rgba(200,168,80,0.12)',  bd: 'rgba(200,168,80,0.35)' },
+    AUX:      { c: '#50c8c8', bg: 'rgba(80,200,200,0.12)',  bd: 'rgba(80,200,200,0.32)' },
+    CLK:      { c: '#7090a8', bg: 'rgba(112,144,168,0.12)', bd: 'rgba(112,144,168,0.35)' },
+    CPOUT:    { c: '#c078ff', bg: 'rgba(192,120,255,0.11)', bd: 'rgba(192,120,255,0.28)' },
     RESERVED: { c: '#a8a8a8', bg: 'rgba(168,168,168,0.08)', bd: 'rgba(168,168,168,0.20)' },
   },
 
@@ -56,7 +47,6 @@ l
     { type: 'CPOUT', label: 'Charge Pump', color: '#c078ff' },
     { type: 'RESERVED', label: 'Reserved', color: '#a8a8a8' },
   ],
-
 
   // ── PINS (QFN-24) ──────────────────────────────────────────
   pins: [
@@ -193,7 +183,7 @@ l
       funcs: ['I2C'],
       volt: '0-3.46V',
       curr: 'N/A',
-      note: 'GND=0x68, VLOGIC=0x69 [citation:2].'
+      note: 'GND=0x68, VLOGIC=0x69.'
     },
 
     // RIGHT SIDE (pins 13-18, bottom to top)
@@ -228,7 +218,7 @@ l
       funcs: ['I2C'],
       volt: '0-3.46V',
       curr: 'N/A',
-      note: 'Requires pull-up resistor to VLOGIC [citation:2].'
+      note: 'Requires pull-up resistor to VLOGIC.'
     },
     {
       num:  16,
@@ -354,7 +344,7 @@ l
   // ── DETAILED SPECS ────────────────────────────────────────────
   dsSpecs: [
     { label: 'ADC Resolution', value: '16-bit' },
-    { label: 'I2C Address',    value: '0x68 or 0x69 [citation:2]' },
+    { label: 'I2C Address',    value: '0x68 or 0x69' },
     { label: 'Operating Temp', value: '-40°C to +85°C' },
     { label: 'Current (active)', value: '3.9mA' },
     { label: 'Current (sleep)',  value: '8µA' },
