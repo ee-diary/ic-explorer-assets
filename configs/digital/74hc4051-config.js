@@ -1,7 +1,7 @@
 // configs/74hc4051-config.js
 // 74HC4051 — NXP / TI 8-Channel Analog Multiplexer / Demultiplexer
 // DIP-16 package • 16 pins
-// Drop this file into: ic-explorer-assets/configs/
+// Drop this file into: ic-explorer-assets/configs/digital/
 
 window.IC_CONFIG = {
 
@@ -28,8 +28,8 @@ window.IC_CONFIG = {
   },
 
   // ── CUSTOM TYPE COLOURS ───────────────────────────────────────
-  // The engine reads this optional map to extend its palette for
-  // chip-specific types not in the standard set.
+  // The engine reads this map to extend its palette for chip-specific
+  // types not in the standard set.
   customTypes: {
     CH:  { c: '#f4a261', bg: 'rgba(244,162,97,.12)',  bd: 'rgba(244,162,97,.35)'  },
     SEL: { c: '#50c8a0', bg: 'rgba(80,200,160,.12)',  bd: 'rgba(80,200,160,.32)'  },
@@ -37,6 +37,25 @@ window.IC_CONFIG = {
     EN:  { c: '#ff9944', bg: 'rgba(255,153,68,.12)',  bd: 'rgba(255,153,68,.30)'  },
     VEE: { c: '#c078ff', bg: 'rgba(192,120,255,.11)', bd: 'rgba(192,120,255,.28)' },
   },
+
+  // ── FILTER BUTTONS ────────────────────────────────────────────
+  // Defines exactly which buttons appear in "Highlight by Function".
+  // Each entry: { type, label, color }
+  //   type  — must match the type/funcs values used in the pins array
+  //   label — text shown on the button
+  //   color — button accent colour (use values from customTypes above)
+  //
+  // The engine checks for this array first. If present it uses ONLY
+  // these buttons instead of its built-in GPIO/PWM/ADC/... list.
+  filterButtons: [
+    { type: 'CH',  label: 'Channel (Y0–Y7)', color: '#f4a261' },
+    { type: 'COM', label: 'COM (Z)',          color: '#c8a850' },
+    { type: 'SEL', label: 'Select (A/B/C)',   color: '#50c8a0' },
+    { type: 'EN',  label: 'Enable (/E)',      color: '#ff9944' },
+    { type: 'VEE', label: 'VEE',              color: '#c078ff' },
+    { type: 'PWR', label: 'VCC',              color: '#ff6b6b' },
+    { type: 'GND', label: 'GND',              color: '#a8a8a8' },
+  ],
 
   // ── PINS ──────────────────────────────────────────────────────
   // DIP-16: pins 1–8 → left side top→bottom (no _rightSlot)
@@ -147,8 +166,6 @@ window.IC_CONFIG = {
   },
 
   // ── MUX TRUTH TABLE ───────────────────────────────────────────
-  // Custom chip-specific data consumed by the engine's detail panel
-  // and any chip-page extras.  Key = channel id, value = {c,b,a, pin}.
   muxTable: [
     { c: 0, b: 0, a: 0, ch: 'Y0', pin: 14 },
     { c: 0, b: 0, a: 1, ch: 'Y1', pin: 13 },
