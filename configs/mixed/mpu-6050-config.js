@@ -15,12 +15,12 @@ window.IC_CONFIG = {
 
   // ── LAYOUT HINT (QFN-24) ──────────────────────────────────────
   qfpConfig: {
-    pinsPerSide: 6,    // 24 pins / 4 sides = 6 pins per side
-    bodySize: 400,
-    pinLength: 28,
-    pinWidth: 20,
-    pinGap: 1
-  },
+  pinsPerSide: 6,
+  bodySize: 320,        // ← Smaller body (was 400)
+  pinLength: 20,        // ← Shorter pins (was 28)
+  pinWidth: 14,         // ← Thinner pins (was 20)
+  pinGap: 0,            // ← No gap
+}
 
   // ── CUSTOM TYPE COLOURS ─────────────────────────────────────
   customTypes: {
