@@ -22,13 +22,24 @@ var ICExplorer = (function() {
     INT:  {c:'#c8a850',bg:'rgba(200,168,80,.12)', bd:'rgba(200,168,80,.30)'},
     USB:  {c:'#a78bfa',bg:'rgba(167,139,250,.11)',bd:'rgba(167,139,250,.28)'},
   };
+
+  // ── PATCH: merge customTypes from config into COLORS at runtime ──────────
+  // Called once during init so getColor() can resolve chip-specific types.
+  function mergeCustomTypes(cfg) {
+    if (!cfg || !cfg.customTypes) return;
+    Object.keys(cfg.customTypes).forEach(function(k) {
+      var ct = cfg.customTypes[k];
+      // Map customTypes {c, bg, bd} → same shape as COLORS entries
+      COLORS[k] = { c: ct.c, bg: ct.bg, bd: ct.bd };
+    });
+  }
   
   function getColor(type) {
     return COLORS[type] || COLORS.GPIO;
   }
   
-  // Filter definitions
-  var FILTERS = [
+  // Default filter definitions (used when config has NO filterButtons array)
+  var DEFAULT_FILTERS = [
     {lbl:'GPIO',  key:'GPIO',  fn:function(p){return p.funcs && p.funcs.indexOf('GPIO')>=0;}},
     {lbl:'PWM',   key:'PWM',   fn:function(p){return p.funcs && p.funcs.indexOf('PWM')>=0;}},
     {lbl:'ADC',   key:'ADC',   fn:function(p){return p.funcs && p.funcs.indexOf('ADC')>=0;}},
@@ -42,7 +53,41 @@ var ICExplorer = (function() {
     {lbl:'GND',   key:'GND',   fn:function(p){return p.type==='GND';}},
     {lbl:'RESET', key:'RESET', fn:function(p){return p.type==='RESET';}},
   ];
-  
+
+  // ── PATCH: build FILTERS and FCLR from config.filterButtons if present ───
+  // Returns { filters, fclr } — either from config or from the defaults above.
+  function resolveFilters(cfg) {
+    if (cfg && cfg.filterButtons && cfg.filterButtons.length) {
+      var filters = cfg.filterButtons.map(function(fb) {
+        var key = fb.type;
+        return {
+          lbl: fb.label,
+          key: key,
+          // Generic matcher: check funcs array first, then fall back to type field
+          fn: function(p) {
+            if (p.funcs && p.funcs.indexOf(key) >= 0) return true;
+            if (p.type === key) return true;
+            return false;
+          }
+        };
+      });
+      var fclr = {};
+      cfg.filterButtons.forEach(function(fb) {
+        fclr[fb.type] = fb.color;
+      });
+      return { filters: filters, fclr: fclr };
+    }
+    // No filterButtons in config — use hardcoded defaults
+    var defaultFclr = {
+      GPIO:'#78c878', PWM:'#50c8c8', ADC:'#c8a850', SPI:'#4a9aee',
+      I2C:'#9898d8', UART:'#cc6888', USB:'#a78bfa', TIMER:'#50c8c8',
+      XTAL:'#7090a8', PWR:'#ff6b6b', GND:'#a8a8a8', RESET:'#ff9944'
+    };
+    return { filters: DEFAULT_FILTERS, fclr: defaultFclr };
+  }
+
+  // Active filters (set during init, may be replaced per-chip)
+  var FILTERS = DEFAULT_FILTERS;
   var FCLR = {
     GPIO:'#78c878', PWM:'#50c8c8', ADC:'#c8a850', SPI:'#4a9aee',
     I2C:'#9898d8', UART:'#cc6888', USB:'#a78bfa', TIMER:'#50c8c8',
@@ -73,6 +118,15 @@ var ICExplorer = (function() {
       var C = cfg;
       var PINS = C.pins;
       var ALT = C.altFuncs || {};
+
+      // ── PATCH: merge custom types and resolve filters before anything else ──
+      mergeCustomTypes(C);
+      var resolved = resolveFilters(C);
+      FILTERS = resolved.filters;
+      FCLR    = resolved.fclr;
+      // Keep public references in sync
+      API.FILTERS = FILTERS;
+      API.FCLR    = FCLR;
       
       // Store config globally
       window._icConfig = C;
@@ -141,8 +195,6 @@ var ICExplorer = (function() {
     
     selectPin: function(id) {
       window._selectedPin = (window._selectedPin === id) ? null : id;
-      // Batch all DOM mutations in a single rAF to prevent mid-paint layout thrash
-      // that causes the SVG IC body to visually jump/shift.
       requestAnimationFrame(function() {
         API.updateBoardHighlight();
         API.updateDetailPanel();
@@ -261,6 +313,7 @@ var ICExplorer = (function() {
     pinMatchesFilter: function(p) {
       var filterType = window._currentFilter;
       if (!filterType) return true;
+      // ── PATCH: use the resolved FILTERS array (chip-specific or default) ──
       var f = FILTERS.find(function(x) { return x.key === filterType; });
       return f ? f.fn(p) : true;
     },
@@ -284,8 +337,7 @@ var ICExplorer = (function() {
       if (cntSpan) cntSpan.textContent = pins.length + (pins.length < window._icPins.length ? ' / ' + window._icPins.length : '');
     },
 
-    // Lightweight selection-only update — only toggles the .on class,
-    // does NOT rebuild innerHTML, so no layout reflow is triggered.
+    // Lightweight selection-only update
     updatePinListSelection: function() {
       var rowsDiv = document.getElementById('awROWS');
       if (!rowsDiv) return;
@@ -321,6 +373,8 @@ var ICExplorer = (function() {
       if (!fbDiv) return;
       
       var filterType = window._currentFilter;
+
+      // ── PATCH: use resolved FILTERS + FCLR (chip-specific or default) ──────
       fbDiv.innerHTML = FILTERS.map(function(f) {
         var c = FCLR[f.key] || '#78c878';
         var on = filterType === f.key;
@@ -469,7 +523,6 @@ var ICExplorer = (function() {
       window.addEventListener('resize', resizeCanvas);
       setTimeout(resizeCanvas, 100);
       
-      // Zoom buttons
       var zoomIn = document.getElementById('awCanZoomIn');
       var zoomOut = document.getElementById('awCanZoomOut');
       var reset = document.getElementById('awCanReset');
@@ -499,7 +552,6 @@ var ICExplorer = (function() {
         });
       }
       
-      // Mouse events for panning
       canvasState.canvas.addEventListener('wheel', function(e) {
         e.preventDefault();
         var rect = canvasState.canvas.getBoundingClientRect();
@@ -569,7 +621,6 @@ var ICExplorer = (function() {
       ctx.translate(offX, offY);
       ctx.scale(zoom, zoom);
       
-      // Draw grid
       ctx.strokeStyle = 'rgba(77,166,255,0.04)';
       ctx.lineWidth = 0.5;
       for (var x = 0; x < W / zoom; x += 20) {
@@ -585,7 +636,6 @@ var ICExplorer = (function() {
         ctx.stroke();
       }
       
-      // IC body
       var ix = 70, iy = 14, iw = W / zoom - 140, ih = H / zoom - 28;
       ctx.fillStyle = '#0a0e16';
       ctx.strokeStyle = '#3a6080';
@@ -593,13 +643,11 @@ var ICExplorer = (function() {
       ctx.fillRect(ix, iy, iw, ih);
       ctx.strokeRect(ix, iy, iw, ih);
       
-      // Pin-1 dot
       ctx.fillStyle = '#4da6ff';
       ctx.beginPath();
       ctx.arc(ix + 8, iy + 8, 3, 0, Math.PI * 2);
       ctx.fill();
       
-      // Text
       ctx.fillStyle = '#4da6ff';
       ctx.font = 'bold 9px monospace';
       ctx.textAlign = 'center';
@@ -611,7 +659,6 @@ var ICExplorer = (function() {
       ctx.font = '10px monospace';
       ctx.fillText(C.package + ' · ' + C.pinCount + ' pins', ix + iw / 2, iy + 46);
       
-      // Group pins by type
       var pins = C.pins;
       var grpMap = {};
       pins.forEach(function(p) {
