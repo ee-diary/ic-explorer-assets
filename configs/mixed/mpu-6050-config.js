@@ -19,7 +19,7 @@ window.IC_CONFIG = {
   bodySize: 320,        // ← Smaller body (was 400)
   pinLength: 20,        // ← Shorter pins (was 28)
   pinWidth: 14,         // ← Thinner pins (was 20)
-  pinGap: 0,            // ← No gap
+  pinGap: 1,            // ← No gap
 }
 
   // ── CUSTOM TYPE COLOURS ─────────────────────────────────────
