@@ -95,8 +95,8 @@ window.QFPRenderer = {
     body.setAttribute('height', bodySize);
     body.setAttribute('rx', '8');
     body.setAttribute('ry', '8');
-    body.setAttribute('fill', '#1a1a2e');
-    body.setAttribute('stroke', '#2a2a3e');
+    body.setAttribute('fill', '#171B26');
+    body.setAttribute('stroke', '#2A2F3E');
     body.setAttribute('stroke-width', '2');
     mainGroup.appendChild(body);
     
