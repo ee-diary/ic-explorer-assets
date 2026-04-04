@@ -32,9 +32,9 @@ window.IC_CONFIG = {
     { type: 'GND',      label: 'Ground',       color: '#a8a8a8' },
     { type: 'I2C',      label: 'I2C',          color: '#9898d8' },
     { type: 'INT',      label: 'Interrupt',    color: '#c8a850' },
-    { type: 'AUX',      label: 'Aux',    color: '#50c8c8' },
+    { type: 'AUX',      label: 'AUX',    color: '#50c8c8' },
     { type: 'CLK',      label: 'Clock',        color: '#7090a8' },
-    { type: 'CPOUT',    label: 'Charge Pump',  color: '#c078ff', fontSize:'10'},
+    { type: 'CPOUT',    label: 'Charge Pump',  color: '#c078ff', fontSize: '11px'},
     { type: 'RESERVED', label: 'Reserved',     color: '#555968' },
   ],
 
