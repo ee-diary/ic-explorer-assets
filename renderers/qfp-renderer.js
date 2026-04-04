@@ -181,7 +181,8 @@ window.QFPRenderer = {
       pinRect.setAttribute('stroke-width', '1.5');
       pinRect.setAttribute('rx', '2');
       pinRect.setAttribute('ry', '2');
-      pinRect.setAttribute('data-pin-id', pin.id);
+      pinRect.setAttribute('class', 'ic-pin');
+      pinRect.setAttribute('data-id', pin.id);        // ← engine uses data-id, not data-pin-id
       pinRect.setAttribute('data-pin-num', pin.num);
       pinRect.setAttribute('data-pin-type', pin.type);
       pinRect.setAttribute('data-pin-funcs', JSON.stringify(pin.funcs));
