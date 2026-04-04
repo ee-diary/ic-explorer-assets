@@ -63,14 +63,12 @@ var ICExplorer = (function() {
         return {
           lbl:      fb.label,
           key:      key,
-          fontSize: fb.fontSize || null,   // ← add this
+          fontSize: fb.fontSize || null,
           fn: function(p) {
             if (p.funcs && p.funcs.indexOf(key) >= 0) return true;
             if (p.type === key) return true;
             return false;
           }
-        };
-      });
         };
       });
       var fclr = {};
@@ -79,7 +77,6 @@ var ICExplorer = (function() {
       });
       return { filters: filters, fclr: fclr };
     }
-    // No filterButtons in config — use hardcoded defaults
     var defaultFclr = {
       GPIO:'#78c878', PWM:'#50c8c8', ADC:'#c8a850', SPI:'#4a9aee',
       I2C:'#9898d8', UART:'#cc6888', USB:'#a78bfa', TIMER:'#50c8c8',
