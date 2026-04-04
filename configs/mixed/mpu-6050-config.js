@@ -15,7 +15,7 @@ window.IC_CONFIG = {
     pinLength:   20,
     pinWidth:    14,
     pinGap:      1,
-    pinOffset:   40  
+    pinOffset:   50  
     // removed non-standard pinStartOffset / pinEndOffset
   },
 
