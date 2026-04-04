@@ -20,7 +20,7 @@ window.IC_CONFIG = {
   pinLength: 20,        // ← Shorter pins (was 28)
   pinWidth: 14,         // ← Thinner pins (was 20)
   pinGap: 1,            // ← No gap
-}
+},
 
   // ── CUSTOM TYPE COLOURS ─────────────────────────────────────
   customTypes: {
