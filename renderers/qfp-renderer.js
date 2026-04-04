@@ -124,15 +124,14 @@ for (var i = 0; i < pinsPerSide; i++) {
 }
 // RIGHT — bottom → top
 for (var i = 0; i < pinsPerSide; i++) {
-  var y = half - offset - (pinWidth / 2) - i * spacing;
+  var y = half - offset - (pinWidth / 2) - i * spacing;  // ← minus, not plus
   pinPositions.push({ side: 'right', cx: half, cy: y });
 }
 // TOP — right → left
 for (var i = 0; i < pinsPerSide; i++) {
-  var x = half - offset - (pinWidth / 2) - i * spacing;
+  var x = half - offset - (pinWidth / 2) - i * spacing;  // ← minus, not plus
   pinPositions.push({ side: 'top', cx: x, cy: -half });
 }
-
     // ── Draw pins ─────────────────────────────────────────────────────────
     for (var i = 0; i < pinPositions.length && i < pins.length; i++) {
       var pos  = pinPositions[i];
