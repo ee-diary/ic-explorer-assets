@@ -31,12 +31,12 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
-    { type: 'LED',  label: 'LED Outputs',      color: '#ff6b6b' },
-    { type: 'SIG',  label: 'Signal Input',     color: '#f4a261' },
-    { type: 'REF',  label: 'Voltage Reference',color: '#c8a850' },
-    { type: 'MODE', label: 'Display Mode',     color: '#c078ff' },
-    { type: 'PWR',  label: 'V+ Supply',        color: '#ff6b6b' },
-    { type: 'GND',  label: 'V- / Ground',      color: '#a8a8a8' },
+    { type: 'LED',  label: 'LEDs',      color: '#ff6b6b' },
+    { type: 'SIG',  label: 'SIG',     color: '#f4a261' },
+    { type: 'REF',  label: 'V.Ref',color: '#c8a850' },
+    { type: 'MODE', label: 'Mode',     color: '#c078ff' },
+    { type: 'PWR',  label: 'V+',        color: '#ff6b6b' },
+    { type: 'GND',  label: 'V-',      color: '#a8a8a8' },
   ],
 
   // ── PINS ──────────────────────────────────────────────────────
