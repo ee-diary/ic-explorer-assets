@@ -129,12 +129,81 @@ window.IC_CONFIG = {
     pinLength: 28, pinWidth: 20, pinGap: 2
   },
 
+  // ── CUSTOM TYPE COLOURS (optional) ───────────────────────────
+  // Define this block ONLY when the chip uses pin types that are not
+  // in the standard palette (GPIO, ADC, PWR, GND, UART, SPI, I2C,
+  // USB, CAN, PWM, TIMER, XTAL, RESET, JTAG, BOOT, INT, COMP).
+  //
+  // Use this for chips with chip-specific functional groups, such as:
+  //   - Analog MUX channels (74HC4051 → CH, COM, SEL, EN, VEE)
+  //   - Op-amp pins (IN+, IN-, OUT)
+  //   - Comparator pins
+  //   - Any other non-standard pin role
+  //
+  // Each key is a short type name used in pins[].type and pins[].funcs.
+  // Values: c = text/stroke colour, bg = fill background, bd = border colour.
+  //
+  // The engine merges these into its colour palette at init time,
+  // so getColor('CH') etc. will resolve correctly everywhere
+  // (pin body, detail panel badge, pin list tag, legend, tooltip).
+  //
+  // OMIT this block entirely for standard microcontrollers — it is only
+  // needed when the chip's functions cannot be expressed with the
+  // built-in type names above.
+  customTypes: {
+    CH:  { c: '#f4a261', bg: 'rgba(244,162,97,.12)',  bd: 'rgba(244,162,97,.35)'  },
+    SEL: { c: '#50c8a0', bg: 'rgba(80,200,160,.12)',  bd: 'rgba(80,200,160,.32)'  },
+    COM: { c: '#c8a850', bg: 'rgba(200,168,80,.14)',  bd: 'rgba(200,168,80,.35)'  },
+    EN:  { c: '#ff9944', bg: 'rgba(255,153,68,.12)',  bd: 'rgba(255,153,68,.30)'  },
+    VEE: { c: '#c078ff', bg: 'rgba(192,120,255,.11)', bd: 'rgba(192,120,255,.28)' },
+  },
+
+  // ── FILTER BUTTONS (optional — replaces default GPIO/PWM/ADC/... set) ────
+  //
+  // *** DECISION RULE — READ THIS BEFORE WRITING PINS ***
+  //
+  // Ask: do the chip's pin functions map naturally onto the standard types?
+  //   GPIO, ADC, PWR, GND, UART, SPI, I2C, USB, CAN,
+  //   PWM, TIMER, XTAL, RESET, JTAG, BOOT, INT, COMP
+  //
+  //   YES → standard microcontroller (PIC, STM32, AVR, etc.)
+  //         Omit filterButtons entirely. The engine shows the default
+  //         button set and only renders buttons for types that actually
+  //         appear in the pins array (unused buttons are hidden).
+  //
+  //   NO  → specialist chip (analog MUX, op-amp, comparator, gate, etc.)
+  //         Define customTypes (above) for any new type names, then
+  //         define filterButtons (below) to control exactly which buttons
+  //         appear and in what order.
+  //
+  // When filterButtons IS present the engine uses ONLY these entries —
+  // the entire default set is suppressed. List every type the user needs
+  // to filter by, including PWR and GND if relevant.
+  //
+  // Fields per entry:
+  //   type  — must exactly match the type/funcs values used in pins[]
+  //   label — human-readable text shown on the button (keep it short)
+  //   color — hex accent colour (use the matching value from customTypes.c,
+  //           or a standard palette colour for PWR/GND)
+  //
+  // Example — 74HC4051 8-channel analog MUX:
+  filterButtons: [
+    { type: 'CH',  label: 'Channel (Y0–Y7)', color: '#f4a261' },
+    { type: 'COM', label: 'COM (Z)',          color: '#c8a850' },
+    { type: 'SEL', label: 'Select (A/B/C)',   color: '#50c8a0' },
+    { type: 'EN',  label: 'Enable (/E)',      color: '#ff9944' },
+    { type: 'VEE', label: 'VEE',              color: '#c078ff' },
+    { type: 'PWR', label: 'VCC',              color: '#ff6b6b' },
+    { type: 'GND', label: 'GND',              color: '#a8a8a8' },
+  ],
+
   // ── PINS ──────────────────────────────────────────────────────
   // RULES:
   //   • Every pin must have ALL fields: num, id, lbl, name, type, funcs, volt, curr, note
   //   • id must be unique across all pins
-  //   • type must be one of the allowed values listed below
-  //   • funcs is an array — drives the filter buttons in the UI
+  //   • type must be one of the standard allowed values OR a key defined in customTypes
+  //   • funcs is an array — must contain values that match filterButtons[].type
+  //     (or standard type names if filterButtons is omitted)
   //
   // DIP pin ordering:
   //   Pins 1..N/2   → left side, top → bottom (no _rightSlot)
@@ -146,7 +215,7 @@ window.IC_CONFIG = {
   //   Pins 2*pps+1..3*pps → RIGHT side,  bottom → top
   //   Pins 3*pps+1..4*pps → TOP side,    right → left
   //
-  // Allowed type values (controls colour in both renderers):
+  // Standard allowed type values (built-in colours — no customTypes needed):
   //   GPIO | ADC | PWR | GND | UART | SPI | I2C | USB | CAN |
   //   PWM  | TIMER | XTAL | RESET | JTAG | BOOT | INT | COMP
   //
@@ -198,6 +267,86 @@ window.IC_CONFIG = {
 
 ---
 
+## Filter Buttons — When to Use the Default Set vs. Custom
+
+This is the most common mistake when adding a new chip. Follow this decision tree:
+
+```
+Is this chip a general-purpose microcontroller
+(PIC, STM32, AVR, ESP, NXP Kinetis, etc.)?
+│
+├── YES → Omit both customTypes and filterButtons.
+│         Use only standard type values in pins[].type and pins[].funcs.
+│         The engine automatically shows only the buttons relevant to
+│         the types present in the pins array.
+│         Standard types: GPIO ADC PWR GND UART SPI I2C USB CAN
+│                         PWM TIMER XTAL RESET JTAG BOOT INT COMP
+│
+└── NO  → Does the chip have functional groups not in the standard list?
+          (e.g. analog channels, MUX select lines, op-amp inputs,
+          inhibit/enable controls, negative supply rails, etc.)
+          │
+          ├── YES → 1. Define customTypes for each new type name.
+          │         2. Define filterButtons listing every button needed,
+          │            including PWR and GND if you want them shown.
+          │         3. Use the custom type names in pins[].type and
+          │            pins[].funcs throughout the pins array.
+          │
+          └── NO  → Standard types cover it — omit both blocks.
+```
+
+### Examples by chip category
+
+| Chip type | filterButtons needed? | Reason |
+|---|---|---|
+| PIC16F877A (MCU) | No | All pins map to GPIO, ADC, UART, SPI, I2C, PWM, XTAL, RESET |
+| STM32F103 (MCU) | No | Standard types cover all functions |
+| 74HC4051 (analog MUX) | **Yes** | Needs CH, SEL, COM, EN, VEE — none exist in standard set |
+| LM358 (op-amp) | **Yes** | Needs IN+, IN−, OUT, PWR, GND |
+| 74HC00 (NAND gate) | **Yes** | Needs INPUT, OUTPUT, PWR, GND |
+| NE555 (timer IC) | **Yes** | Needs TRIG, THR, OUT, RST, CV, DIS, PWR, GND |
+
+---
+
+## Colour Palette (shared across all renderers and the engine)
+
+### Standard built-in colours
+
+```
+GPIO  #78c878 (green)     PWR   #ff6b6b (red)       GND   #a8a8a8 (grey)
+ADC   #c8a850 (gold)      SPI   #4a9aee (blue)       I2C   #9898d8 (purple)
+UART  #cc6888 (pink)      USB   #4a9aee (blue)       CAN   #ff9944 (orange)
+PWM   #50c8c8 (cyan)      TIMER #50c8c8 (cyan)       XTAL  #7090a8 (steel)
+RESET #ff9944 (orange)    JTAG  #c8a850 (gold)       BOOT  #50c8c8 (cyan)
+INT   #c8a850 (gold)      COMP  #ff9944 (orange)
+```
+
+### Extending the palette with customTypes
+
+When a chip needs types outside the list above, define them in `customTypes`.
+The engine merges these into its internal colour map at init time so that pin
+bodies, detail panel badges, pin list tags, the legend, and tooltips all pick
+up the correct colour automatically — no other files need to change.
+
+```js
+customTypes: {
+  // key    text colour   fill background          border colour
+  CH:  { c: '#f4a261', bg: 'rgba(244,162,97,.12)',  bd: 'rgba(244,162,97,.35)'  },
+  SEL: { c: '#50c8a0', bg: 'rgba(80,200,160,.12)',  bd: 'rgba(80,200,160,.32)'  },
+},
+```
+
+Suggested colours for common specialist types:
+
+```
+Analog channel   #f4a261 (amber)     Select / address  #50c8a0 (teal)
+Common / COM     #c8a850 (gold)      Enable / inhibit  #ff9944 (orange)
+Negative rail    #c078ff (violet)    Op-amp input      #4a9aee (blue)
+Op-amp output    #78c878 (green)     Clock input       #7090a8 (steel)
+```
+
+---
+
 ## Renderer Selection Rules (renderer-factory.js)
 
 | Package string contains | Renderer used |
@@ -222,19 +371,6 @@ The factory is called automatically by the boot script — you never call it man
 
 ---
 
-## Colour Palette (shared across all renderers and the engine)
-
-```
-GPIO  #78c878 (green)     PWR   #ff6b6b (red)       GND   #a8a8a8 (grey)
-ADC   #c8a850 (gold)      SPI   #4a9aee (blue)       I2C   #9898d8 (purple)
-UART  #cc6888 (pink)      USB   #4a9aee (blue)       CAN   #ff9944 (orange)
-PWM   #50c8c8 (cyan)      TIMER #50c8c8 (cyan)       XTAL  #7090a8 (steel)
-RESET #ff9944 (orange)    JTAG  #c8a850 (gold)       BOOT  #50c8c8 (cyan)
-INT   #c8a850 (gold)      COMP  #ff9944 (orange)
-```
-
----
-
 ## Task Instructions for the AI
 
 ### Standard IC Chips (DIP / QFP / LQFP / TQFP)
@@ -246,36 +382,54 @@ When adding a standard IC, you must:
 
 2. **Determine the renderer** from the package string using the table above.
 
-3. **Write only `configs/CHIPNAME-config.js`** — this is the only file needed per chip.
+3. **Decide whether this chip needs custom filter buttons.**
+   Before writing a single pin, ask: do all the chip's functional groups map onto
+   the standard type names (GPIO, ADC, UART, SPI, I2C, PWM, TIMER, XTAL, RESET,
+   JTAG, BOOT, INT, COMP, USB, CAN, PWR, GND)?
+
+   - **Standard MCU** (PIC, STM32, AVR, ESP, etc.) → use only standard types,
+     omit `customTypes` and `filterButtons` entirely.
+
+   - **Specialist chip** (analog MUX, op-amp, comparator, logic gate, timer IC,
+     level shifter, etc.) → define `customTypes` for every new type name, then
+     define `filterButtons` listing the buttons in the order you want them shown.
+     Every type used in `pins[].type` or `pins[].funcs` must have a matching entry
+     in either the standard palette or `customTypes`.
+
+4. **Write only `configs/CHIPNAME-config.js`** — this is the only file needed per chip.
    - Extract every pin: num, id, lbl, name, type, funcs, volt, curr, note
    - For DIP: include `_rightSlot` on all right-side pins
    - For QFP: order pins strictly LEFT→BOTTOM→RIGHT→TOP counter-clockwise
    - Include `dipConfig` or `qfpConfig` layout block matching the package
+   - Include `customTypes` + `filterButtons` if the chip needs them (see step 3)
    - Populate altFuncs, quickSpecs, dsSpecs, dsFeatures from the datasheet
 
-4. **If the package is QFP/LQFP/TQFP**, also check whether `qfp-renderer.js`
+5. **If the package is QFP/LQFP/TQFP**, also check whether `qfp-renderer.js`
    needs updating — specifically confirm it has:
    - `draw(svg, config)` — draws all 4 sides
    - `updatePins(selectedId, filterType, filterFn)` — handles all 4 visual states
 
    If either is missing or broken, rewrite `qfp-renderer.js` in full.
 
-5. **Do NOT modify** these files unless there is a specific bug to fix:
+6. **Do NOT modify** these files unless there is a specific bug to fix:
    - `ic-explorer-core.css`
    - `ic-explorer-base.js`
    - `renderer-factory.js`
    - `dip-renderer.js`
    - `custom-board-renderer.js`
 
-6. **Output format**: provide the complete file(s) ready to drop into the repo.
+7. **Output format**: provide the complete file(s) ready to drop into the repo.
    Name files exactly as: `configs/CHIPNAME-config.js`
    Use lowercase-hyphenated chip names: `pic16f877a`, `stm32f103c8t6`, `attiny85`, etc.
 
-7. **Flag these issues** if you spot them:
+8. **Flag these issues** if you spot them:
    - Filename vs. chip identity mismatch (e.g. file named F401 but contains F103 data)
    - Hardcoded API keys in any file
    - Pin count mismatch between `pinCount` field and actual `pins` array length
    - Pins array not sorted in the correct side order for the package type
+   - Custom type used in `pins[].type` or `pins[].funcs` but not defined in `customTypes`
+   - `filterButtons` defined but a pin's `funcs` value has no matching button entry
+     (that pin will never be highlightable via the filter UI)
 
 ---
 
@@ -354,6 +508,8 @@ When writing a new config, match the style of `pic16f877a-config.js` exactly:
 - Write full-sentence notes (not abbreviations)
 - Use the same colour values from the palette above
 - List `funcs` from most-primary to least-primary
+- For specialist chips, always define `customTypes` before `filterButtons`,
+  and always define `filterButtons` before `pins`
 
 The gold standard for pin highlighting behaviour is the PIC16F877A page.
 All new renderers must produce identical visual behaviour to that page.
