@@ -8,7 +8,7 @@ window.IC_CONFIG = {
   // ── IDENTITY ──────────────────────────────────────────────────
   partName:     '74HC4051',
   partMPN:      '74HC4051D',
-  manufacturer: 'NXP / Texas Instruments',
+  manufacturer: 'NXP  Texas Instruments',
   package:      'DIP-16',
   pinCount:     16,
 
@@ -48,10 +48,10 @@ window.IC_CONFIG = {
   // The engine checks for this array first. If present it uses ONLY
   // these buttons instead of its built-in GPIO/PWM/ADC/... list.
   filterButtons: [
-    { type: 'CH',  label: 'Ch(Y0–Y7)', color: '#f4a261', fontSize: '13px'},
+    { type: 'CH',  label: 'Ch(Y0–Y7)', color: '#f4a261', fontSize: '14px'},
     { type: 'COM', label: 'COM(Z)',          color: '#c8a850' },
-    { type: 'SEL', label: 'Sel(A/B/C)',   color: '#50c8a0', fontSize: '11px'},
-    { type: 'EN',  label: 'Enable(/E)',      color: '#ff9944', fontSize: '12px'},
+    { type: 'SEL', label: 'Sel(A/B/C)',   color: '#50c8a0', fontSize: '12px'},
+    { type: 'EN',  label: 'Enable(/E)',      color: '#ff9944', fontSize: '13px'},
     { type: 'VEE', label: 'VEE',              color: '#c078ff' },
     { type: 'PWR', label: 'VCC',              color: '#ff6b6b' },
     { type: 'GND', label: 'GND',              color: '#a8a8a8' },
