@@ -1,3 +1,4 @@
+// configs/l293d-config.js
 window.IC_CONFIG = {
 
   // ── IDENTITY ──────────────────────────────────────────────────
@@ -23,19 +24,21 @@ window.IC_CONFIG = {
   },
 
   // ── CUSTOM TYPE COLOURS (motor driver specific) ───────────────
+  // Using unique names to avoid conflicts with built-in types
   customTypes: {
-    ENABLE:  { c: '#50c8a0', bg: 'rgba(80,200,160,0.12)', bd: 'rgba(80,200,160,0.32)' },
-    INPUT:   { c: '#4a9aee', bg: 'rgba(74,154,238,0.12)', bd: 'rgba(74,154,238,0.35)' },
-    OUTPUT:  { c: '#78c878', bg: 'rgba(120,200,120,0.12)', bd: 'rgba(120,200,120,0.35)' },
+    MOTOR_EN:   { c: '#50c8a0', bg: 'rgba(80,200,160,0.12)', bd: 'rgba(80,200,160,0.32)' },
+    MOTOR_IN:   { c: '#4a9aee', bg: 'rgba(74,154,238,0.12)', bd: 'rgba(74,154,238,0.35)' },
+    MOTOR_OUT:  { c: '#78c878', bg: 'rgba(120,200,120,0.12)', bd: 'rgba(120,200,120,0.35)' },
   },
 
   // ── FILTER BUTTONS (motor driver specific) ────────────────────
+  // Only these buttons will appear - no default GPIO/ADC/etc buttons
   filterButtons: [
-    { type: 'ENABLE', label: 'Enable (PWM)', color: '#50c8a0' },
-    { type: 'INPUT',  label: 'Input',        color: '#4a9aee' },
-    { type: 'OUTPUT', label: 'Output',       color: '#78c878' },
-    { type: 'PWR',    label: 'Power (VCC)',  color: '#ff6b6b' },
-    { type: 'GND',    label: 'Ground',       color: '#a8a8a8' },
+    { type: 'MOTOR_EN',  label: 'Enable (PWM)', color: '#50c8a0' },
+    { type: 'MOTOR_IN',  label: 'Input',        color: '#4a9aee' },
+    { type: 'MOTOR_OUT', label: 'Output',       color: '#78c878' },
+    { type: 'PWR',       label: 'Power (VCC)',  color: '#ff6b6b' },
+    { type: 'GND',       label: 'Ground',       color: '#a8a8a8' },
   ],
 
   // ── PINS ──────────────────────────────────────────────────────
@@ -50,8 +53,8 @@ window.IC_CONFIG = {
       id:    'EN1',
       lbl:   'EN1,2',
       name:  'Enable 1,2 (Motor A)',
-      type:  'ENABLE',
-      funcs: ['ENABLE'],
+      type:  'MOTOR_EN',
+      funcs: ['MOTOR_EN'],
       volt:  '5V',
       curr:  'N/A',
       note:  'Enable pin for channels 1 and 2 (Motor A). Logic HIGH activates both output channels; logic LOW disables them. Can be driven with PWM to control motor speed.'
@@ -61,8 +64,8 @@ window.IC_CONFIG = {
       id:    'IN1',
       lbl:   'IN1',
       name:  'Input 1 (Motor A)',
-      type:  'INPUT',
-      funcs: ['INPUT'],
+      type:  'MOTOR_IN',
+      funcs: ['MOTOR_IN'],
       volt:  '5V',
       curr:  'N/A',
       note:  'Logic input for channel 1 (Motor A, terminal 1). Accepts TTL/CMOS logic levels. Set HIGH to drive Output 1 high, LOW to drive Output 1 low.'
@@ -72,8 +75,8 @@ window.IC_CONFIG = {
       id:    'OUT1',
       lbl:   'OUT1',
       name:  'Output 1 (Motor A)',
-      type:  'OUTPUT',
-      funcs: ['OUTPUT'],
+      type:  'MOTOR_OUT',
+      funcs: ['MOTOR_OUT'],
       volt:  '4.5–36V',
       curr:  '600mA',
       note:  'Motor output for channel 1 (Motor A, terminal 1). Connect to one terminal of Motor A. Output state follows IN1 when EN1,2 is HIGH. Maximum continuous current 600 mA, peak 1.2 A.'
@@ -105,8 +108,8 @@ window.IC_CONFIG = {
       id:    'OUT2',
       lbl:   'OUT2',
       name:  'Output 2 (Motor A)',
-      type:  'OUTPUT',
-      funcs: ['OUTPUT'],
+      type:  'MOTOR_OUT',
+      funcs: ['MOTOR_OUT'],
       volt:  '4.5–36V',
       curr:  '600mA',
       note:  'Motor output for channel 2 (Motor A, terminal 2). Connect to the other terminal of Motor A. Together with OUT1, forms the full H-bridge for Motor A. Maximum continuous current 600 mA, peak 1.2 A.'
@@ -116,8 +119,8 @@ window.IC_CONFIG = {
       id:    'IN2',
       lbl:   'IN2',
       name:  'Input 2 (Motor A)',
-      type:  'INPUT',
-      funcs: ['INPUT'],
+      type:  'MOTOR_IN',
+      funcs: ['MOTOR_IN'],
       volt:  '5V',
       curr:  'N/A',
       note:  'Logic input for channel 2 (Motor A, terminal 2). Accepts TTL/CMOS logic levels. Set IN1=HIGH, IN2=LOW for forward; IN1=LOW, IN2=HIGH for reverse; both same state for brake/stop.'
@@ -153,8 +156,8 @@ window.IC_CONFIG = {
       id:    'IN4',
       lbl:   'IN4',
       name:  'Input 4 (Motor B)',
-      type:  'INPUT',
-      funcs: ['INPUT'],
+      type:  'MOTOR_IN',
+      funcs: ['MOTOR_IN'],
       volt:  '5V',
       curr:  'N/A',
       note:  'Logic input for channel 4 (Motor B, terminal 2). Accepts TTL/CMOS logic levels. Set IN3=HIGH, IN4=LOW for forward; IN3=LOW, IN4=HIGH for reverse; both same state for brake/stop.',
@@ -165,8 +168,8 @@ window.IC_CONFIG = {
       id:    'OUT4',
       lbl:   'OUT4',
       name:  'Output 4 (Motor B)',
-      type:  'OUTPUT',
-      funcs: ['OUTPUT'],
+      type:  'MOTOR_OUT',
+      funcs: ['MOTOR_OUT'],
       volt:  '4.5–36V',
       curr:  '600mA',
       note:  'Motor output for channel 4 (Motor B, terminal 2). Connect to the other terminal of Motor B. Together with OUT3, forms the full H-bridge for Motor B. Maximum continuous current 600 mA, peak 1.2 A.',
@@ -201,8 +204,8 @@ window.IC_CONFIG = {
       id:    'OUT3',
       lbl:   'OUT3',
       name:  'Output 3 (Motor B)',
-      type:  'OUTPUT',
-      funcs: ['OUTPUT'],
+      type:  'MOTOR_OUT',
+      funcs: ['MOTOR_OUT'],
       volt:  '4.5–36V',
       curr:  '600mA',
       note:  'Motor output for channel 3 (Motor B, terminal 1). Connect to one terminal of Motor B. Output state follows IN3 when EN3,4 is HIGH. Maximum continuous current 600 mA, peak 1.2 A.',
@@ -213,8 +216,8 @@ window.IC_CONFIG = {
       id:    'IN3',
       lbl:   'IN3',
       name:  'Input 3 (Motor B)',
-      type:  'INPUT',
-      funcs: ['INPUT'],
+      type:  'MOTOR_IN',
+      funcs: ['MOTOR_IN'],
       volt:  '5V',
       curr:  'N/A',
       note:  'Logic input for channel 3 (Motor B, terminal 1). Accepts TTL/CMOS logic levels. Set HIGH to drive Output 3 high, LOW to drive Output 3 low.',
@@ -225,8 +228,8 @@ window.IC_CONFIG = {
       id:    'EN3',
       lbl:   'EN3,4',
       name:  'Enable 3,4 (Motor B)',
-      type:  'ENABLE',
-      funcs: ['ENABLE'],
+      type:  'MOTOR_EN',
+      funcs: ['MOTOR_EN'],
       volt:  '5V',
       curr:  'N/A',
       note:  'Enable pin for channels 3 and 4 (Motor B). Logic HIGH activates both output channels; logic LOW disables them. Can be driven with PWM to control Motor B speed independently of Motor A.',
