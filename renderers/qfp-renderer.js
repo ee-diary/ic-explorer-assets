@@ -191,10 +191,11 @@ window.QFPRenderer = {
         funcs: pin.funcs
       };
       
-      // Click handler
+      // Click handler - dispatches event for ic-explorer-base.js
       pinRect.addEventListener('click', (function(pinData) {
         return function(evt) {
           evt.stopPropagation();
+          // This is the key event that ic-explorer-base.js listens for
           var event = new CustomEvent('pinSelected', {
             detail: { pinId: pinData.id }
           });
@@ -335,9 +336,7 @@ window.QFPRenderer = {
     var colorMap = {
       'PWR': '#ff6b6b', 'GND': '#a8a8a8', 'I2C': '#9898d8',
       'INT': '#c8a850', 'AUX': '#50c8c8', 'CLK': '#7090a8',
-      'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8',
-      'MOTOR_EN': '#50c8a0', 'MOTOR_IN': '#4a9aee', 'MOTOR_OUT': '#78c878',
-      'INPUT': '#4a9aee', 'OUTPUT': '#78c878', 'ENABLE': '#50c8a0'
+      'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8'
     };
     
     if (this.currentConfig && this.currentConfig.customTypes && this.currentConfig.customTypes[type]) {
@@ -387,6 +386,8 @@ window.QFPRenderer = {
         pinElem.element.setAttribute('opacity', '0.08');
         if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', pinColor);
         if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', pinColor);
+        if (pinElem.numLabel) pinElem.numLabel.setAttribute('opacity', '0.08');
+        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('opacity', '0.08');
       } else {
         pinElem.element.setAttribute('fill', 'rgba(120,200,120,0.12)');
         pinElem.element.setAttribute('stroke', pinColor);
@@ -395,6 +396,8 @@ window.QFPRenderer = {
         pinElem.element.setAttribute('opacity', '1');
         if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', pinColor);
         if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', pinColor);
+        if (pinElem.numLabel) pinElem.numLabel.setAttribute('opacity', '1');
+        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('opacity', '1');
       }
     }
   }
