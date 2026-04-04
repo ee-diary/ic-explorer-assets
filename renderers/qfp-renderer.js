@@ -182,20 +182,26 @@ window.QFPRenderer = {
       pinRect.setAttribute('ry', '2');
       pinRect.setAttribute('data-pin-id', pin.id);
       pinRect.setAttribute('data-pin-num', pin.num);
+      pinRect.setAttribute('data-pin-type', pin.type);
+      pinRect.setAttribute('data-pin-funcs', JSON.stringify(pin.funcs));
       
       // Store pin data
       pinRect.pinData = {
         id: pin.id,
         num: pin.num,
         type: pin.type,
-        funcs: pin.funcs
+        funcs: pin.funcs,
+        name: pin.name,
+        volt: pin.volt,
+        curr: pin.curr,
+        note: pin.note
       };
       
-      // Click handler - dispatches event for ic-explorer-base.js
+      // Click handler
       pinRect.addEventListener('click', (function(pinData) {
         return function(evt) {
           evt.stopPropagation();
-          // This is the key event that ic-explorer-base.js listens for
+          // Dispatch event for ic-explorer-base.js
           var event = new CustomEvent('pinSelected', {
             detail: { pinId: pinData.id }
           });
@@ -204,20 +210,23 @@ window.QFPRenderer = {
       })(pinRect.pinData));
       
       // Hover handlers
-      pinRect.addEventListener('mouseenter', (function(rect, color) {
+      pinRect.addEventListener('mouseenter', (function(rect) {
         return function() {
           rect.setAttribute('filter', 'url(#pinGlow)');
-          rect.setAttribute('stroke-width', '2.5');
+          rect.setAttribute('stroke-width', '3');
           var event = new CustomEvent('pinHover', {
             detail: { pinId: rect.pinData.id, pinNum: rect.pinData.num }
           });
           document.dispatchEvent(event);
         };
-      })(pinRect, pinColor));
+      })(pinRect));
       
       pinRect.addEventListener('mouseleave', (function(rect) {
         return function() {
-          rect.setAttribute('filter', 'none');
+          // Don't remove filter if selected
+          if (rect.pinData.id !== self.currentSelectedId) {
+            rect.setAttribute('filter', 'none');
+          }
           rect.setAttribute('stroke-width', '1.5');
           var event = new CustomEvent('pinLeave');
           document.dispatchEvent(event);
@@ -330,13 +339,18 @@ window.QFPRenderer = {
     pkgText.setAttribute('font-family', 'monospace');
     pkgText.textContent = config.package || '';
     mainGroup.appendChild(pkgText);
+    
+    // Store current selected ID
+    this.currentSelectedId = null;
   },
   
   getPinColor: function(type) {
     var colorMap = {
       'PWR': '#ff6b6b', 'GND': '#a8a8a8', 'I2C': '#9898d8',
       'INT': '#c8a850', 'AUX': '#50c8c8', 'CLK': '#7090a8',
-      'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8'
+      'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8',
+      'MOTOR_EN': '#50c8a0', 'MOTOR_IN': '#4a9aee', 'MOTOR_OUT': '#78c878',
+      'INPUT': '#4a9aee', 'OUTPUT': '#78c878', 'ENABLE': '#50c8a0'
     };
     
     if (this.currentConfig && this.currentConfig.customTypes && this.currentConfig.customTypes[type]) {
@@ -347,6 +361,9 @@ window.QFPRenderer = {
   },
   
   updatePins: function(selectedId, filterType, filterFn) {
+    // Store selected ID
+    this.currentSelectedId = selectedId;
+    
     if (!this.currentPinElements) return;
     
     for (var i = 0; i < this.currentPinElements.length; i++) {
@@ -363,41 +380,65 @@ window.QFPRenderer = {
       var pinColor = this.getPinColor(pinElem.type);
       
       if (isSelected) {
+        // Selected pin - solid color with glow
         pinElem.element.setAttribute('fill', pinColor);
         pinElem.element.setAttribute('stroke', pinColor);
         pinElem.element.setAttribute('stroke-width', '2');
         pinElem.element.setAttribute('filter', 'url(#pinGlow)');
         pinElem.element.setAttribute('opacity', '1');
-        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', '#060c1a');
-        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', '#060c1a');
+        if (pinElem.numLabel) {
+          pinElem.numLabel.setAttribute('fill', '#060c1a');
+          pinElem.numLabel.setAttribute('opacity', '1');
+        }
+        if (pinElem.lblLabel) {
+          pinElem.lblLabel.setAttribute('fill', '#060c1a');
+          pinElem.lblLabel.setAttribute('opacity', '1');
+        }
       } else if (isFilterMatch) {
+        // Filter matched - solid color, no glow
         pinElem.element.setAttribute('fill', pinColor);
         pinElem.element.setAttribute('stroke', pinColor);
         pinElem.element.setAttribute('stroke-width', '2');
         pinElem.element.setAttribute('filter', 'none');
         pinElem.element.setAttribute('opacity', '1');
-        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', '#060c1a');
-        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', '#060c1a');
+        if (pinElem.numLabel) {
+          pinElem.numLabel.setAttribute('fill', '#060c1a');
+          pinElem.numLabel.setAttribute('opacity', '1');
+        }
+        if (pinElem.lblLabel) {
+          pinElem.lblLabel.setAttribute('fill', '#060c1a');
+          pinElem.lblLabel.setAttribute('opacity', '1');
+        }
       } else if (filterType && !isFilterMatch) {
+        // Filter active but pin doesn't match - dimmed
         pinElem.element.setAttribute('fill', 'rgba(120,200,120,0.12)');
         pinElem.element.setAttribute('stroke', pinColor);
         pinElem.element.setAttribute('stroke-width', '1');
         pinElem.element.setAttribute('filter', 'none');
         pinElem.element.setAttribute('opacity', '0.08');
-        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', pinColor);
-        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', pinColor);
-        if (pinElem.numLabel) pinElem.numLabel.setAttribute('opacity', '0.08');
-        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('opacity', '0.08');
+        if (pinElem.numLabel) {
+          pinElem.numLabel.setAttribute('fill', pinColor);
+          pinElem.numLabel.setAttribute('opacity', '0.08');
+        }
+        if (pinElem.lblLabel) {
+          pinElem.lblLabel.setAttribute('fill', pinColor);
+          pinElem.lblLabel.setAttribute('opacity', '0.08');
+        }
       } else {
+        // Default state
         pinElem.element.setAttribute('fill', 'rgba(120,200,120,0.12)');
         pinElem.element.setAttribute('stroke', pinColor);
         pinElem.element.setAttribute('stroke-width', '1');
         pinElem.element.setAttribute('filter', 'none');
         pinElem.element.setAttribute('opacity', '1');
-        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', pinColor);
-        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', pinColor);
-        if (pinElem.numLabel) pinElem.numLabel.setAttribute('opacity', '1');
-        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('opacity', '1');
+        if (pinElem.numLabel) {
+          pinElem.numLabel.setAttribute('fill', pinColor);
+          pinElem.numLabel.setAttribute('opacity', '1');
+        }
+        if (pinElem.lblLabel) {
+          pinElem.lblLabel.setAttribute('fill', pinColor);
+          pinElem.lblLabel.setAttribute('opacity', '1');
+        }
       }
     }
   }
