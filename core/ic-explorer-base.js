@@ -61,14 +61,16 @@ var ICExplorer = (function() {
       var filters = cfg.filterButtons.map(function(fb) {
         var key = fb.type;
         return {
-          lbl: fb.label,
-          key: key,
-          // Generic matcher: check funcs array first, then fall back to type field
+          lbl:      fb.label,
+          key:      key,
+          fontSize: fb.fontSize || null,   // ← add this
           fn: function(p) {
             if (p.funcs && p.funcs.indexOf(key) >= 0) return true;
             if (p.type === key) return true;
             return false;
           }
+        };
+      });
         };
       });
       var fclr = {};
