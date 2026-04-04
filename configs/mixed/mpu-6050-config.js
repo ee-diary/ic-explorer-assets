@@ -25,26 +25,29 @@ window.IC_CONFIG = {
 },
 
   // ── CUSTOM TYPE COLOURS ─────────────────────────────────────
-  customTypes: {
-    I2C:     { c: '#9898d8', bg: 'rgba(152,152,216,0.12)', bd: 'rgba(152,152,216,0.35)' },
-    INT:     { c: '#c8a850', bg: 'rgba(200,168,80,0.12)',  bd: 'rgba(200,168,80,0.35)' },
-    AUX:     { c: '#50c8c8', bg: 'rgba(80,200,200,0.12)',  bd: 'rgba(80,200,200,0.32)' },
-    CLK:     { c: '#7090a8', bg: 'rgba(112,144,168,0.12)', bd: 'rgba(112,144,168,0.35)' },
-    CPOUT:   { c: '#c078ff', bg: 'rgba(192,120,255,0.11)', bd: 'rgba(192,120,255,0.28)' },
-    RESERVED: { c: '#a8a8a8', bg: 'rgba(168,168,168,0.08)', bd: 'rgba(168,168,168,0.20)' },
-  },
+customTypes: {
+  PWR:     { c: '#ff6b6b', bg: 'rgba(255,107,107,0.12)', bd: 'rgba(255,107,107,0.35)' },
+  GND:     { c: '#a8a8a8', bg: 'rgba(168,168,168,0.12)', bd: 'rgba(168,168,168,0.35)' },
+  I2C:     { c: '#9898d8', bg: 'rgba(152,152,216,0.12)', bd: 'rgba(152,152,216,0.35)' },
+  INT:     { c: '#c8a850', bg: 'rgba(200,168,80,0.12)',  bd: 'rgba(200,168,80,0.35)' },
+  AUX:     { c: '#50c8c8', bg: 'rgba(80,200,200,0.12)',  bd: 'rgba(80,200,200,0.32)' },
+  CLK:     { c: '#7090a8', bg: 'rgba(112,144,168,0.12)', bd: 'rgba(112,144,168,0.35)' },
+  CPOUT:   { c: '#c078ff', bg: 'rgba(192,120,255,0.11)', bd: 'rgba(192,120,255,0.28)' },
+  RESERVED: { c: '#a8a8a8', bg: 'rgba(168,168,168,0.08)', bd: 'rgba(168,168,168,0.20)' },
+},
 
   // ── FILTER BUTTONS ──────────────────────────────────────────
-  filterButtons: [
-    { type: 'PWR',      label: 'Power (VDD/VLOGIC)', color: '#ff6b6b' },
-    { type: 'GND',      label: 'Ground',             color: '#a8a8a8' },
-    { type: 'I2C',      label: 'I2C Interface',      color: '#9898d8' },
-    { type: 'INT',      label: 'Interrupt',          color: '#c8a850' },
-    { type: 'AUX',      label: 'Auxiliary I2C',      color: '#50c8c8' },
-    { type: 'CLK',      label: 'Clock',              color: '#7090a8' },
-    { type: 'CPOUT',    label: 'Charge Pump',        color: '#c078ff' },
-    { type: 'RESERVED', label: 'Reserved',           color: '#a8a8a8' },
-  ],
+// MPU6050 CONFIG - Replace your filterButtons section with this:
+filterButtons: [
+  { type: 'PWR', label: 'Power (VDD/VLOGIC)', color: '#ff6b6b' },
+  { type: 'GND', label: 'Ground', color: '#a8a8a8' },
+  { type: 'I2C', label: 'I2C Interface', color: '#9898d8' },
+  { type: 'INT', label: 'Interrupt', color: '#c8a850' },
+  { type: 'AUX', label: 'Auxiliary I2C', color: '#50c8c8' },
+  { type: 'CLK', label: 'Clock', color: '#7090a8' },
+  { type: 'CPOUT', label: 'Charge Pump', color: '#c078ff' },
+  { type: 'RESERVED', label: 'Reserved', color: '#a8a8a8' },
+],
 
   // ── PINS (QFN-24) ──────────────────────────────────────────
   pins: [
