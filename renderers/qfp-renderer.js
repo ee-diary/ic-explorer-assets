@@ -32,7 +32,7 @@ window.QFPRenderer = {
     var pinLength = qfp.pinLength || 28;
     var pinWidth = qfp.pinWidth || 20;
     
-    // NEW: Config-driven positioning with defaults matching original hardcoded behavior
+    // Config-driven positioning with defaults matching original hardcoded behavior
     var pinStartOffset = (qfp.pinStartOffset !== undefined) ? qfp.pinStartOffset : 20;
     var pinEndOffset = (qfp.pinEndOffset !== undefined) ? qfp.pinEndOffset : 20;
     var pinGap = (qfp.pinGap !== undefined) ? qfp.pinGap : 2;
@@ -41,9 +41,15 @@ window.QFPRenderer = {
     var availableSpace = bodySize - (pinStartOffset + pinEndOffset);
     var spacing = availableSpace / (pinsPerSide - 1);
     
-    // Calculate pin dimensions
-    var actualPinWidth = pinWidth;
-    var actualPinGap = pinGap;
+    // CRITICAL: Set up SVG viewBox to center the content
+    // Calculate total bounds including pins
+    var totalWidth = bodySize + (pinLength * 2) + 100;
+    var totalHeight = bodySize + (pinLength * 2) + 100;
+    
+    // Set viewBox on the SVG element to center everything
+    svg.setAttribute('viewBox', (-totalWidth/2) + ' ' + (-totalHeight/2) + ' ' + totalWidth + ' ' + totalHeight);
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', '100%');
     
     // Clear previous content
     while (svg.firstChild) {
@@ -80,7 +86,11 @@ window.QFPRenderer = {
     
     svg.appendChild(defs);
     
-    // Draw IC body (center at 0,0)
+    // Create a group to center all content
+    var mainGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    svg.appendChild(mainGroup);
+    
+    // Draw IC body (centered at 0,0)
     var body = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     body.setAttribute('x', -bodySize/2);
     body.setAttribute('y', -bodySize/2);
@@ -91,7 +101,7 @@ window.QFPRenderer = {
     body.setAttribute('fill', '#1a1a2e');
     body.setAttribute('stroke', '#2a2a3e');
     body.setAttribute('stroke-width', '2');
-    svg.appendChild(body);
+    mainGroup.appendChild(body);
     
     // Draw orientation dot (pin 1 indicator)
     var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -99,7 +109,7 @@ window.QFPRenderer = {
     dot.setAttribute('cy', -bodySize/2 + 15);
     dot.setAttribute('r', '6');
     dot.setAttribute('fill', '#ff6b6b');
-    svg.appendChild(dot);
+    mainGroup.appendChild(dot);
     
     // Store pin elements for later updates
     this.currentPinElements = [];
@@ -181,6 +191,7 @@ window.QFPRenderer = {
       var pos = pinPositions[i];
       var pin = pins[i];
       var pinColor = getPinColor(pin.type, pin.funcs, false, false);
+      var actualPinWidth = pinWidth;
       
       var pinRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       
@@ -207,16 +218,16 @@ window.QFPRenderer = {
       pinRect.setAttribute('data-pin-funcs', JSON.stringify(pin.funcs));
       
       // Add hover/click handlers
-      pinRect.addEventListener('mouseenter', function(evt, pinId, pinNum) {
+      pinRect.addEventListener('mouseenter', (function(pinId, pinNum) {
         return function() { self.onPinHover(pinId, pinNum); };
-      }(null, pin.id, pin.num));
+      })(pin.id, pin.num));
       
       pinRect.addEventListener('mouseleave', function() { self.onPinLeave(); });
-      pinRect.addEventListener('click', function(evt, pinId) {
+      pinRect.addEventListener('click', (function(pinId) {
         return function() { self.onPinClick(pinId); };
-      }(null, pin.id));
+      })(pin.id));
       
-      svg.appendChild(pinRect);
+      mainGroup.appendChild(pinRect);
       
       // Add pin number label
       var numLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -247,7 +258,7 @@ window.QFPRenderer = {
       numLabel.setAttribute('font-family', 'monospace');
       numLabel.setAttribute('font-weight', 'bold');
       numLabel.textContent = pin.num;
-      svg.appendChild(numLabel);
+      mainGroup.appendChild(numLabel);
       
       // Add pin label (short name on IC body)
       if (pin.lbl && pin.lbl.length <= 6) {
@@ -278,7 +289,7 @@ window.QFPRenderer = {
         lblLabel.setAttribute('font-size', '9');
         lblLabel.setAttribute('font-family', 'monospace');
         lblLabel.textContent = pin.lbl;
-        svg.appendChild(lblLabel);
+        mainGroup.appendChild(lblLabel);
       }
       
       this.currentPinElements.push({
@@ -304,7 +315,7 @@ window.QFPRenderer = {
     partText.setAttribute('font-family', 'Arial, sans-serif');
     partText.setAttribute('font-weight', 'bold');
     partText.textContent = config.partName || 'IC';
-    svg.appendChild(partText);
+    mainGroup.appendChild(partText);
     
     // Add package info
     var pkgText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -315,7 +326,7 @@ window.QFPRenderer = {
     pkgText.setAttribute('font-size', '10');
     pkgText.setAttribute('font-family', 'monospace');
     pkgText.textContent = config.package || '';
-    svg.appendChild(pkgText);
+    mainGroup.appendChild(pkgText);
   },
   
   /**
