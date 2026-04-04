@@ -16,7 +16,7 @@ window.IC_CONFIG = {
   // ── LAYOUT HINT (DIP) ─────────────────────────────────────────
   dipConfig: {
     pinsPerSide:  8,
-    bodyX: 122, bodyY: 25, bodyW: 260, bodyH: 380,
+    bodyX: 122, bodyY: 25, bodyW: 200, bodyH: 380,
     pinLength: 34, pinWidthHalf: 16,
     notchSize: 8, notchX: 14, notchY: 14,
     textSizes: { mfr: 14, part: 24, pkg: 16, pinCount: 12 },
