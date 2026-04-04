@@ -25,7 +25,7 @@ window.QFPRenderer = {
     var offset      = qfp.pinOffset   || 10;
 
     // Evenly space pins across each side
-    var usable  = bodySize - pinWidth;
+    var usable  = bodySize - (offset * 2) - pinWidth;
     var spacing = pinsPerSide > 1 ? usable / (pinsPerSide - 1) : 0;
 
     // SVG viewport
