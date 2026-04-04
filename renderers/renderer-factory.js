@@ -15,8 +15,8 @@ var RendererFactory = {
     // DIP packages
     if (pkg.indexOf('DIP') >= 0) return 'dip';
     
-    // QFP/LQFP/TQFP packages
-    if (pkg.indexOf('QFP') >= 0 || pkg.indexOf('LQFP') >= 0 || pkg.indexOf('TQFP') >= 0) {
+    // QFP/LQFP/TQFP/QFN packages (all 4-sided surface mount packages)
+    if (pkg.indexOf('QFP') >= 0 || pkg.indexOf('LQFP') >= 0 || pkg.indexOf('TQFP') >= 0 || pkg.indexOf('QFN') >= 0) {
       return 'qfp';
     }
     
@@ -27,8 +27,8 @@ var RendererFactory = {
   getRenderer: function(packageName, partName) {
     var type = this.getPackageType(packageName, partName);
 
-  // Teensy 4.1
-   if (partName && partName.toLowerCase().indexOf('teensy 4.1') >= 0) {
+    // Teensy 4.1
+    if (partName && partName.toLowerCase().indexOf('teensy 4.1') >= 0) {
       return window.Teensy41Renderer;
     }
     
