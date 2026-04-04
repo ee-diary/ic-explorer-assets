@@ -167,7 +167,7 @@ window.QFPRenderer = {
       var pin = pins[i];
       
       // Get pin color based on type
-      var pinColor = this.getPinColor(pin.type, pin.funcs, false, false);
+      var pinColor = this.getPinColor(pin.type);
       
       var pinRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       
@@ -194,7 +194,7 @@ window.QFPRenderer = {
         pinRect.setAttribute('height', pos.height);
       }
       
-      pinRect.setAttribute('fill', this.getFillColor(pin.type, config, false, false));
+      pinRect.setAttribute('fill', this.getFillColor(pin.type, false, false));
       pinRect.setAttribute('stroke', pinColor);
       pinRect.setAttribute('stroke-width', '1.5');
       pinRect.setAttribute('rx', '2');
@@ -204,37 +204,69 @@ window.QFPRenderer = {
       pinRect.setAttribute('data-pin-type', pin.type);
       pinRect.setAttribute('data-pin-funcs', JSON.stringify(pin.funcs));
       
-      // Store pin data on the element for easy access
+      // Store pin data on the element
       pinRect.pinData = {
         id: pin.id,
         num: pin.num,
         type: pin.type,
-        funcs: pin.funcs
+        funcs: pin.funcs,
+        name: pin.name,
+        volt: pin.volt,
+        curr: pin.curr,
+        note: pin.note
       };
       
-      // Add hover/click handlers - FIXED BINDING
-      pinRect.addEventListener('mouseenter', (function(pinId, pinNum, pinRect) {
-        return function() { 
-          self.onPinHover(pinId, pinNum);
-          // Highlight this pin on hover
+      // Add click handler - CRITICAL for showing info
+      pinRect.addEventListener('click', (function(pinData) {
+        return function(evt) {
+          evt.stopPropagation();
+          // Dispatch event that ic-explorer-base.js listens for
+          var event = new CustomEvent('pinSelected', { 
+            detail: { 
+              pinId: pinData.id,
+              pinNum: pinData.num,
+              pinName: pinData.name,
+              pinType: pinData.type,
+              pinFuncs: pinData.funcs,
+              pinVolt: pinData.volt,
+              pinCurr: pinData.curr,
+              pinNote: pinData.note
+            } 
+          });
+          document.dispatchEvent(event);
+        };
+      })(pinRect.pinData));
+      
+      // Add hover handlers
+      pinRect.addEventListener('mouseenter', (function(pinRect, pinColor) {
+        return function() {
           pinRect.setAttribute('filter', 'url(#pinGlow)');
           pinRect.setAttribute('stroke-width', '3');
+          // Dispatch hover event for tooltip
+          var event = new CustomEvent('pinHover', { 
+            detail: { 
+              pinId: pinRect.pinData.id,
+              pinNum: pinRect.pinData.num 
+            } 
+          });
+          document.dispatchEvent(event);
         };
-      })(pin.id, pin.num, pinRect));
+      })(pinRect, pinColor));
       
       pinRect.addEventListener('mouseleave', (function(pinRect) {
-        return function() { 
-          self.onPinLeave();
+        return function() {
           // Restore based on current selection/filter state
-          self.updatePins(self.currentSelectedId, self.currentFilterType, self.currentFilterFn);
+          if (self.currentSelectedId === pinRect.pinData.id) {
+            pinRect.setAttribute('filter', 'url(#pinGlow)');
+            pinRect.setAttribute('stroke-width', '2');
+          } else {
+            pinRect.setAttribute('filter', 'none');
+            pinRect.setAttribute('stroke-width', '1.5');
+          }
+          var event = new CustomEvent('pinLeave');
+          document.dispatchEvent(event);
         };
       })(pinRect));
-      
-      pinRect.addEventListener('click', (function(pinId) {
-        return function() { 
-          self.onPinClick(pinId);
-        };
-      })(pin.id));
       
       mainGroup.appendChild(pinRect);
       
@@ -347,24 +379,14 @@ window.QFPRenderer = {
     pkgText.setAttribute('font-family', 'monospace');
     pkgText.textContent = config.package || '';
     mainGroup.appendChild(pkgText);
-    
-    // Apply any existing selection/filter after drawing
-    if (this.currentSelectedId || this.currentFilterType) {
-      this.updatePins(this.currentSelectedId, this.currentFilterType, this.currentFilterFn);
-    }
   },
   
   /**
    * Get fill color for a pin based on its state
    */
-  getFillColor: function(type, config, isSelected, isFilterMatch) {
-    var customTypes = config.customTypes || {};
-    
+  getFillColor: function(type, isSelected, isFilterMatch) {
     if (isSelected || isFilterMatch) {
       // Selected or filter matched - solid color
-      if (customTypes[type]) {
-        return customTypes[type].c;
-      }
       var colorMap = {
         'PWR': '#ff6b6b', 'GND': '#a8a8a8', 'I2C': '#9898d8',
         'INT': '#c8a850', 'AUX': '#50c8c8', 'CLK': '#7090a8',
@@ -373,15 +395,13 @@ window.QFPRenderer = {
       return colorMap[type] || '#78c878';
     } else {
       // Default - semi-transparent
-      if (customTypes[type]) {
-        return customTypes[type].bg || 'rgba(120,200,120,0.12)';
-      }
       return 'rgba(120,200,120,0.12)';
     }
   },
   
   /**
    * Update pin appearances based on selection and filter state
+   * Called by ic-explorer-base.js
    */
   updatePins: function(selectedId, filterType, filterFn) {
     var self = this;
@@ -404,8 +424,8 @@ window.QFPRenderer = {
         });
       }
       
-      var pinColor = self.getPinColor(pinElem.type, pinElem.funcs, isSelected, isFilterMatch);
-      var fillColor = self.getFillColor(pinElem.type, self.currentConfig, isSelected, isFilterMatch);
+      var pinColor = self.getPinColor(pinElem.type);
+      var fillColor = self.getFillColor(pinElem.type, isSelected, isFilterMatch);
       
       // Update pin rectangle
       if (isSelected || isFilterMatch) {
@@ -449,11 +469,13 @@ window.QFPRenderer = {
   /**
    * Helper to get pin color
    */
-  getPinColor: function(type, funcs, isSelected, isFilterMatch) {
+  getPinColor: function(type) {
     var colorMap = {
       'PWR': '#ff6b6b', 'GND': '#a8a8a8', 'I2C': '#9898d8',
       'INT': '#c8a850', 'AUX': '#50c8c8', 'CLK': '#7090a8',
-      'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8'
+      'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8',
+      'MOTOR_EN': '#50c8a0', 'MOTOR_IN': '#4a9aee', 'MOTOR_OUT': '#78c878',
+      'INPUT': '#4a9aee', 'OUTPUT': '#78c878'
     };
     
     if (this.currentConfig && this.currentConfig.customTypes && this.currentConfig.customTypes[type]) {
@@ -461,31 +483,6 @@ window.QFPRenderer = {
     }
     
     return colorMap[type] || '#78c878';
-  },
-  
-  /**
-   * Handle pin hover
-   */
-  onPinHover: function(pinId, pinNum) {
-    // Dispatch custom event for tooltip
-    var event = new CustomEvent('pinHover', { detail: { pinId: pinId, pinNum: pinNum } });
-    document.dispatchEvent(event);
-  },
-  
-  /**
-   * Handle pin leave
-   */
-  onPinLeave: function() {
-    var event = new CustomEvent('pinLeave');
-    document.dispatchEvent(event);
-  },
-  
-  /**
-   * Handle pin click
-   */
-  onPinClick: function(pinId) {
-    var event = new CustomEvent('pinClick', { detail: { pinId: pinId } });
-    document.dispatchEvent(event);
   }
 };
 
