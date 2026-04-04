@@ -377,7 +377,8 @@ var ICExplorer = (function() {
       fbDiv.innerHTML = FILTERS.map(function(f) {
         var c = FCLR[f.key] || '#78c878';
         var on = filterType === f.key;
-        return '<button class="aw-fb' + (on ? ' on' : '') + '" data-k="' + f.key + '" style="color:' + c + ';background:' + (on ? '#0d1117' : '#1c2128') + ';border-color:' + (on ? c : 'rgba(255,255,255,.12)') + '">' + f.lbl + '</button>';
+        var fs = f.fontSize ? 'font-size:' + f.fontSize + ';' : '';   // ← add this
+        return '<button class="aw-fb' + (on ? ' on' : '') + '" data-k="' + f.key + '" style="color:' + c + ';background:' + (on ? '#0d1117' : '#1c2128') + ';border-color:' + (on ? c : 'rgba(255,255,255,.12)') + ';' + fs + '">' + f.lbl + '</button>';
       }).join('');
       
       document.querySelectorAll('.aw-fb').forEach(function(b) {
