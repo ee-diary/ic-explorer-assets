@@ -22,6 +22,7 @@ window.QFPRenderer = {
     var pinLength   = qfp.pinLength   || 28;
     var pinWidth    = qfp.pinWidth    || 20;
     var pinGap      = qfp.pinGap      || 2;
+    var offset      = qfp.pinOffset   || 10;
 
     // Evenly space pins across each side
     var usable  = bodySize - pinWidth;
@@ -113,22 +114,22 @@ window.QFPRenderer = {
 
     // LEFT — top → bottom
     for (var i = 0; i < pinsPerSide; i++) {
-      var y = -half + (pinWidth / 2) + i * spacing;
+      var y = -half + offset + (pinWidth / 2) + i * spacing;
       pinPositions.push({ side: 'left', cx: -half, cy: y });
     }
     // BOTTOM — left → right
     for (var i = 0; i < pinsPerSide; i++) {
-      var x = -half + (pinWidth / 2) + i * spacing;
+      var x = -half + offset + (pinWidth / 2) + i * spacing;
       pinPositions.push({ side: 'bottom', cx: x, cy: half });
     }
     // RIGHT — bottom → top
     for (var i = 0; i < pinsPerSide; i++) {
-      var y = half - (pinWidth / 2) - i * spacing;
+      var y = half - offset + (pinWidth / 2) - i * spacing;
       pinPositions.push({ side: 'right', cx: half, cy: y });
     }
     // TOP — right → left
     for (var i = 0; i < pinsPerSide; i++) {
-      var x = half - (pinWidth / 2) - i * spacing;
+      var x = half - offset + (pinWidth / 2) - i * spacing;
       pinPositions.push({ side: 'top', cx: x, cy: -half });
     }
 
