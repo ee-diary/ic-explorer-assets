@@ -3,17 +3,10 @@
  */
 
 window.QFPRenderer = {
-  // Store current state for updatePins
   currentSvg: null,
   currentConfig: null,
   currentPinElements: [],
-  currentSelectedId: null,
-  currentFilterType: null,
-  currentFilterFn: null,
   
-  /**
-   * Main draw function - creates the complete QFP package visualization
-   */
   draw: function(svg, config) {
     var self = this;
     this.currentSvg = svg;
@@ -22,21 +15,19 @@ window.QFPRenderer = {
     var qfp = config.qfpConfig || {};
     var pins = config.pins || [];
     
-    // Read configuration with sensible defaults
+    // Configuration with defaults
     var pinsPerSide = qfp.pinsPerSide || Math.ceil(config.pinCount / 4);
     var bodySize = qfp.bodySize || 400;
     var pinLength = qfp.pinLength || 28;
     var pinWidth = qfp.pinWidth || 20;
+    var pinStartOffset = qfp.pinStartOffset !== undefined ? qfp.pinStartOffset : 20;
+    var pinEndOffset = qfp.pinEndOffset !== undefined ? qfp.pinEndOffset : 20;
     
-    // Config-driven positioning
-    var pinStartOffset = (qfp.pinStartOffset !== undefined) ? qfp.pinStartOffset : 20;
-    var pinEndOffset = (qfp.pinEndOffset !== undefined) ? qfp.pinEndOffset : 20;
-    
-    // Calculate available space and spacing between pins
+    // Calculate spacing
     var availableSpace = bodySize - (pinStartOffset + pinEndOffset);
     var spacing = availableSpace / (pinsPerSide - 1);
     
-    // Set up SVG viewBox to center the content
+    // Setup SVG viewBox
     var totalWidth = bodySize + (pinLength * 2) + 100;
     var totalHeight = bodySize + (pinLength * 2) + 100;
     svg.setAttribute('viewBox', (-totalWidth/2) + ' ' + (-totalHeight/2) + ' ' + totalWidth + ' ' + totalHeight);
@@ -48,10 +39,8 @@ window.QFPRenderer = {
       svg.removeChild(svg.firstChild);
     }
     
-    // Add definitions (filters, gradients)
+    // Add glow filter
     var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-    
-    // Glow filter for selected pins
     var filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
     filter.setAttribute('id', 'pinGlow');
     filter.setAttribute('x', '-50%');
@@ -59,26 +48,25 @@ window.QFPRenderer = {
     filter.setAttribute('width', '200%');
     filter.setAttribute('height', '200%');
     
-    var feGaussianBlur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
-    feGaussianBlur.setAttribute('in', 'SourceAlpha');
-    feGaussianBlur.setAttribute('stdDeviation', '3');
-    feGaussianBlur.setAttribute('result', 'blur');
+    var blur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
+    blur.setAttribute('in', 'SourceAlpha');
+    blur.setAttribute('stdDeviation', '3');
+    blur.setAttribute('result', 'blur');
     
-    var feMerge = document.createElementNS('http://www.w3.org/2000/svg', 'feMerge');
-    var feMergeNode1 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
-    feMergeNode1.setAttribute('in', 'blur');
-    var feMergeNode2 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
-    feMergeNode2.setAttribute('in', 'SourceGraphic');
-    feMerge.appendChild(feMergeNode1);
-    feMerge.appendChild(feMergeNode2);
+    var merge = document.createElementNS('http://www.w3.org/2000/svg', 'feMerge');
+    var mergeNode1 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
+    mergeNode1.setAttribute('in', 'blur');
+    var mergeNode2 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
+    mergeNode2.setAttribute('in', 'SourceGraphic');
+    merge.appendChild(mergeNode1);
+    merge.appendChild(mergeNode2);
     
-    filter.appendChild(feGaussianBlur);
-    filter.appendChild(feMerge);
+    filter.appendChild(blur);
+    filter.appendChild(merge);
     defs.appendChild(filter);
-    
     svg.appendChild(defs);
     
-    // Create a group to center all content
+    // Main group
     var mainGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     svg.appendChild(mainGroup);
     
@@ -95,7 +83,7 @@ window.QFPRenderer = {
     body.setAttribute('stroke-width', '2');
     mainGroup.appendChild(body);
     
-    // Draw orientation dot (pin 1 indicator)
+    // Orientation dot (pin 1 indicator)
     var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     dot.setAttribute('cx', -bodySize/2 + 15);
     dot.setAttribute('cy', -bodySize/2 + 15);
@@ -103,13 +91,13 @@ window.QFPRenderer = {
     dot.setAttribute('fill', '#ff6b6b');
     mainGroup.appendChild(dot);
     
-    // Clear and repopulate pin elements
+    // Clear pin elements
     this.currentPinElements = [];
     
-    // Calculate pin positions for each side
+    // Calculate pin positions
     var pinPositions = [];
     
-    // LEFT SIDE (pins 1 to pinsPerSide, top to bottom)
+    // LEFT SIDE (top to bottom)
     for (var i = 0; i < pinsPerSide; i++) {
       var y = -bodySize/2 + pinStartOffset + (i * spacing);
       pinPositions.push({
@@ -117,12 +105,11 @@ window.QFPRenderer = {
         x: -bodySize/2 - pinLength,
         y: y,
         width: pinLength,
-        height: pinWidth,
-        pinIndex: i
+        height: pinWidth
       });
     }
     
-    // BOTTOM SIDE (pins pinsPerSide+1 to 2*pinsPerSide, left to right)
+    // BOTTOM SIDE (left to right)
     for (var i = 0; i < pinsPerSide; i++) {
       var x = -bodySize/2 + pinStartOffset + (i * spacing);
       pinPositions.push({
@@ -130,12 +117,11 @@ window.QFPRenderer = {
         x: x,
         y: bodySize/2,
         width: pinWidth,
-        height: pinLength,
-        pinIndex: pinsPerSide + i
+        height: pinLength
       });
     }
     
-    // RIGHT SIDE (pins 2*pinsPerSide+1 to 3*pinsPerSide, bottom to top)
+    // RIGHT SIDE (bottom to top)
     for (var i = 0; i < pinsPerSide; i++) {
       var y = bodySize/2 - pinStartOffset - (i * spacing);
       pinPositions.push({
@@ -143,12 +129,11 @@ window.QFPRenderer = {
         x: bodySize/2,
         y: y,
         width: pinLength,
-        height: pinWidth,
-        pinIndex: 2 * pinsPerSide + i
+        height: pinWidth
       });
     }
     
-    // TOP SIDE (pins 3*pinsPerSide+1 to 4*pinsPerSide, right to left)
+    // TOP SIDE (right to left)
     for (var i = 0; i < pinsPerSide; i++) {
       var x = bodySize/2 - pinStartOffset - (i * spacing);
       pinPositions.push({
@@ -156,8 +141,7 @@ window.QFPRenderer = {
         x: x,
         y: -bodySize/2 - pinLength,
         width: pinWidth,
-        height: pinLength,
-        pinIndex: 3 * pinsPerSide + i
+        height: pinLength
       });
     }
     
@@ -165,13 +149,10 @@ window.QFPRenderer = {
     for (var i = 0; i < pinPositions.length && i < pins.length; i++) {
       var pos = pinPositions[i];
       var pin = pins[i];
-      
-      // Get pin color based on type
       var pinColor = this.getPinColor(pin.type);
       
       var pinRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       
-      // Position rectangle based on side
       if (pos.side === 'left') {
         pinRect.setAttribute('x', pos.x);
         pinRect.setAttribute('y', pos.y - pos.height/2);
@@ -194,75 +175,49 @@ window.QFPRenderer = {
         pinRect.setAttribute('height', pos.height);
       }
       
-      pinRect.setAttribute('fill', this.getFillColor(pin.type, false, false));
+      pinRect.setAttribute('fill', 'rgba(120,200,120,0.12)');
       pinRect.setAttribute('stroke', pinColor);
       pinRect.setAttribute('stroke-width', '1.5');
       pinRect.setAttribute('rx', '2');
       pinRect.setAttribute('ry', '2');
       pinRect.setAttribute('data-pin-id', pin.id);
       pinRect.setAttribute('data-pin-num', pin.num);
-      pinRect.setAttribute('data-pin-type', pin.type);
-      pinRect.setAttribute('data-pin-funcs', JSON.stringify(pin.funcs));
       
-      // Store pin data on the element
+      // Store pin data
       pinRect.pinData = {
         id: pin.id,
         num: pin.num,
         type: pin.type,
-        funcs: pin.funcs,
-        name: pin.name,
-        volt: pin.volt,
-        curr: pin.curr,
-        note: pin.note
+        funcs: pin.funcs
       };
       
-      // Add click handler - CRITICAL for showing info
+      // Click handler
       pinRect.addEventListener('click', (function(pinData) {
         return function(evt) {
           evt.stopPropagation();
-          // Dispatch event that ic-explorer-base.js listens for
-          var event = new CustomEvent('pinSelected', { 
-            detail: { 
-              pinId: pinData.id,
-              pinNum: pinData.num,
-              pinName: pinData.name,
-              pinType: pinData.type,
-              pinFuncs: pinData.funcs,
-              pinVolt: pinData.volt,
-              pinCurr: pinData.curr,
-              pinNote: pinData.note
-            } 
+          var event = new CustomEvent('pinSelected', {
+            detail: { pinId: pinData.id }
           });
           document.dispatchEvent(event);
         };
       })(pinRect.pinData));
       
-      // Add hover handlers
-      pinRect.addEventListener('mouseenter', (function(pinRect, pinColor) {
+      // Hover handlers
+      pinRect.addEventListener('mouseenter', (function(rect, color) {
         return function() {
-          pinRect.setAttribute('filter', 'url(#pinGlow)');
-          pinRect.setAttribute('stroke-width', '3');
-          // Dispatch hover event for tooltip
-          var event = new CustomEvent('pinHover', { 
-            detail: { 
-              pinId: pinRect.pinData.id,
-              pinNum: pinRect.pinData.num 
-            } 
+          rect.setAttribute('filter', 'url(#pinGlow)');
+          rect.setAttribute('stroke-width', '2.5');
+          var event = new CustomEvent('pinHover', {
+            detail: { pinId: rect.pinData.id, pinNum: rect.pinData.num }
           });
           document.dispatchEvent(event);
         };
       })(pinRect, pinColor));
       
-      pinRect.addEventListener('mouseleave', (function(pinRect) {
+      pinRect.addEventListener('mouseleave', (function(rect) {
         return function() {
-          // Restore based on current selection/filter state
-          if (self.currentSelectedId === pinRect.pinData.id) {
-            pinRect.setAttribute('filter', 'url(#pinGlow)');
-            pinRect.setAttribute('stroke-width', '2');
-          } else {
-            pinRect.setAttribute('filter', 'none');
-            pinRect.setAttribute('stroke-width', '1.5');
-          }
+          rect.setAttribute('filter', 'none');
+          rect.setAttribute('stroke-width', '1.5');
           var event = new CustomEvent('pinLeave');
           document.dispatchEvent(event);
         };
@@ -270,7 +225,7 @@ window.QFPRenderer = {
       
       mainGroup.appendChild(pinRect);
       
-      // Add pin number label
+      // Pin number label
       var numLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       var labelX, labelY;
       
@@ -301,8 +256,8 @@ window.QFPRenderer = {
       numLabel.textContent = pin.num;
       mainGroup.appendChild(numLabel);
       
-      // Add pin label (short name on IC body)
-      if (pin.lbl && pin.lbl.length <= 6) {
+      // Pin label on IC body
+      if (pin.lbl) {
         var lblLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         var lblX, lblY;
         
@@ -337,10 +292,8 @@ window.QFPRenderer = {
           numLabel: numLabel,
           lblLabel: lblLabel,
           pinId: pin.id,
-          pinNum: pin.num,
           type: pin.type,
-          funcs: pin.funcs,
-          position: pos
+          funcs: pin.funcs
         });
       } else {
         this.currentPinElements.push({
@@ -348,15 +301,13 @@ window.QFPRenderer = {
           numLabel: numLabel,
           lblLabel: null,
           pinId: pin.id,
-          pinNum: pin.num,
           type: pin.type,
-          funcs: pin.funcs,
-          position: pos
+          funcs: pin.funcs
         });
       }
     }
     
-    // Add IC part number text
+    // IC part number
     var partText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     partText.setAttribute('x', '0');
     partText.setAttribute('y', '0');
@@ -364,12 +315,11 @@ window.QFPRenderer = {
     partText.setAttribute('dominant-baseline', 'middle');
     partText.setAttribute('fill', '#e0e5ec');
     partText.setAttribute('font-size', '18');
-    partText.setAttribute('font-family', 'Arial, sans-serif');
     partText.setAttribute('font-weight', 'bold');
     partText.textContent = config.partName || 'IC';
     mainGroup.appendChild(partText);
     
-    // Add package info
+    // Package info
     var pkgText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     pkgText.setAttribute('x', '0');
     pkgText.setAttribute('y', '24');
@@ -381,101 +331,13 @@ window.QFPRenderer = {
     mainGroup.appendChild(pkgText);
   },
   
-  /**
-   * Get fill color for a pin based on its state
-   */
-  getFillColor: function(type, isSelected, isFilterMatch) {
-    if (isSelected || isFilterMatch) {
-      // Selected or filter matched - solid color
-      var colorMap = {
-        'PWR': '#ff6b6b', 'GND': '#a8a8a8', 'I2C': '#9898d8',
-        'INT': '#c8a850', 'AUX': '#50c8c8', 'CLK': '#7090a8',
-        'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8'
-      };
-      return colorMap[type] || '#78c878';
-    } else {
-      // Default - semi-transparent
-      return 'rgba(120,200,120,0.12)';
-    }
-  },
-  
-  /**
-   * Update pin appearances based on selection and filter state
-   * Called by ic-explorer-base.js
-   */
-  updatePins: function(selectedId, filterType, filterFn) {
-    var self = this;
-    
-    // Store current state
-    this.currentSelectedId = selectedId;
-    this.currentFilterType = filterType;
-    this.currentFilterFn = filterFn;
-    
-    if (!this.currentPinElements) return;
-    
-    this.currentPinElements.forEach(function(pinElem) {
-      var isSelected = (selectedId === pinElem.pinId);
-      var isFilterMatch = false;
-      
-      if (filterType && filterFn) {
-        // Check if this pin matches the filter
-        isFilterMatch = pinElem.funcs && pinElem.funcs.some(function(f) {
-          return filterFn(f);
-        });
-      }
-      
-      var pinColor = self.getPinColor(pinElem.type);
-      var fillColor = self.getFillColor(pinElem.type, isSelected, isFilterMatch);
-      
-      // Update pin rectangle
-      if (isSelected || isFilterMatch) {
-        pinElem.element.setAttribute('fill', fillColor);
-        pinElem.element.setAttribute('stroke', pinColor);
-        pinElem.element.setAttribute('stroke-width', '2');
-        if (isSelected) {
-          pinElem.element.setAttribute('filter', 'url(#pinGlow)');
-        } else {
-          pinElem.element.setAttribute('filter', 'none');
-        }
-      } else {
-        pinElem.element.setAttribute('fill', fillColor);
-        pinElem.element.setAttribute('stroke', pinColor);
-        pinElem.element.setAttribute('stroke-width', '1');
-        pinElem.element.setAttribute('filter', 'none');
-      }
-      
-      // Update label colors
-      var labelColor = (isSelected || isFilterMatch) ? '#060c1a' : pinColor;
-      if (pinElem.numLabel) {
-        pinElem.numLabel.setAttribute('fill', labelColor);
-      }
-      if (pinElem.lblLabel) {
-        pinElem.lblLabel.setAttribute('fill', labelColor);
-      }
-      
-      // Adjust opacity for non-matching during filter
-      if (filterType && !isFilterMatch && !isSelected) {
-        pinElem.element.setAttribute('opacity', '0.08');
-        if (pinElem.numLabel) pinElem.numLabel.setAttribute('opacity', '0.08');
-        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('opacity', '0.08');
-      } else {
-        pinElem.element.setAttribute('opacity', '1');
-        if (pinElem.numLabel) pinElem.numLabel.setAttribute('opacity', '1');
-        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('opacity', '1');
-      }
-    });
-  },
-  
-  /**
-   * Helper to get pin color
-   */
   getPinColor: function(type) {
     var colorMap = {
       'PWR': '#ff6b6b', 'GND': '#a8a8a8', 'I2C': '#9898d8',
       'INT': '#c8a850', 'AUX': '#50c8c8', 'CLK': '#7090a8',
       'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8',
       'MOTOR_EN': '#50c8a0', 'MOTOR_IN': '#4a9aee', 'MOTOR_OUT': '#78c878',
-      'INPUT': '#4a9aee', 'OUTPUT': '#78c878'
+      'INPUT': '#4a9aee', 'OUTPUT': '#78c878', 'ENABLE': '#50c8a0'
     };
     
     if (this.currentConfig && this.currentConfig.customTypes && this.currentConfig.customTypes[type]) {
@@ -483,8 +345,59 @@ window.QFPRenderer = {
     }
     
     return colorMap[type] || '#78c878';
+  },
+  
+  updatePins: function(selectedId, filterType, filterFn) {
+    if (!this.currentPinElements) return;
+    
+    for (var i = 0; i < this.currentPinElements.length; i++) {
+      var pinElem = this.currentPinElements[i];
+      var isSelected = (selectedId === pinElem.pinId);
+      var isFilterMatch = false;
+      
+      if (filterType && filterFn) {
+        isFilterMatch = pinElem.funcs && pinElem.funcs.some(function(f) {
+          return filterFn(f);
+        });
+      }
+      
+      var pinColor = this.getPinColor(pinElem.type);
+      
+      if (isSelected) {
+        pinElem.element.setAttribute('fill', pinColor);
+        pinElem.element.setAttribute('stroke', pinColor);
+        pinElem.element.setAttribute('stroke-width', '2');
+        pinElem.element.setAttribute('filter', 'url(#pinGlow)');
+        pinElem.element.setAttribute('opacity', '1');
+        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', '#060c1a');
+        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', '#060c1a');
+      } else if (isFilterMatch) {
+        pinElem.element.setAttribute('fill', pinColor);
+        pinElem.element.setAttribute('stroke', pinColor);
+        pinElem.element.setAttribute('stroke-width', '2');
+        pinElem.element.setAttribute('filter', 'none');
+        pinElem.element.setAttribute('opacity', '1');
+        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', '#060c1a');
+        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', '#060c1a');
+      } else if (filterType && !isFilterMatch) {
+        pinElem.element.setAttribute('fill', 'rgba(120,200,120,0.12)');
+        pinElem.element.setAttribute('stroke', pinColor);
+        pinElem.element.setAttribute('stroke-width', '1');
+        pinElem.element.setAttribute('filter', 'none');
+        pinElem.element.setAttribute('opacity', '0.08');
+        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', pinColor);
+        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', pinColor);
+      } else {
+        pinElem.element.setAttribute('fill', 'rgba(120,200,120,0.12)');
+        pinElem.element.setAttribute('stroke', pinColor);
+        pinElem.element.setAttribute('stroke-width', '1');
+        pinElem.element.setAttribute('filter', 'none');
+        pinElem.element.setAttribute('opacity', '1');
+        if (pinElem.numLabel) pinElem.numLabel.setAttribute('fill', pinColor);
+        if (pinElem.lblLabel) pinElem.lblLabel.setAttribute('fill', pinColor);
+      }
+    }
   }
 };
 
-// Make it globally available
 window.QFPRenderer = window.QFPRenderer || QFPRenderer;
