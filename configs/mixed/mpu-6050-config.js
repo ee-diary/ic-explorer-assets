@@ -34,7 +34,7 @@ window.IC_CONFIG = {
     { type: 'INT',      label: 'Interrupt',    color: '#c8a850' },
     { type: 'AUX',      label: 'Auxiliary',    color: '#50c8c8' },
     { type: 'CLK',      label: 'Clock',        color: '#7090a8' },
-    { type: 'CPOUT',    label: 'Charge Pump',  color: '#c078ff' },
+    { type: 'CPOUT',    label: 'Charge Pump',  color: '#c078ff', textSize:'13'},
     { type: 'RESERVED', label: 'Reserved',     color: '#555968' },
   ],
 
