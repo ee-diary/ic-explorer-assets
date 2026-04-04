@@ -39,11 +39,11 @@ window.IC_CONFIG = {
   // Replaces the default GPIO/PWM/ADC/... set with buttons that
   // reflect the actual functional groups of this shift register IC.
   filterButtons: [
-    { type: 'OUT',  label: 'Output(QA–QH)', color: '#78c878' },
-    { type: 'SOUT', label: "SerialOut(QH')", color: '#4a9aee' },
-    { type: 'DATA', label: 'Data(DS)',        color: '#c8a850' },
-    { type: 'CLK',  label: 'Clock(SHCP/STCP)', color: '#50c8c8' },
-    { type: 'CTRL', label: 'Control(OE/CLR)', color: '#ff9944' },
+    { type: 'OUT',  label: 'OUT', color: '#78c878' },
+    { type: 'SOUT', label: "SOUT", color: '#4a9aee' },
+    { type: 'DATA', label: 'Data',        color: '#c8a850' },
+    { type: 'CLK',  label: 'CLK', color: '#50c8c8' },
+    { type: 'CTRL', label: 'CTRL', color: '#ff9944' },
     { type: 'PWR',  label: 'VCC',              color: '#ff6b6b' },
     { type: 'GND',  label: 'GND',              color: '#a8a8a8' },
   ],
