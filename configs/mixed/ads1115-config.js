@@ -45,10 +45,10 @@ window.IC_CONFIG = {
   // Replaces the generic GPIO/PWM/SPI/... default set with buttons
   // that match the actual functional groups of this ADC IC.
   filterButtons: [
-    { type: 'AINP', label: 'Analog In (AIN0–3)', color: '#c8a850' },
-    { type: 'I2C',  label: 'I²C (SDA/SCL)',      color: '#9898d8' },
-    { type: 'ALRT', label: 'Alert / RDY',         color: '#ff6b9d' },
-    { type: 'CFG',  label: 'Addr Config',          color: '#9898d8' },
+    { type: 'AINP', label: 'AIN0–3', color: '#c8a850' },
+    { type: 'I2C',  label: 'I²C',      color: '#9898d8' },
+    { type: 'ALRT', label: 'RDY',         color: '#ff6b9d' },
+    { type: 'CFG',  label: 'Addr',          color: '#9898d8' },
     { type: 'PWR',  label: 'VDD',                  color: '#ff6b6b' },
     { type: 'GND',  label: 'GND',                  color: '#a8a8a8' },
   ],
