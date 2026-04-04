@@ -32,12 +32,12 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
-    { type: 'PWR',  label: 'Input(IN)',       color: '#ff6b6b' },
-    { type: 'SW',   label: 'Switch(SW)',      color: '#f4a261' },
-    { type: 'FB',   label: 'Feedback(FB)',    color: '#c8a850' },
-    { type: 'EN',   label: 'Enable(EN)',      color: '#ff9944' },
-    { type: 'BST',  label: 'Bootstrap(BST)',  color: '#50c8a0' },
-    { type: 'COMP', label: 'Comp.',     color: '#c078ff' },
+    { type: 'PWR',  label: 'IN',       color: '#ff6b6b' },
+    { type: 'SW',   label: 'SW',      color: '#f4a261' },
+    { type: 'FB',   label: 'FB',    color: '#c8a850' },
+    { type: 'EN',   label: 'EN',      color: '#ff9944' },
+    { type: 'BST',  label: 'BST',  color: '#50c8a0' },
+    { type: 'COMP', label: 'COMP.',     color: '#c078ff' },
     { type: 'GND',  label: 'GND',           color: '#a8a8a8' },
   ],
 
