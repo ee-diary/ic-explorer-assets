@@ -89,7 +89,7 @@ window.QFPRenderer = {
 
     // ── Part name & package label ─────────────────────────────────────────
     var partText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    partText.setAttribute('x', '0'); partText.setAttribute('y', '-10');
+    partText.setAttribute('x', '0'); partText.setAttribute('y', '-6');
     partText.setAttribute('text-anchor', 'middle');
     partText.setAttribute('fill', '#e0e5ec');
     partText.setAttribute('font-size', '20');
