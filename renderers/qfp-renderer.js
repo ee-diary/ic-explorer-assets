@@ -26,13 +26,13 @@ window.QFPRenderer = {
     var qfp = config.qfpConfig || {};
     var pins = config.pins || [];
     
-    // Read configuration with sensible defaults (won't break existing chips)
+    // Read configuration with sensible defaults
     var pinsPerSide = qfp.pinsPerSide || Math.ceil(config.pinCount / 4);
     var bodySize = qfp.bodySize || 400;
     var pinLength = qfp.pinLength || 28;
     var pinWidth = qfp.pinWidth || 20;
     
-    // Config-driven positioning with defaults matching original hardcoded behavior
+    // Config-driven positioning with defaults matching original behavior
     var pinStartOffset = (qfp.pinStartOffset !== undefined) ? qfp.pinStartOffset : 20;
     var pinEndOffset = (qfp.pinEndOffset !== undefined) ? qfp.pinEndOffset : 20;
     var pinGap = (qfp.pinGap !== undefined) ? qfp.pinGap : 2;
@@ -41,12 +41,9 @@ window.QFPRenderer = {
     var availableSpace = bodySize - (pinStartOffset + pinEndOffset);
     var spacing = availableSpace / (pinsPerSide - 1);
     
-    // CRITICAL: Set up SVG viewBox to center the content
-    // Calculate total bounds including pins
+    // Set up SVG viewBox to center the content
     var totalWidth = bodySize + (pinLength * 2) + 100;
     var totalHeight = bodySize + (pinLength * 2) + 100;
-    
-    // Set viewBox on the SVG element to center everything
     svg.setAttribute('viewBox', (-totalWidth/2) + ' ' + (-totalHeight/2) + ' ' + totalWidth + ' ' + totalHeight);
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', '100%');
@@ -90,7 +87,7 @@ window.QFPRenderer = {
     var mainGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     svg.appendChild(mainGroup);
     
-    // Draw IC body (centered at 0,0)
+    // Draw IC body (original color #1a1a2e)
     var body = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     body.setAttribute('x', -bodySize/2);
     body.setAttribute('y', -bodySize/2);
@@ -114,23 +111,6 @@ window.QFPRenderer = {
     // Store pin elements for later updates
     this.currentPinElements = [];
     
-    // Helper function to get pin color based on type
-    var getPinColor = function(type, funcs, isSelected, isFilterMatch) {
-      var colorMap = {
-        'PWR': '#ff6b6b', 'GND': '#a8a8a8', 'I2C': '#9898d8',
-        'INT': '#c8a850', 'AUX': '#50c8c8', 'CLK': '#7090a8',
-        'CPOUT': '#c078ff', 'RESERVED': '#a8a8a8'
-      };
-      
-      // Check custom types from config
-      if (config.customTypes && config.customTypes[type]) {
-        var customColor = config.customTypes[type].c;
-        if (customColor) return customColor;
-      }
-      
-      return colorMap[type] || '#78c878';
-    };
-    
     // Calculate pin positions for each side
     var pinPositions = [];
     
@@ -142,7 +122,7 @@ window.QFPRenderer = {
         x: -bodySize/2 - pinLength,
         y: y,
         width: pinLength,
-        height: actualPinWidth,
+        height: pinWidth,
         pinIndex: i
       });
     }
@@ -154,7 +134,7 @@ window.QFPRenderer = {
         side: 'bottom',
         x: x,
         y: bodySize/2,
-        width: actualPinWidth,
+        width: pinWidth,
         height: pinLength,
         pinIndex: pinsPerSide + i
       });
@@ -166,9 +146,9 @@ window.QFPRenderer = {
       pinPositions.push({
         side: 'right',
         x: bodySize/2,
-        y: y - actualPinWidth/2,
+        y: y,
         width: pinLength,
-        height: actualPinWidth,
+        height: pinWidth,
         pinIndex: 2 * pinsPerSide + i
       });
     }
@@ -178,9 +158,9 @@ window.QFPRenderer = {
       var x = bodySize/2 - pinStartOffset - (i * spacing);
       pinPositions.push({
         side: 'top',
-        x: x - actualPinWidth/2,
+        x: x,
         y: -bodySize/2 - pinLength,
-        width: actualPinWidth,
+        width: pinWidth,
         height: pinLength,
         pinIndex: 3 * pinsPerSide + i
       });
@@ -190,14 +170,26 @@ window.QFPRenderer = {
     for (var i = 0; i < pinPositions.length && i < pins.length; i++) {
       var pos = pinPositions[i];
       var pin = pins[i];
-      var pinColor = getPinColor(pin.type, pin.funcs, false, false);
-      var actualPinWidth = pinWidth;
+      
+      // Get pin color based on type
+      var pinColor = this.getPinColor(pin.type, pin.funcs, false, false);
       
       var pinRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       
-      if (pos.side === 'left' || pos.side === 'right') {
+      // Position rectangle based on side
+      if (pos.side === 'left') {
         pinRect.setAttribute('x', pos.x);
         pinRect.setAttribute('y', pos.y - pos.height/2);
+        pinRect.setAttribute('width', pos.width);
+        pinRect.setAttribute('height', pos.height);
+      } else if (pos.side === 'right') {
+        pinRect.setAttribute('x', pos.x);
+        pinRect.setAttribute('y', pos.y - pos.height/2);
+        pinRect.setAttribute('width', pos.width);
+        pinRect.setAttribute('height', pos.height);
+      } else if (pos.side === 'bottom') {
+        pinRect.setAttribute('x', pos.x - pos.width/2);
+        pinRect.setAttribute('y', pos.y);
         pinRect.setAttribute('width', pos.width);
         pinRect.setAttribute('height', pos.height);
       } else {
@@ -360,6 +352,8 @@ window.QFPRenderer = {
    */
   updatePins: function(selectedId, filterType, filterFn) {
     var self = this;
+    
+    if (!this.currentPinElements) return;
     
     this.currentPinElements.forEach(function(pinElem) {
       var isSelected = (selectedId === pinElem.pinId);
