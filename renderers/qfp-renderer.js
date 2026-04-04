@@ -89,7 +89,7 @@ window.QFPRenderer = {
 
     // ── Part name & package label ─────────────────────────────────────────
     var partText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    partText.setAttribute('x', '0'); partText.setAttribute('y', '-16');
+    partText.setAttribute('x', '0'); partText.setAttribute('y', '-10');
     partText.setAttribute('text-anchor', 'middle');
     partText.setAttribute('fill', '#e0e5ec');
     partText.setAttribute('font-size', '20');
@@ -99,7 +99,7 @@ window.QFPRenderer = {
     mainGroup.appendChild(partText);
 
     var pkgText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    pkgText.setAttribute('x', '0'); pkgText.setAttribute('y', '16');
+    pkgText.setAttribute('x', '0'); pkgText.setAttribute('y', '24');
     pkgText.setAttribute('text-anchor', 'middle');
     pkgText.setAttribute('fill', '#a8a8a8');
     pkgText.setAttribute('font-size', '11');
