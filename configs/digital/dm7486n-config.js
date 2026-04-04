@@ -31,8 +31,8 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS (logic gate specific) ──────────────────────
   filterButtons: [
-    { type: 'INPUT', label: 'Input (A/B)', color: '#4a9aee' },
-    { type: 'OUTPUT', label: 'Output (Y)', color: '#78c878' },
+    { type: 'INPUT', label: 'Input (A/B)', color: '#4a9aee', fontSize: '9px' },
+    { type: 'OUTPUT', label: 'Output (Y)', color: '#78c878', fontSize: '9px' },
     { type: 'PWR', label: 'VCC', color: '#ff6b6b' },
     { type: 'GND', label: 'GND', color: '#a8a8a8' },
   ],
