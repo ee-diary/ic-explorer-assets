@@ -311,12 +311,11 @@ var ICExplorer = (function() {
     },
     
     pinMatchesFilter: function(p) {
-      var filterType = window._currentFilter;
-      if (!filterType) return true;
-      // ── PATCH: use the resolved FILTERS array (chip-specific or default) ──
-      var f = FILTERS.find(function(x) { return x.key === filterType; });
-      return f ? f.fn(p) : true;
-    },
+  var filterType = window._currentFilter;
+  if (!filterType) return true;
+  var f = API.FILTERS.find(function(x) { return x.key === filterType; });
+  return f ? f.fn(p) : true;
+},
     
     // Full rebuild — called on filter changes and on init.
     updatePinList: function() {
