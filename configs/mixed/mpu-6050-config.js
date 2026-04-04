@@ -19,7 +19,7 @@ window.IC_CONFIG = {
     bodySize: 400,
     pinLength: 28,
     pinWidth: 20,
-    pinGap: 2
+    pinGap: 1
   },
 
   // ── CUSTOM TYPE COLOURS ─────────────────────────────────────
