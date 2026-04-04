@@ -1,12 +1,5 @@
 /**
  * QFP/TQFP/LQFP/QFN Renderer - Draws 4-sided surface mount packages
- * 
- * Supports config-driven positioning with fallback defaults:
- * - pinStartOffset / pinEndOffset: Distance from corners to first/last pin (default: 20)
- * - pinGap: Space between pins (default: 2)
- * - bodySize: Width/height of IC body (default: 400)
- * - pinLength: How far pins extend from body (default: 28)
- * - pinWidth: Thickness of pins (default: 20)
  */
 
 window.QFPRenderer = {
@@ -14,6 +7,9 @@ window.QFPRenderer = {
   currentSvg: null,
   currentConfig: null,
   currentPinElements: [],
+  currentSelectedId: null,
+  currentFilterType: null,
+  currentFilterFn: null,
   
   /**
    * Main draw function - creates the complete QFP package visualization
@@ -32,10 +28,9 @@ window.QFPRenderer = {
     var pinLength = qfp.pinLength || 28;
     var pinWidth = qfp.pinWidth || 20;
     
-    // Config-driven positioning with defaults matching original behavior
+    // Config-driven positioning
     var pinStartOffset = (qfp.pinStartOffset !== undefined) ? qfp.pinStartOffset : 20;
     var pinEndOffset = (qfp.pinEndOffset !== undefined) ? qfp.pinEndOffset : 20;
-    var pinGap = (qfp.pinGap !== undefined) ? qfp.pinGap : 2;
     
     // Calculate available space and spacing between pins
     var availableSpace = bodySize - (pinStartOffset + pinEndOffset);
@@ -87,7 +82,7 @@ window.QFPRenderer = {
     var mainGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     svg.appendChild(mainGroup);
     
-    // Draw IC body (original color #1a1a2e)
+    // Draw IC body
     var body = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     body.setAttribute('x', -bodySize/2);
     body.setAttribute('y', -bodySize/2);
@@ -108,7 +103,7 @@ window.QFPRenderer = {
     dot.setAttribute('fill', '#ff6b6b');
     mainGroup.appendChild(dot);
     
-    // Store pin elements for later updates
+    // Clear and repopulate pin elements
     this.currentPinElements = [];
     
     // Calculate pin positions for each side
@@ -209,14 +204,36 @@ window.QFPRenderer = {
       pinRect.setAttribute('data-pin-type', pin.type);
       pinRect.setAttribute('data-pin-funcs', JSON.stringify(pin.funcs));
       
-      // Add hover/click handlers
-      pinRect.addEventListener('mouseenter', (function(pinId, pinNum) {
-        return function() { self.onPinHover(pinId, pinNum); };
-      })(pin.id, pin.num));
+      // Store pin data on the element for easy access
+      pinRect.pinData = {
+        id: pin.id,
+        num: pin.num,
+        type: pin.type,
+        funcs: pin.funcs
+      };
       
-      pinRect.addEventListener('mouseleave', function() { self.onPinLeave(); });
+      // Add hover/click handlers - FIXED BINDING
+      pinRect.addEventListener('mouseenter', (function(pinId, pinNum, pinRect) {
+        return function() { 
+          self.onPinHover(pinId, pinNum);
+          // Highlight this pin on hover
+          pinRect.setAttribute('filter', 'url(#pinGlow)');
+          pinRect.setAttribute('stroke-width', '3');
+        };
+      })(pin.id, pin.num, pinRect));
+      
+      pinRect.addEventListener('mouseleave', (function(pinRect) {
+        return function() { 
+          self.onPinLeave();
+          // Restore based on current selection/filter state
+          self.updatePins(self.currentSelectedId, self.currentFilterType, self.currentFilterFn);
+        };
+      })(pinRect));
+      
       pinRect.addEventListener('click', (function(pinId) {
-        return function() { self.onPinClick(pinId); };
+        return function() { 
+          self.onPinClick(pinId);
+        };
       })(pin.id));
       
       mainGroup.appendChild(pinRect);
@@ -282,18 +299,29 @@ window.QFPRenderer = {
         lblLabel.setAttribute('font-family', 'monospace');
         lblLabel.textContent = pin.lbl;
         mainGroup.appendChild(lblLabel);
+        
+        this.currentPinElements.push({
+          element: pinRect,
+          numLabel: numLabel,
+          lblLabel: lblLabel,
+          pinId: pin.id,
+          pinNum: pin.num,
+          type: pin.type,
+          funcs: pin.funcs,
+          position: pos
+        });
+      } else {
+        this.currentPinElements.push({
+          element: pinRect,
+          numLabel: numLabel,
+          lblLabel: null,
+          pinId: pin.id,
+          pinNum: pin.num,
+          type: pin.type,
+          funcs: pin.funcs,
+          position: pos
+        });
       }
-      
-      this.currentPinElements.push({
-        element: pinRect,
-        numLabel: numLabel,
-        lblLabel: lblLabel,
-        pinId: pin.id,
-        pinNum: pin.num,
-        type: pin.type,
-        funcs: pin.funcs,
-        position: pos
-      });
     }
     
     // Add IC part number text
@@ -319,6 +347,11 @@ window.QFPRenderer = {
     pkgText.setAttribute('font-family', 'monospace');
     pkgText.textContent = config.package || '';
     mainGroup.appendChild(pkgText);
+    
+    // Apply any existing selection/filter after drawing
+    if (this.currentSelectedId || this.currentFilterType) {
+      this.updatePins(this.currentSelectedId, this.currentFilterType, this.currentFilterFn);
+    }
   },
   
   /**
@@ -352,6 +385,11 @@ window.QFPRenderer = {
    */
   updatePins: function(selectedId, filterType, filterFn) {
     var self = this;
+    
+    // Store current state
+    this.currentSelectedId = selectedId;
+    this.currentFilterType = filterType;
+    this.currentFilterFn = filterFn;
     
     if (!this.currentPinElements) return;
     
@@ -429,13 +467,6 @@ window.QFPRenderer = {
    * Handle pin hover
    */
   onPinHover: function(pinId, pinNum) {
-    // Find and highlight the pin
-    var pinElem = this.currentPinElements.find(function(p) { return p.pinId === pinId; });
-    if (pinElem) {
-      pinElem.element.setAttribute('filter', 'url(#pinGlow)');
-      pinElem.element.setAttribute('stroke-width', '2.5');
-    }
-    
     // Dispatch custom event for tooltip
     var event = new CustomEvent('pinHover', { detail: { pinId: pinId, pinNum: pinNum } });
     document.dispatchEvent(event);
@@ -445,7 +476,6 @@ window.QFPRenderer = {
    * Handle pin leave
    */
   onPinLeave: function() {
-    // Reset all pins to their proper state (will be restored by updatePins)
     var event = new CustomEvent('pinLeave');
     document.dispatchEvent(event);
   },
