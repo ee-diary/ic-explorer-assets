@@ -30,28 +30,33 @@ window.IC_CONFIG = {
   manufacturer: 'TDK-InvenSense',
   package: 'QFN-24',
   pinCount: 24,
-
+l
   // ... links, qfpConfig ...
 
-  // REMOVE customTypes and filterButtons entirely
-  // The engine will auto-generate filters from these standard types:
-  // PWR, GND, I2C, INT, SPI (for AUX), etc.
+  // ── CUSTOM TYPE COLOURS ─────────────────────────────────────
+  customTypes: {
+    PWR:     { c: '#ff6b6b', bg: 'rgba(255,107,107,0.12)', bd: 'rgba(255,107,107,0.35)' },
+    GND:     { c: '#a8a8a8', bg: 'rgba(168,168,168,0.12)', bd: 'rgba(168,168,168,0.35)' },
+    I2C:     { c: '#9898d8', bg: 'rgba(152,152,216,0.12)', bd: 'rgba(152,152,216,0.35)' },
+    INT:     { c: '#c8a850', bg: 'rgba(200,168,80,0.12)',  bd: 'rgba(200,168,80,0.35)' },
+    AUX:     { c: '#50c8c8', bg: 'rgba(80,200,200,0.12)',  bd: 'rgba(80,200,200,0.32)' },
+    CLK:     { c: '#7090a8', bg: 'rgba(112,144,168,0.12)', bd: 'rgba(112,144,168,0.35)' },
+    CPOUT:   { c: '#c078ff', bg: 'rgba(192,120,255,0.11)', bd: 'rgba(192,120,255,0.28)' },
+    RESERVED: { c: '#a8a8a8', bg: 'rgba(168,168,168,0.08)', bd: 'rgba(168,168,168,0.20)' },
+  },
 
-  pins: [
-    // Update pin types to standard names that engine recognizes
-    { num: 1, id: 'CLKIN', type: 'GPIO', funcs: ['GPIO'], ... },  // or 'TIMER'
-    { num: 2, id: 'CPOUT', type: 'PWR', funcs: ['PWR'], ... },
-    { num: 8, id: 'VDD', type: 'PWR', funcs: ['PWR'], ... },
-    { num: 9, id: 'GND', type: 'GND', funcs: ['GND'], ... },
-    { num: 12, id: 'AD0', type: 'I2C', funcs: ['I2C'], ... },
-    { num: 13, id: 'INT', type: 'INT', funcs: ['INT'], ... },
-    { num: 14, id: 'SDA', type: 'I2C', funcs: ['I2C'], ... },
-    { num: 15, id: 'SCL', type: 'I2C', funcs: ['I2C'], ... },
-    { num: 16, id: 'AUX_DA', type: 'SPI', funcs: ['SPI'], ... },  // Use SPI for aux I2C
-    { num: 17, id: 'AUX_CL', type: 'SPI', funcs: ['SPI'], ... },
-    // ... rest of pins with standard types
+  // ── FILTER BUTTONS ──────────────────────────────────────────
+  filterButtons: [
+    { type: 'PWR', label: 'Power (VDD/VLOGIC)', color: '#ff6b6b' },
+    { type: 'GND', label: 'Ground', color: '#a8a8a8' },
+    { type: 'I2C', label: 'I2C Interface', color: '#9898d8' },
+    { type: 'INT', label: 'Interrupt', color: '#c8a850' },
+    { type: 'AUX', label: 'Auxiliary I2C', color: '#50c8c8' },
+    { type: 'CLK', label: 'Clock', color: '#7090a8' },
+    { type: 'CPOUT', label: 'Charge Pump', color: '#c078ff' },
+    { type: 'RESERVED', label: 'Reserved', color: '#a8a8a8' },
   ],
-};
+
 
   // ── PINS (QFN-24) ──────────────────────────────────────────
   pins: [
