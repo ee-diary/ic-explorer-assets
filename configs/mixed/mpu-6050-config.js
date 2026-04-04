@@ -15,8 +15,8 @@ window.IC_CONFIG = {
     pinLength:   20,
     pinWidth:    14,
     pinGap:      1,
-    pinOffset:   50  
-    // removed non-standard pinStartOffset / pinEndOffset
+    pinOffset:   60  
+    // spacing = (bodySize - (offset * 2) - pinWidth) / (pinsPerSide - 1)
   },
 
   // Only genuinely non-standard types — PWR, GND, I2C, INT are already built-in
