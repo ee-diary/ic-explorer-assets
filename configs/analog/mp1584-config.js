@@ -38,7 +38,7 @@ window.IC_CONFIG = {
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
     { type: 'PWR',  label: 'Input (VIN)',      color: '#ff6b6b', fontSize:'12px' },
-    { type: 'SW',   label: 'Switch (SW)',      color: '#f4a261' fontSize:'12px'},
+    { type: 'SW',   label: 'Switch (SW)',      color: '#f4a261', fontSize:'12px'},
     { type: 'BST',  label: 'Bootstrap',        color: '#c078ff' },
     { type: 'FB',   label: 'Feedback',         color: '#50c8a0' },
     { type: 'COMP', label: 'Comp',             color: '#9898d8' },
