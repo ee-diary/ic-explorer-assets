@@ -36,8 +36,8 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
-    { type: 'SIGNAL',  label: 'Signal In',    color: '#3498db', fontSize:'12px' },
-    { type: 'CARRIER', label: 'Carrier In',   color: '#9b59b6', fontSize:'12px' },
+    { type: 'SIGNAL',  label: 'Signal In',    color: '#3498db', fontSize:'13px' },
+    { type: 'CARRIER', label: 'Carrier In',   color: '#9b59b6', fontSize:'13px' },
     { type: 'OUT',     label: 'Output',       color: '#50c8a0' },
     { type: 'ADJ',     label: 'Gain Adjust',  color: '#f4a261', fontSize:'12px' },
     { type: 'PWR',     label: 'Power',        color: '#ff6b6b' },
