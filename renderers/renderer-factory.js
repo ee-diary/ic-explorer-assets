@@ -14,13 +14,9 @@ var RendererFactory = {
     
     // DIP packages
     if (pkg.indexOf('DIP') >= 0) return 'dip';
-
-    // QFN packages with uneven pin distribution (e.g. QFN-73)
-    // These use the QFNRenderer which supports per-side pin counts via qfnConfig.sides[]
-    if (pkg.indexOf('QFN') >= 0) return 'qfn';
     
-    // QFP/LQFP/TQFP packages — evenly divisible by 4
-    if (pkg.indexOf('QFP') >= 0 || pkg.indexOf('LQFP') >= 0 || pkg.indexOf('TQFP') >= 0) {
+    // QFP/LQFP/TQFP/QFN packages (all 4-sided surface mount packages)
+    if (pkg.indexOf('QFP') >= 0 || pkg.indexOf('LQFP') >= 0 || pkg.indexOf('TQFP') >= 0 || pkg.indexOf('QFN') >= 0) {
       return 'qfp';
     }
     
@@ -41,8 +37,6 @@ var RendererFactory = {
         return window.DIPRenderer;
       case 'qfp':
         return window.QFPRenderer;
-      case 'qfn':
-        return window.QFNRenderer;
       case 'custom':
         return window.CustomBoardRenderer;
       default:
