@@ -1,35 +1,65 @@
 /**
- * QFP/TQFP/LQFP/QFN Renderer - Draws 4-sided surface mount packages
- * Structured for ic-explorer-base.js compatibility:
- *   - Each pin is a <g class="ic-pin" data-id="...">
- *   - Inner rect has class="pin-sq" (engine styles this directly)
- *   - No custom click/hover handlers (engine wires these up)
+ * QFN Renderer — Draws QFN packages with uneven pin distribution across 4 sides.
+ *
+ * Designed for chips like the nRF52840 (QFN-73) where pinCount is not evenly
+ * divisible by 4. Pin counts per side are driven by qfnConfig.sides[] in the
+ * chip config, e.g.:
+ *
+ *   qfnConfig: {
+ *     sides:     [19, 19, 18, 17],   // [LEFT, BOTTOM, RIGHT, TOP]
+ *     bodySize:  480,
+ *     pinLength: 30,
+ *     pinWidth:  18,
+ *     pinGap:    2,
+ *   }
+ *
+ * If qfnConfig.sides is omitted the renderer falls back to equal distribution
+ * (same behaviour as QFPRenderer) so existing chips continue to work if routed
+ * here.
+ *
+ * Pin ordering in config.pins[] must match:
+ *   pins[0 .. sides[0]-1]                          → LEFT   (top → bottom)
+ *   pins[sides[0] .. sides[0]+sides[1]-1]           → BOTTOM (left → right)
+ *   pins[sides[0]+sides[1] .. sum(sides,3)-1]        → RIGHT  (bottom → top)
+ *   pins[sum(sides,3) .. total-1]                   → TOP    (right → left)
+ *
+ * Interface (matches QFPRenderer and DIPRenderer):
+ *   draw(svg, config)
+ *   updatePins(selectedId, filterType, filterFn)
  */
 
-window.QFPRenderer = {
-  currentSvg: null,
+window.QFNRenderer = {
+  currentSvg:    null,
   currentConfig: null,
 
+  // ── Public: draw ────────────────────────────────────────────────────────
   draw: function(svg, config) {
-    this.currentSvg = svg;
+    this.currentSvg    = svg;
     this.currentConfig = config;
 
-    var qfp = config.qfpConfig || {};
-    var pins = config.pins || [];
+    var qfn   = config.qfnConfig || {};
+    var pins  = config.pins || [];
+    var total = pins.length;
 
-    var pinsPerSide = qfp.pinsPerSide || Math.ceil(config.pinCount / 4);
-    var bodySize    = qfp.bodySize    || 400;
-    var pinLength   = qfp.pinLength   || 28;
-    var pinWidth    = qfp.pinWidth    || 20;
-    var pinGap      = qfp.pinGap      || 2;
-    var offset      = qfp.pinOffset   || 10;
+    var bodySize  = qfn.bodySize  || 400;
+    var pinLength = qfn.pinLength || 28;
+    var pinWidth  = qfn.pinWidth  || 20;
+    var pinGap    = qfn.pinGap    || 2;
+    var offset    = qfn.pinOffset || 10;
 
-    // Evenly space pins across each side
-    var usable  = bodySize - (offset * 2) - pinWidth;
-    var spacing = pinsPerSide > 1 ? usable / (pinsPerSide - 1) : 0;
+    // Resolve per-side counts
+    // If qfnConfig.sides is provided use it; otherwise split evenly.
+    var sides;
+    if (qfn.sides && qfn.sides.length === 4) {
+      sides = qfn.sides;
+    } else {
+      var pps  = qfn.pinsPerSide || Math.ceil(total / 4);
+      sides = [pps, pps, pps, pps];
+    }
 
-    // SVG viewport
+    // ── SVG viewport ───────────────────────────────────────────────────
     var totalSize = bodySize + pinLength * 2 + 80;
+    var half      = bodySize / 2;
     svg.setAttribute('viewBox',
       (-totalSize / 2) + ' ' + (-totalSize / 2) + ' ' + totalSize + ' ' + totalSize);
     svg.setAttribute('width',  '100%');
@@ -38,7 +68,7 @@ window.QFPRenderer = {
     // Clear
     while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-    // ── Defs (glow filter) ────────────────────────────────────────────────
+    // ── Defs — glow filter ─────────────────────────────────────────────
     var defs   = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     var filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
     filter.setAttribute('id', 'pinGlow');
@@ -51,104 +81,97 @@ window.QFPRenderer = {
     feBlur.setAttribute('result', 'blur');
 
     var feMerge  = document.createElementNS('http://www.w3.org/2000/svg', 'feMerge');
-    var feMerge1 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
-    var feMerge2 = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
-    feMerge1.setAttribute('in', 'blur');
-    feMerge2.setAttribute('in', 'SourceGraphic');
-    feMerge.appendChild(feMerge1);
-    feMerge.appendChild(feMerge2);
-
+    var mergeOrig = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
+    var mergeSrc  = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode');
+    mergeOrig.setAttribute('in', 'blur');
+    mergeSrc.setAttribute('in',  'SourceGraphic');
+    feMerge.appendChild(mergeOrig);
+    feMerge.appendChild(mergeSrc);
     filter.appendChild(feBlur);
     filter.appendChild(feMerge);
     defs.appendChild(filter);
     svg.appendChild(defs);
 
-    // ── Main group ────────────────────────────────────────────────────────
+    // ── Main group ─────────────────────────────────────────────────────
     var mainGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     svg.appendChild(mainGroup);
 
-    // ── IC body ───────────────────────────────────────────────────────────
+    // ── IC body ────────────────────────────────────────────────────────
     var body = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    body.setAttribute('x', -bodySize / 2);
-    body.setAttribute('y', -bodySize / 2);
-    body.setAttribute('width',  bodySize);
-    body.setAttribute('height', bodySize);
-    body.setAttribute('rx', '8'); body.setAttribute('ry', '8');
+    body.setAttribute('x',            -half);
+    body.setAttribute('y',            -half);
+    body.setAttribute('width',         bodySize);
+    body.setAttribute('height',        bodySize);
+    body.setAttribute('rx',            '8');
+    body.setAttribute('ry',            '8');
     body.setAttribute('fill',         '#171B26');
     body.setAttribute('stroke',       '#2A2F3E');
     body.setAttribute('stroke-width', '2');
     mainGroup.appendChild(body);
 
-    // Pin-1 orientation dot
+    // Pin-1 indicator dot (top-left corner of body)
     var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    dot.setAttribute('cx', -bodySize / 2 + 15);
-    dot.setAttribute('cy', -bodySize / 2 + 15);
-    dot.setAttribute('r',  '6');
+    dot.setAttribute('cx',   -half + 16);
+    dot.setAttribute('cy',   -half + 16);
+    dot.setAttribute('r',    '6');
     dot.setAttribute('fill', '#ff6b6b');
     mainGroup.appendChild(dot);
 
-    // ── Part name & package label ─────────────────────────────────────────
+    // ── Part name ──────────────────────────────────────────────────────
     var partText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    partText.setAttribute('x', '0'); partText.setAttribute('y', '-40');
+    partText.setAttribute('x',           '0');
+    partText.setAttribute('y',           '-20');
     partText.setAttribute('text-anchor', 'middle');
-    partText.setAttribute('fill', '#e0e5ec');
-    partText.setAttribute('font-size', '20');
+    partText.setAttribute('fill',        '#e0e5ec');
+    partText.setAttribute('font-size',   '22');
     partText.setAttribute('font-weight', 'bold');
     partText.setAttribute('font-family', 'monospace');
     partText.textContent = config.partName || 'IC';
     mainGroup.appendChild(partText);
 
+    // ── Package label ──────────────────────────────────────────────────
     var pkgText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    pkgText.setAttribute('x', '0'); pkgText.setAttribute('y', '40');
+    pkgText.setAttribute('x',           '0');
+    pkgText.setAttribute('y',           '30');
     pkgText.setAttribute('text-anchor', 'middle');
-    pkgText.setAttribute('fill', '#a8a8a8');
-    pkgText.setAttribute('font-size', '11');
+    pkgText.setAttribute('fill',        '#a8a8a8');
+    pkgText.setAttribute('font-size',   '12');
     pkgText.setAttribute('font-family', 'monospace');
     pkgText.textContent = config.package || '';
     mainGroup.appendChild(pkgText);
 
-    // ── Build pin position table ──────────────────────────────────────────
-    // Counter-clockwise: LEFT → BOTTOM → RIGHT → TOP
-    var pinPositions = [];
-    var half = bodySize / 2;
+    // Manufacturer label
+    var mfrText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    mfrText.setAttribute('x',           '0');
+    mfrText.setAttribute('y',           '52');
+    mfrText.setAttribute('text-anchor', 'middle');
+    mfrText.setAttribute('fill',        '#5a6070');
+    mfrText.setAttribute('font-size',   '11');
+    mfrText.setAttribute('font-family', 'monospace');
+    mfrText.textContent = config.manufacturer || '';
+    mainGroup.appendChild(mfrText);
 
-// LEFT — top → bottom
-for (var i = 0; i < pinsPerSide; i++) {
-  var y = -half + offset + (pinWidth / 2) + i * spacing;
-  pinPositions.push({ side: 'left', cx: -half, cy: y });
-}
-// BOTTOM — left → right
-for (var i = 0; i < pinsPerSide; i++) {
-  var x = -half + offset + (pinWidth / 2) + i * spacing;
-  pinPositions.push({ side: 'bottom', cx: x, cy: half });
-}
-// RIGHT — bottom → top
-for (var i = 0; i < pinsPerSide; i++) {
-  var y = half - offset - (pinWidth / 2) - i * spacing;  // ← minus, not plus
-  pinPositions.push({ side: 'right', cx: half, cy: y });
-}
-// TOP — right → left
-for (var i = 0; i < pinsPerSide; i++) {
-  var x = half - offset - (pinWidth / 2) - i * spacing;  // ← minus, not plus
-  pinPositions.push({ side: 'top', cx: x, cy: -half });
-}
-    // ── Draw pins ─────────────────────────────────────────────────────────
+    // ── Build pin position table ───────────────────────────────────────
+    // Returns array of {side, cx, cy} for each logical pin slot.
+    // Pins are evenly spaced within each side using the available body
+    // length minus the edge offset on each end.
+    var pinPositions = this._buildPositions(sides, bodySize, pinWidth, offset);
+
+    // ── Draw each pin ──────────────────────────────────────────────────
     for (var i = 0; i < pinPositions.length && i < pins.length; i++) {
       var pos  = pinPositions[i];
       var pin  = pins[i];
-      var col  = this.getPinColor(pin.type);
+      var col  = this._getColor(pin.type);
       var side = pos.side;
 
-      // Rect dimensions vary by side
+      // Compute rect geometry per side
       var rw, rh, rx, ry;
       if (side === 'left') {
-        rw = pinLength; rh = pinWidth - pinGap;
-        rx = pos.cx - half - pinLength;   // extends left from body edge... 
-        // actually position relative to body edge:
+        rw = pinLength;    rh = pinWidth - pinGap;
         rx = -half - pinLength;
         ry = pos.cy - rh / 2;
       } else if (side === 'right') {
-        rw = pinLength; rh = pinWidth - pinGap;
+        rw = pinLength;    rh = pinWidth - pinGap;
         rx = half;
         ry = pos.cy - rh / 2;
       } else if (side === 'bottom') {
@@ -161,13 +184,13 @@ for (var i = 0; i < pinsPerSide; i++) {
         ry = -half - pinLength;
       }
 
-      // ── <g class="ic-pin" data-id="..."> ─────────────────────────────
+      // ── <g class="ic-pin" data-id="..."> ────────────────────────────
       var pinGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
       pinGroup.setAttribute('class',   'ic-pin');
       pinGroup.setAttribute('data-id', pin.id);
       pinGroup.style.cursor = 'pointer';
 
-      // ── <rect class="pin-sq"> — engine reads and styles this ──────────
+      // ── <rect class="pin-sq"> — engine reads & styles this ───────────
       var pinRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       pinRect.setAttribute('class',        'pin-sq');
       pinRect.setAttribute('x',            rx);
@@ -179,60 +202,67 @@ for (var i = 0; i < pinsPerSide; i++) {
       pinRect.setAttribute('fill',         'rgba(120,200,120,0.10)');
       pinRect.setAttribute('stroke',       col);
       pinRect.setAttribute('stroke-width', '1.5');
-
       pinGroup.appendChild(pinRect);
 
-      // ── Pin number (outside body) ─────────────────────────────────────
+      // ── Pin number (outside the body) ─────────────────────────────
       var numText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       numText.setAttribute('fill',        col);
-      numText.setAttribute('font-size',   '10');
+      numText.setAttribute('font-size',   '9');
       numText.setAttribute('font-family', 'monospace');
       numText.setAttribute('font-weight', 'bold');
       numText.textContent = pin.num;
 
       if (side === 'left') {
-        numText.setAttribute('x', rx - 4);
-        numText.setAttribute('y', pos.cy + 4);
-        numText.setAttribute('text-anchor', 'end');
+        numText.setAttribute('x',            rx - 3);
+        numText.setAttribute('y',            pos.cy + 3);
+        numText.setAttribute('text-anchor',  'end');
       } else if (side === 'right') {
-        numText.setAttribute('x', rx + rw + 4);
-        numText.setAttribute('y', pos.cy + 4);
-        numText.setAttribute('text-anchor', 'start');
+        numText.setAttribute('x',            rx + rw + 3);
+        numText.setAttribute('y',            pos.cy + 3);
+        numText.setAttribute('text-anchor',  'start');
       } else if (side === 'bottom') {
-        numText.setAttribute('x', pos.cx);
-        numText.setAttribute('y', ry + rh + 12);
-        numText.setAttribute('text-anchor', 'middle');
-      } else {
-        numText.setAttribute('x', pos.cx);
-        numText.setAttribute('y', ry - 4);
-        numText.setAttribute('text-anchor', 'middle');
+        numText.setAttribute('x',            pos.cx);
+        numText.setAttribute('y',            ry + rh + 11);
+        numText.setAttribute('text-anchor',  'middle');
+      } else { // top
+        numText.setAttribute('x',            pos.cx);
+        numText.setAttribute('y',            ry - 3);
+        numText.setAttribute('text-anchor',  'middle');
       }
       pinGroup.appendChild(numText);
 
-      // ── Pin label (inside body edge) ──────────────────────────────────
+      // ── Pin label (inside body edge) ───────────────────────────────
       if (pin.lbl) {
         var lblText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         lblText.setAttribute('fill',        col);
-        lblText.setAttribute('font-size',   '9');
+        lblText.setAttribute('font-size',   '8');
         lblText.setAttribute('font-family', 'monospace');
         lblText.textContent = pin.lbl;
 
         if (side === 'left') {
-          lblText.setAttribute('x', -half + 5);
-          lblText.setAttribute('y', pos.cy + 3);
-          lblText.setAttribute('text-anchor', 'start');
+          lblText.setAttribute('x',           -half + 5);
+          lblText.setAttribute('y',            pos.cy + 3);
+          lblText.setAttribute('text-anchor',  'start');
         } else if (side === 'right') {
-          lblText.setAttribute('x', half - 5);
-          lblText.setAttribute('y', pos.cy + 3);
-          lblText.setAttribute('text-anchor', 'end');
+          lblText.setAttribute('x',            half - 5);
+          lblText.setAttribute('y',            pos.cy + 3);
+          lblText.setAttribute('text-anchor',  'end');
         } else if (side === 'bottom') {
-          lblText.setAttribute('x', pos.cx);
-          lblText.setAttribute('y', half - 6);
-          lblText.setAttribute('text-anchor', 'middle');
-        } else {
-          lblText.setAttribute('x', pos.cx);
-          lblText.setAttribute('y', -half + 12);
-          lblText.setAttribute('text-anchor', 'middle');
+          // Rotated label for bottom pins — reads upward from body edge
+          var bx = pos.cx;
+          var by = half - 5;
+          lblText.setAttribute('x',           bx);
+          lblText.setAttribute('y',           by);
+          lblText.setAttribute('text-anchor', 'end');
+          lblText.setAttribute('transform',   'rotate(-90,' + bx + ',' + by + ')');
+        } else { // top
+          // Rotated label for top pins — reads downward from body edge
+          var tx = pos.cx;
+          var ty = -half + 5;
+          lblText.setAttribute('x',           tx);
+          lblText.setAttribute('y',           ty);
+          lblText.setAttribute('text-anchor', 'start');
+          lblText.setAttribute('transform',   'rotate(-90,' + tx + ',' + ty + ')');
         }
         pinGroup.appendChild(lblText);
       }
@@ -241,31 +271,70 @@ for (var i = 0; i < pinsPerSide; i++) {
     }
   },
 
-  getPinColor: function(type) {
-    // Check customTypes in config first
+  // ── updatePins ──────────────────────────────────────────────────────────
+  // Engine drives all highlighting via updateBoardHighlight() — nothing needed.
+  updatePins: function(selectedId, filterType, filterFn) {},
+
+  // ── _buildPositions ─────────────────────────────────────────────────────
+  // Returns [{side, cx, cy}] for each pin slot in L→B→R→T order.
+  // Each side is independently spaced across the available body length.
+  _buildPositions: function(sides, bodySize, pinWidth, offset) {
+    var half      = bodySize / 2;
+    var positions = [];
+
+    var sideNames = ['left', 'bottom', 'right', 'top'];
+
+    for (var s = 0; s < 4; s++) {
+      var count   = sides[s];
+      var name    = sideNames[s];
+      // Available span along this side (same formula as QFPRenderer)
+      var usable  = bodySize - (offset * 2) - pinWidth;
+      var spacing = count > 1 ? usable / (count - 1) : 0;
+
+      for (var i = 0; i < count; i++) {
+        var t = -half + offset + (pinWidth / 2) + i * spacing;
+
+        if (name === 'left') {
+          // top → bottom: t is Y
+          positions.push({ side: 'left',   cx: -half, cy: t });
+        } else if (name === 'bottom') {
+          // left → right: t is X
+          positions.push({ side: 'bottom', cx: t,     cy: half });
+        } else if (name === 'right') {
+          // bottom → top: invert — start from bottom
+          var y = half - offset - (pinWidth / 2) - i * spacing;
+          positions.push({ side: 'right',  cx: half,  cy: y });
+        } else { // top
+          // right → left: invert — start from right
+          var x = half - offset - (pinWidth / 2) - i * spacing;
+          positions.push({ side: 'top',    cx: x,     cy: -half });
+        }
+      }
+    }
+
+    return positions;
+  },
+
+  // ── _getColor ────────────────────────────────────────────────────────────
+  // Checks customTypes in the active config first, then falls back to the
+  // standard palette (identical mapping to QFPRenderer).
+  _getColor: function(type) {
     if (this.currentConfig &&
         this.currentConfig.customTypes &&
         this.currentConfig.customTypes[type]) {
       return this.currentConfig.customTypes[type].c;
     }
-    // Fall back to standard palette
     var map = {
-      GPIO:  '#78c878', PWR:   '#ff6b6b', GND:   '#a8a8a8',
-      ADC:   '#c8a850', SPI:   '#4a9aee', I2C:   '#9898d8',
-      UART:  '#cc6888', PWM:   '#50c8c8', XTAL:  '#7090a8',
-      RESET: '#ff9944', TIMER: '#50c8c8', INT:   '#c8a850',
-      USB:   '#a78bfa', CAN:   '#ff9944', JTAG:  '#c8a850',
-      BOOT:  '#50c8c8', COMP:  '#ff9944',
-      // MPU-6050 custom
-      AUX:      '#50c8c8', CLK:  '#7090a8',
+      GPIO:     '#78c878', PWR:      '#ff6b6b', GND:      '#a8a8a8',
+      ADC:      '#c8a850', SPI:      '#4a9aee', I2C:      '#9898d8',
+      UART:     '#cc6888', PWM:      '#50c8c8', XTAL:     '#7090a8',
+      RESET:    '#ff9944', TIMER:    '#50c8c8', INT:      '#c8a850',
+      USB:      '#a78bfa', CAN:      '#ff9944', JTAG:     '#c8a850',
+      BOOT:     '#50c8c8', COMP:     '#ff9944',
+      // Extra types used by existing configs
+      AUX:      '#50c8c8', CLK:      '#7090a8',
       CPOUT:    '#c078ff', RESERVED: '#555968',
     };
     return map[type] || '#78c878';
-  },
-
-  // updatePins is kept for any direct calls but the engine drives
-  // highlighting via CSS classes on .ic-pin / .pin-sq directly.
-  updatePins: function(selectedId, filterType, filterFn) {
-    // Engine handles this via updateBoardHighlight() — nothing needed here.
   }
 };
