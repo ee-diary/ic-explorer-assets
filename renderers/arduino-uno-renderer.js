@@ -2,10 +2,12 @@
 //  renderers/arduino-uno-renderer.js
 //  IC Explorer — Arduino Uno R3 board renderer
 //
-//  FIX: Pin click now dispatches a 'icexplorer:pinselect' CustomEvent
-//       on the SVG element instead of calling ICExplorer.selectPin()
-//       directly (which may not exist at click time). The base engine
-//       must listen for this event and call renderer.updatePins().
+//  KEY FIX: pin <g> elements now use class="ic-pin" (not "uno-pin")
+//  so that ic-explorer-base.js attachPinEvents() and
+//  updateBoardHighlight() can find them via querySelectorAll('.ic-pin')
+//
+//  SECOND FIX: glow filter id changed from 'unoRendererPinGlow'
+//  to 'pinGlow' to match the url(#pinGlow) reference in base engine.
 // ============================================================
 
 (function (global) {
@@ -13,7 +15,6 @@
 
   var NS = 'http://www.w3.org/2000/svg';
 
-  // ── SVG helpers ──────────────────────────────────────────────
   function mk(tag, attrs) {
     var el = document.createElementNS(NS, tag);
     for (var k in attrs) el.setAttribute(k, attrs[k]);
@@ -26,7 +27,6 @@
   }
   function app(p, c) { p.appendChild(c); return c; }
 
-  // ── Colour palette ───────────────────────────────────────────
   var STD_COLORS = {
     GPIO:  { c: '#78c878', bg: 'rgba(120,200,120,.14)', bd: 'rgba(120,200,120,.35)' },
     ADC:   { c: '#c8a850', bg: 'rgba(200,168,80,.13)',  bd: 'rgba(200,168,80,.34)'  },
@@ -44,10 +44,7 @@
     return STD_COLORS[type] || STD_COLORS.SPEC;
   }
 
-  // ── Pin layout: absolute SVG coordinates ─────────────────────
-  // viewBox is 0 0 390 470
   var PIN_COORDS = {
-    // Digital header (right side, top → bottom)
     'AREF':   { x: 380, y: 214, side: 'right' },
     'GND_D':  { x: 380, y: 228, side: 'right' },
     'D13':    { x: 380, y: 242, side: 'right' },
@@ -64,30 +61,26 @@
     'D2':     { x: 380, y: 406, side: 'right' },
     'TX0':    { x: 380, y: 421, side: 'right' },
     'RX0':    { x: 380, y: 435, side: 'right' },
-    // Power header (left side)
-    'IOREF':  { x: 8,   y: 222, side: 'left' },
-    'RST':    { x: 8,   y: 237, side: 'left' },
-    '3V3':    { x: 8,   y: 253, side: 'left' },
-    '5V':     { x: 8,   y: 268, side: 'left' },
-    'GND_P':  { x: 8,   y: 284, side: 'left' },
-    'GND_P2': { x: 8,   y: 300, side: 'left' },
-    'VIN':    { x: 8,   y: 315, side: 'left' },
-    // Analog header (left side, lower)
-    'A0':     { x: 8,   y: 357, side: 'left' },
-    'A1':     { x: 8,   y: 372, side: 'left' },
-    'A2':     { x: 8,   y: 387, side: 'left' },
-    'A3':     { x: 8,   y: 404, side: 'left' },
-    'A4':     { x: 8,   y: 419, side: 'left' },
-    'A5':     { x: 8,   y: 435, side: 'left' },
+    'IOREF':  { x: 8,   y: 222, side: 'left'  },
+    'RST':    { x: 8,   y: 237, side: 'left'  },
+    '3V3':    { x: 8,   y: 253, side: 'left'  },
+    '5V':     { x: 8,   y: 268, side: 'left'  },
+    'GND_P':  { x: 8,   y: 284, side: 'left'  },
+    'GND_P2': { x: 8,   y: 300, side: 'left'  },
+    'VIN':    { x: 8,   y: 315, side: 'left'  },
+    'A0':     { x: 8,   y: 357, side: 'left'  },
+    'A1':     { x: 8,   y: 372, side: 'left'  },
+    'A2':     { x: 8,   y: 387, side: 'left'  },
+    'A3':     { x: 8,   y: 404, side: 'left'  },
+    'A4':     { x: 8,   y: 419, side: 'left'  },
+    'A5':     { x: 8,   y: 435, side: 'left'  },
   };
 
-  var PS = 15; // pin square half-size
+  var PS = 15;
 
-  // ── Module state ─────────────────────────────────────────────
-  var _svg     = null;
-  var _config  = null;
-  var _pinEls  = {};
-  var _glowId  = 'unoRendererPinGlow';
+  var _svg    = null;
+  var _config = null;
+  var _pinEls = {};
 
   // ── draw ─────────────────────────────────────────────────────
   function draw(svg, config) {
@@ -96,17 +89,15 @@
     _pinEls = {};
 
     while (svg.firstChild) svg.removeChild(svg.firstChild);
-
     svg.setAttribute('viewBox', '0 0 390 470');
     svg.setAttribute('xmlns', NS);
     svg.style.cssText = 'display:block;width:100%;height:auto;overflow:visible;';
 
     _buildDefs(svg);
-    _buildBoard(svg, config);
+    _buildBoard(svg);
     _buildPins(svg, config);
   }
 
-  // ── defs: gradients + glow ───────────────────────────────────
   function _buildDefs(svg) {
     var defs = app(svg, mk('defs', {}));
 
@@ -120,16 +111,17 @@
       defs.appendChild(g);
     }
 
-    linGrad('unoPcbGr', [['0%', '#1a3a6e'], ['50%', '#142d58'], ['100%', '#0e2040']]);
-    linGrad('unoChipGr',[['0%', '#1e1e1e'], ['100%', '#0a0a0a']]);
-    linGrad('unoSilvGr',[['0%', '#d8d8d8'], ['50%', '#a8a8a8'], ['100%', '#787878']]);
-    linGrad('unoUsbGr', [['0%', '#888'],    ['100%', '#555']]);
+    linGrad('unoPcbGr', [['0%','#1a3a6e'],['50%','#142d58'],['100%','#0e2040']]);
+    linGrad('unoChipGr',[['0%','#1e1e1e'],['100%','#0a0a0a']]);
+    linGrad('unoSilvGr',[['0%','#d8d8d8'],['50%','#a8a8a8'],['100%','#787878']]);
+    linGrad('unoUsbGr', [['0%','#888'],   ['100%','#555']]);
 
     var pat = mk('pattern', { id: 'unoDotsPat', width: '18', height: '18', patternUnits: 'userSpaceOnUse' });
     app(pat, mk('circle', { cx: '9', cy: '9', r: '0.6', fill: 'rgba(100,160,255,0.12)' }));
     defs.appendChild(pat);
 
-    var filt = mk('filter', { id: _glowId, x: '-50%', y: '-50%', width: '200%', height: '200%' });
+    // ── FIX: id must be 'pinGlow' — base engine writes url(#pinGlow) ──
+    var filt = mk('filter', { id: 'pinGlow', x: '-50%', y: '-50%', width: '200%', height: '200%' });
     var fgb  = mk('feGaussianBlur', { stdDeviation: '3.5', result: 'blur' });
     filt.appendChild(fgb);
     var fm = mk('feMerge', {});
@@ -139,7 +131,6 @@
     defs.appendChild(filt);
   }
 
-  // ── static board artwork ─────────────────────────────────────
   function _buildBoard(svg) {
     app(svg, mk('path', { d: 'M0,0 L390,0 L390,470 L40,470 L0,443 Z', fill: 'url(#unoPcbGr)', stroke: '#0a1830', 'stroke-width': '2' }));
     app(svg, mk('path', { d: 'M0,0 L390,0 L390,470 L40,470 L0,443 Z', fill: 'url(#unoDotsPat)' }));
@@ -150,68 +141,78 @@
       app(svg, mk('circle', { cx: h.cx, cy: h.cy, r: '5',  fill: '#060e1a' }));
     });
 
-    app(svg, mk('rect', { x: '245', y: '0', width: '88', height: '96', rx: '3', fill: 'url(#unoUsbGr)', stroke: '#444', 'stroke-width': '1.5' }));
-    app(svg, mk('rect', { x: '250', y: '3', width: '78', height: '90', rx: '2', fill: '#333' }));
-    app(svg, mk('rect', { x: '256', y: '0', width: '66', height: '18', rx: '2', fill: '#1a1a1a', stroke: '#666', 'stroke-width': '1' }));
+    // USB-B
+    app(svg, mk('rect', { x: '245', y: '0',  width: '88', height: '96', rx: '3', fill: 'url(#unoUsbGr)', stroke: '#444', 'stroke-width': '1.5' }));
+    app(svg, mk('rect', { x: '250', y: '3',  width: '78', height: '90', rx: '2', fill: '#333' }));
+    app(svg, mk('rect', { x: '256', y: '0',  width: '66', height: '18', rx: '2', fill: '#1a1a1a', stroke: '#666', 'stroke-width': '1' }));
     app(svg, mk('rect', { x: '265', y: '22', width: '48', height: '32', rx: '3', fill: '#1a1a1a', stroke: '#555', 'stroke-width': '1' }));
     app(svg, mk('rect', { x: '270', y: '26', width: '38', height: '24', rx: '2', fill: '#222' }));
-    app(svg, mkt('USB', { fill: '#666', 'font-family': 'monospace', 'font-size': '9', 'text-anchor': 'middle', x: '289', y: '66' }));
+    app(svg, mkt('USB',    { fill: '#666', 'font-family': 'monospace', 'font-size': '9', 'text-anchor': 'middle', x: '289', y: '66' }));
     app(svg, mkt('TYPE-B', { fill: '#555', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '289', y: '75' }));
     [267, 279, 291, 303].forEach(function (x) {
       app(svg, mk('rect', { x: x, y: '80', width: '8', height: '8', rx: '1', fill: '#b87333' }));
     });
 
-    app(svg, mk('rect', { x: '35', y: '0',  width: '68', height: '68', rx: '4', fill: 'url(#unoUsbGr)', stroke: '#444', 'stroke-width': '1.5' }));
-    app(svg, mk('rect', { x: '39', y: '3',  width: '60', height: '62', rx: '3', fill: '#2a2a2a' }));
-    app(svg, mk('circle', { cx: '69', cy: '22', r: '14', fill: '#111', stroke: '#555', 'stroke-width': '1.5' }));
-    app(svg, mk('circle', { cx: '69', cy: '22', r: '9',  fill: '#0a0a0a', stroke: '#444', 'stroke-width': '1' }));
-    app(svg, mk('circle', { cx: '69', cy: '22', r: '4',  fill: '#1a1a1a', stroke: '#555', 'stroke-width': '1' }));
+    // DC jack
+    app(svg, mk('rect',   { x: '35', y: '0',  width: '68', height: '68', rx: '4', fill: 'url(#unoUsbGr)', stroke: '#444', 'stroke-width': '1.5' }));
+    app(svg, mk('rect',   { x: '39', y: '3',  width: '60', height: '62', rx: '3', fill: '#2a2a2a' }));
+    app(svg, mk('circle', { cx: '69', cy: '22', r: '14', fill: '#111',    stroke: '#555', 'stroke-width': '1.5' }));
+    app(svg, mk('circle', { cx: '69', cy: '22', r: '9',  fill: '#0a0a0a', stroke: '#444', 'stroke-width': '1'   }));
+    app(svg, mk('circle', { cx: '69', cy: '22', r: '4',  fill: '#1a1a1a', stroke: '#555', 'stroke-width': '1'   }));
     app(svg, mk('circle', { cx: '69', cy: '22', r: '1.5', fill: '#888' }));
     app(svg, mkt('DC',    { fill: '#555', 'font-family': 'monospace', 'font-size': '8', 'text-anchor': 'middle', x: '69', y: '42' }));
     app(svg, mkt('7-12V', { fill: '#444', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '69', y: '50' }));
 
+    // Reset button
     app(svg, mk('rect',   { x: '346', y: '4',  width: '32', height: '32', rx: '4', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '1' }));
     app(svg, mk('circle', { cx: '362', cy: '20', r: '14', fill: '#cc2222', stroke: '#991111', 'stroke-width': '1.5' }));
     app(svg, mk('circle', { cx: '362', cy: '20', r: '9',  fill: '#dd3333' }));
     app(svg, mk('circle', { cx: '359', cy: '18', r: '3',  fill: 'rgba(255,150,150,0.4)' }));
     app(svg, mkt('RESET', { fill: '#2a4a6a', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '362', y: '45' }));
 
+    // ICSP header
     app(svg, mk('rect', { x: '180', y: '410', width: '64', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
     [[186,416],[202,416],[218,416],[186,429],[202,429],[218,429]].forEach(function (pos) {
       app(svg, mk('rect', { x: pos[0], y: pos[1], width: '10', height: '9', rx: '1', fill: '#222', stroke: '#555', 'stroke-width': '0.7' }));
     });
     app(svg, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
+    // ATmega328P
     app(svg, mk('rect', { x: '110', y: '202', width: '110', height: '110', rx: '5', fill: 'url(#unoChipGr)', stroke: '#2a2a2a', 'stroke-width': '2' }));
     app(svg, mk('rect', { x: '113', y: '205', width: '104', height: '104', rx: '3', fill: 'none', stroke: '#1a1a1a', 'stroke-width': '1', 'stroke-dasharray': '4,4' }));
     app(svg, mk('circle', { cx: '118', cy: '210', r: '3', fill: '#333' }));
-    app(svg, mkt('ATmega',    { fill: '#333', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', x: '165', y: '255' }));
-    app(svg, mkt('328P-PU',   { fill: '#333', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', x: '165', y: '269' }));
-    app(svg, mkt('ARDUINO',   { fill: '#282828', 'font-family': 'monospace', 'font-size': '8', 'text-anchor': 'middle', x: '165', y: '284' }));
+    app(svg, mkt('ATmega',  { fill: '#333', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', x: '165', y: '255' }));
+    app(svg, mkt('328P-PU', { fill: '#333', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', x: '165', y: '269' }));
+    app(svg, mkt('ARDUINO', { fill: '#282828', 'font-family': 'monospace', 'font-size': '8', 'text-anchor': 'middle', x: '165', y: '284' }));
 
+    // ATmega16U2
     app(svg, mk('rect', { x: '270', y: '138', width: '56', height: '56', rx: '3', fill: 'url(#unoChipGr)', stroke: '#1e1e1e', 'stroke-width': '1.5' }));
     app(svg, mk('circle', { cx: '276', cy: '144', r: '2', fill: '#2a2a2a' }));
-    app(svg, mkt('ATmega',   { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '298', y: '161' }));
-    app(svg, mkt('16U2',     { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '298', y: '171' }));
+    app(svg, mkt('ATmega',     { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '298', y: '161' }));
+    app(svg, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '298', y: '171' }));
     app(svg, mkt('USB-SERIAL', { fill: '#242424', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '298', y: '181' }));
 
+    // Crystal
     app(svg, mk('rect',   { x: '260', y: '358', width: '22', height: '35', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
     app(svg, mk('rect',   { x: '264', y: '366', width: '14', height: '21', rx: '5', fill: '#c0c0c0' }));
     app(svg, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '271', y: '378' }));
     app(svg, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '271', y: '386' }));
 
-    app(svg, mk('ellipse', { cx: '80', cy: '160', rx: '12', ry: '12', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '1.5' }));
-    app(svg, mk('ellipse', { cx: '80', cy: '160', rx: '8',  ry: '8',  fill: '#444' }));
-    app(svg, mkt('10\u03bcF', { fill: 'rgba(140,190,255,0.25)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '80', y: '178' }));
+    // Capacitors
+    app(svg, mk('ellipse', { cx: '80',  cy: '160', rx: '12', ry: '12', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '1.5' }));
+    app(svg, mk('ellipse', { cx: '80',  cy: '160', rx: '8',  ry: '8',  fill: '#444' }));
+    app(svg, mkt('10\u03bcF',  { fill: 'rgba(140,190,255,0.25)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '80',  y: '178' }));
     app(svg, mk('ellipse', { cx: '315', cy: '430', rx: '18', ry: '18', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '2' }));
     app(svg, mk('ellipse', { cx: '315', cy: '430', rx: '12', ry: '12', fill: '#444' }));
     app(svg, mkt('100\u03bcF', { fill: 'rgba(140,190,255,0.25)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '315', y: '450' }));
 
+    // Voltage regulator
     app(svg, mk('rect', { x: '88', y: '368', width: '28', height: '34', rx: '2', fill: '#111', stroke: '#222', 'stroke-width': '1.5' }));
     app(svg, mkt('7805', { fill: '#1a3a5a', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '102', y: '410' }));
 
+    // LEDs
     app(svg, mk('rect', { x: '25',  y: '112', width: '14', height: '6', rx: '3', fill: '#00cc44' }));
-    app(svg, mkt('ON', { fill: 'rgba(140,200,140,0.55)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '40', y: '118' }));
+    app(svg, mkt('ON', { fill: 'rgba(140,200,140,0.55)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '40',  y: '118' }));
     app(svg, mk('rect', { x: '230', y: '155', width: '10', height: '6', rx: '2', fill: '#eecc00' }));
     app(svg, mkt('L',  { fill: 'rgba(200,190,80,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '161' }));
     app(svg, mk('rect', { x: '230', y: '170', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
@@ -219,28 +220,28 @@
     app(svg, mk('rect', { x: '230', y: '182', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     app(svg, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
+    // Arduino logo
     var logoG = mk('g', { opacity: '0.5' });
     app(logoG, mk('circle', { cx: '148', cy: '118', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
     app(logoG, mk('circle', { cx: '192', cy: '118', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('line', { x1: '140', y1: '118', x2: '156', y2: '118', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line', { x1: '148', y1: '112', x2: '148', y2: '125', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line', { x1: '184', y1: '118', x2: '200', y2: '118', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '140', y1: '118', x2: '156', y2: '118', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '148', y1: '112', x2: '148', y2: '125', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '184', y1: '118', x2: '200', y2: '118', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
     svg.appendChild(logoG);
-    app(svg, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)', 'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '170', y: '153' }));
-    app(svg, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)', 'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '170', y: '166' }));
-    app(svg, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9', 'letter-spacing': '3', 'text-anchor': 'middle', x: '170', y: '177' }));
+    app(svg, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '170', y: '153' }));
+    app(svg, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '170', y: '166' }));
+    app(svg, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '170', y: '177' }));
 
+    // Header housings
     app(svg, mk('rect', { x: '372', y: '206', width: '16', height: '115', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     app(svg, mk('rect', { x: '372', y: '327', width: '16', height: '116', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     app(svg, mk('rect', { x: '0',   y: '214', width: '16', height: '109', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     app(svg, mk('rect', { x: '0',   y: '349', width: '16', height: '94',  rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
-    var dLabel = mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,345,310)', x: '345', y: '310' });
-    svg.appendChild(dLabel);
-    var pLabel = mkt('POWER', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,44,268)', x: '44', y: '268' });
-    svg.appendChild(pLabel);
-    var aLabel = mkt('ANALOG IN', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,44,396)', x: '44', y: '396' });
-    svg.appendChild(aLabel);
+    // Silkscreen labels
+    svg.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,345,310)', x: '345', y: '310' }));
+    svg.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,44,268)',   x: '44',  y: '268' }));
+    svg.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,44,396)',   x: '44',  y: '396' }));
   }
 
   // ── interactive pin squares ───────────────────────────────────
@@ -254,17 +255,21 @@
       var col     = getColor(p.type, customTypes);
       var onRight = coord.side === 'right';
 
-      var g = mk('g', { 'class': 'uno-pin', 'data-id': p.id });
+      // ── THE FIX ──────────────────────────────────────────────
+      // class must be 'ic-pin'  → base engine querySelectorAll('.ic-pin')
+      // data-id must be p.id    → base engine g.getAttribute('data-id')
+      // inner rect class 'pin-sq' → base engine g.querySelector('.pin-sq')
+      var g = mk('g', { 'class': 'ic-pin', 'data-id': p.id });
       g.style.cursor = 'pointer';
 
-      // PCB pad background
+      // PCB pad
       app(g, mk('rect', {
         x: coord.x - PS / 2 - 2, y: coord.y - PS / 2 - 2,
         width: PS + 4, height: PS + 4, rx: '2',
         fill: 'rgba(184,130,60,0.30)', stroke: 'rgba(184,130,60,0.55)', 'stroke-width': '0.5'
       }));
 
-      // Coloured pin square
+      // Coloured square — class 'pin-sq' required by base engine
       var sq = mk('rect', {
         x: coord.x - PS / 2, y: coord.y - PS / 2,
         width: PS, height: PS, rx: '2',
@@ -279,43 +284,28 @@
         fill: '#050810', 'pointer-events': 'none'
       }));
 
-      // Label on pin face
+      // Face label
       var lbl = mkt(p.lbl.length > 4 ? p.lbl.slice(0, 4) : p.lbl, {
-        x: coord.x, y: coord.y + 3.5,
-        'text-anchor': 'middle',
+        x: coord.x, y: coord.y + 3.5, 'text-anchor': 'middle',
         fill: col.c, 'font-size': '8', 'font-family': 'monospace',
         'font-weight': 'bold', 'pointer-events': 'none'
       });
       app(g, lbl);
 
-      // Silkscreen label beside pin
-      var silkX  = onRight ? coord.x - PS - 3 : coord.x + PS + 4;
-      var anchor = onRight ? 'end' : 'start';
-      app(svg, mkt(p.lbl, {
-        x: silkX, y: coord.y + 4,
-        'text-anchor': anchor,
-        fill: 'rgba(200,225,255,0.75)', 'font-size': '10',
-        'font-family': 'monospace', 'font-weight': 'bold', 'pointer-events': 'none'
-      }));
-
-      // Transparent hit-target
+      // Hit-target
       app(g, mk('rect', {
         x: coord.x - 16, y: coord.y - 16, width: '32', height: '32',
         fill: 'transparent'
       }));
 
-      // ── FIX: dispatch a CustomEvent instead of calling ICExplorer.selectPin ──
-      // The base engine listens for 'icexplorer:pinselect' on the SVG element
-      // and handles selection + calling updatePins() itself.
-      (function (pinId, svgEl) {
-        g.addEventListener('click', function (e) {
-          e.stopPropagation();
-          svgEl.dispatchEvent(new CustomEvent('icexplorer:pinselect', {
-            bubbles: true,
-            detail: { pinId: pinId }
-          }));
-        });
-      })(p.id, svg);
+      // Silkscreen label (outside the group — not interactive)
+      var silkX  = onRight ? coord.x - PS - 3 : coord.x + PS + 4;
+      var anchor = onRight ? 'end' : 'start';
+      app(svg, mkt(p.lbl, {
+        x: silkX, y: coord.y + 4, 'text-anchor': anchor,
+        fill: 'rgba(200,225,255,0.75)', 'font-size': '10',
+        'font-family': 'monospace', 'font-weight': 'bold', 'pointer-events': 'none'
+      }));
 
       svg.appendChild(g);
       _pinEls[p.id] = { g: g, sq: sq, lbl: lbl };
@@ -323,6 +313,7 @@
   }
 
   // ── updatePins ───────────────────────────────────────────────
+  // Called by ic-explorer-base.js on every state change.
   function updatePins(selectedId, filterType, filterFn) {
     if (!_config) return;
     var customTypes = _config.customTypes || {};
@@ -342,7 +333,7 @@
         sq.setAttribute('fill',         col.c);
         sq.setAttribute('stroke',       col.c);
         sq.setAttribute('stroke-width', '2.5');
-        sq.setAttribute('filter',       'url(#' + _glowId + ')');
+        sq.setAttribute('filter',       'url(#pinGlow)');
         lbl.setAttribute('fill',        '#060c1a');
         els.g.style.opacity = '1';
 
@@ -350,7 +341,7 @@
         sq.setAttribute('fill',         col.c);
         sq.setAttribute('stroke',       col.c);
         sq.setAttribute('stroke-width', '2');
-        sq.setAttribute('filter',       'url(#' + _glowId + ')');
+        sq.setAttribute('filter',       'url(#pinGlow)');
         lbl.setAttribute('fill',        '#060c1a');
         els.g.style.opacity = '1';
 
@@ -373,10 +364,6 @@
     });
   }
 
-  // ── Public API ───────────────────────────────────────────────
-  global.ArduinoUnoRenderer = {
-    draw:       draw,
-    updatePins: updatePins,
-  };
+  global.ArduinoUnoRenderer = { draw: draw, updatePins: updatePins };
 
 }(window));
