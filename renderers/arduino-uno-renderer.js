@@ -326,6 +326,15 @@
         fill: 'transparent'
       }));
 
+ // Click handler — tells the base engine which pin was selected
+      (function(pinId){
+        g.addEventListener('click', function(){
+          if(window.ICExplorer && ICExplorer.selectPin){
+            ICExplorer.selectPin(pinId);
+          }
+        });
+      })(p.id);
+
       svg.appendChild(g);
 
       _pinEls[p.id] = { g: g, sq: sq, lbl: lbl };
