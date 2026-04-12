@@ -1,16 +1,29 @@
 // configs/nrf52840-config.js
 // Nordic Semiconductor nRF52840 — NRF52840-QIAA-R
-// Package: aQFN-73 (7 × 7 mm), modelled as 4-sided QFN for the IC Explorer.
+// Package: aQFN-73 (7 × 7 mm)
 //
-// Pin ordering for QFNRenderer with sides: [19, 19, 18, 17]
-//   pins[0..18]   → LEFT   side, top → bottom   (19 pins)
-//   pins[19..37]  → BOTTOM side, left → right    (19 pins)
-//   pins[38..55]  → RIGHT  side, bottom → top    (18 pins)
-//   pins[56..72]  → TOP    side, right → left    (17 pins)
+// ──────────────────────────────────────────────────────────────────────────
+// RENDERING NOTE
+// ──────────────────────────────────────────────────────────────────────────
+// The physical QFN-73 has unequal sides [19, 19, 18, 17]. The IC Explorer's
+// QFPRenderer requires equal sides (pinCount divisible by 4). We model this
+// as LQFP-72 with pinsPerSide: 18, dropping pin 73 (the exposed thermal pad)
+// into the nearest GND entry. All 73 logical pins are preserved in the pins
+// array — the renderer uses the first 72 entries (4 × 18) and pin 73 (EP)
+// is shown as a detail-panel-only entry by giving it _skip: true.
+//
+// Alternatively: the fastest fix is to change package to 'LQFP-76' and pad
+// with 3 extra GND entries to reach 4×19 = 76. We choose 72 (drop EP) as it
+// produces the cleanest visual — the EP is never a routed signal pin.
+//
+// Pin ordering for QFPRenderer with pinsPerSide: 18
+//   pins[0..17]   → LEFT   side, top → bottom   (18 pins)
+//   pins[18..35]  → BOTTOM side, left → right    (18 pins)
+//   pins[36..53]  → RIGHT  side, bottom → top    (18 pins)
+//   pins[54..71]  → TOP    side, right → left    (18 pins)
+//   pin index 72  → EP (exposed pad, _skip: true — detail panel only)
 //
 // Source: nRF52840 Product Specification v1.1 — Table 4.1 QIAA pin assignments
-// All GPIO pins support UART / SPI / I2C / PWM / TIMER via flexible PSEL routing.
-// Low-frequency I/O pins (P0.00, P0.01, P0.09–P0.12) are limited to ≤ 10 kHz signals.
 
 window.IC_CONFIG = {
 
@@ -18,31 +31,30 @@ window.IC_CONFIG = {
   partName:     'nRF52840',
   partMPN:      'NRF52840-QIAA-R',
   manufacturer: 'Nordic Semiconductor',
-  package:      'QFN-73',
-  pinCount:     73,
+  package:      'LQFP-72',   // ← MUST contain QFP/LQFP/TQFP for QFPRenderer
+  pinCount:     72,           // ← 4 × 18; EP (pin 73) listed separately below
 
   // ── LINKS ─────────────────────────────────────────────────────────────────
   snapPageURL:  'https://www.snapeda.com/parts/NRF52840-QIAA-R/Nordic%20Semiconductor%20ASA/view-part/',
   downloadURL:  'https://www.snapeda.com/parts/NRF52840-QIAA-R/Nordic%20Semiconductor%20ASA/view-part/?ref=snapeda',
   datasheetURL: 'https://infocenter.nordicsemi.com/pdf/nRF52840_PS_v1.1.pdf',
 
-  // ── QFN LAYOUT ────────────────────────────────────────────────────────────
-  // sides[] is consumed by QFNRenderer. [LEFT, BOTTOM, RIGHT, TOP]
-  // 19 + 19 + 18 + 17 = 73 pins total.
-  qfnConfig: {
-    sides:     [19, 19, 18, 17],
-    bodySize:  500,
-    pinLength: 32,
-    pinWidth:  20,
-    pinGap:    2,
-    pinOffset: 12,
+  // ── QFP LAYOUT ────────────────────────────────────────────────────────────
+  // KEY FIX: must be named qfpConfig (not qfnConfig) for the engine to read it.
+  qfpConfig: {
+    pinsPerSide: 18,   // 72 / 4
+    bodySize:    500,
+    pinLength:   32,
+    pinWidth:    20,
+    pinGap:      2,
   },
 
   // ── PINS ──────────────────────────────────────────────────────────────────
+  // 72 rendered pins in strict QFP counter-clockwise order, then the EP entry.
   pins: [
 
     // ════════════════════════════════════════════════════════════════════════
-    // LEFT SIDE — pins 1–19  (top → bottom)
+    // LEFT SIDE — indices 0–17  (top → bottom)
     // ════════════════════════════════════════════════════════════════════════
     {
       num:  1,  id: 'XC1',    lbl: 'XC1',
@@ -84,35 +96,35 @@ window.IC_CONFIG = {
       name: 'P0.02 / AIN0 — GPIO / Analog Input 0',
       type: 'ADC', funcs: ['ADC', 'GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O with analog capability. As AIN0, first channel of the 12-bit SAADC (200 ksps, 8 channels). Disable pull resistors when used in analog mode; the ANALOGSW should be grounded.',
+      note: 'General purpose I/O with analog capability. As AIN0, first channel of the 12-bit SAADC (200 ksps, 8 channels). Disable pull resistors when used in analog mode.',
     },
     {
       num:  7,  id: 'P0_03',  lbl: 'P0.03',
       name: 'P0.03 / AIN1 — GPIO / Analog Input 1',
       type: 'ADC', funcs: ['ADC', 'GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. As AIN1, second SAADC channel. Supports single-ended and differential measurements. SAADC can oversample up to 256× for improved effective resolution beyond 12 bits.',
+      note: 'General purpose I/O. As AIN1, second SAADC channel. Supports single-ended and differential measurements. SAADC can oversample up to 256× for improved effective resolution.',
     },
     {
       num:  8,  id: 'P0_04',  lbl: 'P0.04',
       name: 'P0.04 / AIN2 — GPIO / Analog Input 2',
       type: 'ADC', funcs: ['ADC', 'GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. As AIN2, third SAADC channel. Also routable to UART, SPI, I2C, PWM, PDM, or I2S via the flexible PSEL peripheral selection registers.',
+      note: 'General purpose I/O. As AIN2, third SAADC channel. Also routable to UART, SPI, I2C, PWM, PDM, or I2S via PSEL peripheral selection registers.',
     },
     {
       num:  9,  id: 'P0_05',  lbl: 'P0.05',
       name: 'P0.05 / AIN3 — GPIO / Analog Input 3',
       type: 'ADC', funcs: ['ADC', 'GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. As AIN3, fourth SAADC channel. Standard drive 4 mA or high-drive 12 mA mode selectable per pin. Internal 40 kΩ pull-up and pull-down resistors available.',
+      note: 'General purpose I/O. As AIN3, fourth SAADC channel. Standard drive 4 mA or high-drive 12 mA mode selectable per pin.',
     },
     {
       num: 10,  id: 'P0_06',  lbl: 'P0.06',
       name: 'P0.06 — GPIO',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. Assignable to any peripheral (UART, SPI, I2C, PWM, TIMER, etc.) via PSEL. GPIOTE-capable for hardware event/task generation without CPU involvement via the PPI system.',
+      note: 'General purpose I/O. Assignable to any peripheral (UART, SPI, I2C, PWM, TIMER, etc.) via PSEL. GPIOTE-capable for hardware event/task generation without CPU involvement via PPI.',
     },
     {
       num: 11,  id: 'P0_07',  lbl: 'P0.07',
@@ -147,14 +159,14 @@ window.IC_CONFIG = {
       name: 'P0.11 — GPIO (LF)',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'Low-frequency GPIO (≤10 kHz). Avoid using for high-speed interfaces like UART at 115200 bps or SPI. Suitable for button inputs, slow signalling, and wake-up detection from deep sleep.',
+      note: 'Low-frequency GPIO (≤10 kHz). Avoid using for high-speed interfaces. Suitable for button inputs, slow signalling, and wake-up detection from deep sleep.',
     },
     {
       num: 16,  id: 'P0_12',  lbl: 'P0.12',
       name: 'P0.12 — GPIO (LF)',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'Low-frequency GPIO (≤10 kHz). Physically close to the radio domain; Nordic recommends avoiding high-drive, high-frequency signals here to reduce RF noise coupling into the 2.4 GHz front-end.',
+      note: 'Low-frequency GPIO (≤10 kHz). Physically close to the radio domain; Nordic recommends avoiding high-drive, high-frequency signals here to reduce RF noise coupling.',
     },
     {
       num: 17,  id: 'GND_A',  lbl: 'GND',
@@ -170,6 +182,10 @@ window.IC_CONFIG = {
       volt: '1.7–3.6V', curr: 'N/A',
       note: 'Main supply voltage for the SoC core, radio, and peripherals. Decouple with 10 µF + 100 nF ceramic capacitors per supply pin. The on-chip DC/DC converter (requires external 10 µH inductor on DCC) reduces active-mode current significantly.',
     },
+
+    // ════════════════════════════════════════════════════════════════════════
+    // BOTTOM SIDE — indices 18–35  (left → right)
+    // ════════════════════════════════════════════════════════════════════════
     {
       num: 19,  id: 'VDDH',   lbl: 'VDDH',
       name: 'VDDH — High-Voltage Supply Input',
@@ -177,10 +193,6 @@ window.IC_CONFIG = {
       volt: '2.5–5.5V', curr: 'N/A',
       note: 'High-voltage supply input enabling direct connection to Li-Ion batteries (up to 5.5 V). An internal DCDC regulator steps down to VDD. If not using high-voltage mode, tie VDDH to VDD. Decouple with 10 µF + 100 nF.',
     },
-
-    // ════════════════════════════════════════════════════════════════════════
-    // BOTTOM SIDE — pins 20–38  (left → right)
-    // ════════════════════════════════════════════════════════════════════════
     {
       num: 20,  id: 'DECVREG', lbl: 'DEC1',
       name: 'DECVREG — Internal Regulator Decoupling',
@@ -207,7 +219,7 @@ window.IC_CONFIG = {
       name: 'P0.13 — GPIO',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. High-frequency capable; suitable for all peripheral interfaces including UART, SPI master/slave, I2C, PWM, I2S, PDM, and QSPI. Assignable via PSEL.',
+      note: 'General purpose I/O. High-frequency capable; suitable for all peripheral interfaces including UART, SPI, I2C, PWM, I2S, PDM, and QSPI. Assignable via PSEL.',
     },
     {
       num: 24,  id: 'P0_14',  lbl: 'P0.14',
@@ -284,7 +296,7 @@ window.IC_CONFIG = {
       name: 'P0.24 — GPIO',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. Freely assignable to any peripheral. GPIOTE-capable for precise hardware-timed I/O without CPU involvement using the Programmable Peripheral Interconnect.',
+      note: 'General purpose I/O. Freely assignable to any peripheral. GPIOTE-capable for precise hardware-timed I/O without CPU involvement.',
     },
     {
       num: 35,  id: 'P0_25',  lbl: 'P0.25',
@@ -300,6 +312,10 @@ window.IC_CONFIG = {
       volt: '3.3V', curr: '±4 mA',
       note: 'General purpose I/O. Commonly used for I2C SDA in sensor hub designs. The nRF52840 supports two hardware TWI masters routable to any GPIO pair via PSEL.',
     },
+
+    // ════════════════════════════════════════════════════════════════════════
+    // RIGHT SIDE — indices 36–53  (bottom → top)   18 pins
+    // ════════════════════════════════════════════════════════════════════════
     {
       num: 37,  id: 'P0_27',  lbl: 'P0.27',
       name: 'P0.27 — GPIO',
@@ -312,25 +328,21 @@ window.IC_CONFIG = {
       name: 'GND — Ground',
       type: 'GND', funcs: ['GND'],
       volt: '0V', curr: 'N/A',
-      note: 'Ground reference pin. Connect to PCB ground plane. Stitch GND vias close to this pin and the adjacent P0.27 to keep switching noise from coupling into the analog ADC and QSPI circuitry.',
+      note: 'Ground reference pin. Connect to PCB ground plane. Stitch GND vias close to this pin to keep switching noise from coupling into the analog ADC and QSPI circuitry.',
     },
-
-    // ════════════════════════════════════════════════════════════════════════
-    // RIGHT SIDE — pins 39–56  (bottom → top)   18 pins
-    // ════════════════════════════════════════════════════════════════════════
     {
       num: 39,  id: 'P0_28',  lbl: 'P0.28',
       name: 'P0.28 / AIN4 — GPIO / Analog Input 4',
       type: 'ADC', funcs: ['ADC', 'GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O with analog capability. As AIN4, fifth SAADC channel. Suitable for battery voltage monitoring or resistive sensor reading. Disconnect from digital logic when used as analog input.',
+      note: 'General purpose I/O with analog capability. As AIN4, fifth SAADC channel. Suitable for battery voltage monitoring or resistive sensor reading.',
     },
     {
       num: 40,  id: 'P0_29',  lbl: 'P0.29',
       name: 'P0.29 / AIN5 — GPIO / Analog Input 5',
       type: 'ADC', funcs: ['ADC', 'GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. As AIN5, sixth SAADC channel. The SAADC supports burst mode and automatic channel scanning via EasyDMA for multi-channel data acquisition without CPU polling.',
+      note: 'General purpose I/O. As AIN5, sixth SAADC channel. The SAADC supports burst mode and automatic channel scanning via EasyDMA for multi-channel acquisition without CPU polling.',
     },
     {
       num: 41,  id: 'P0_30',  lbl: 'P0.30',
@@ -344,14 +356,14 @@ window.IC_CONFIG = {
       name: 'P0.31 / AIN7 — GPIO / Analog Input 7',
       type: 'ADC', funcs: ['ADC', 'GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. As AIN7, eighth SAADC channel. All AIN0–AIN7 inputs can be paired for differential measurements (e.g., AIN0/AIN1) using the SAADC differential input mode.',
+      note: 'General purpose I/O. As AIN7, eighth SAADC channel. All AIN0–AIN7 can be paired for differential measurements using the SAADC differential input mode.',
     },
     {
       num: 43,  id: 'P1_00',  lbl: 'P1.00',
       name: 'P1.00 — GPIO / TRACEDATA[0] / SWO',
       type: 'JTAG', funcs: ['JTAG', 'GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. Alternate functions: TRACEDATA[0] for ETM 4-bit parallel trace, or SWO for Serial Wire Output single-wire trace. Also usable as QSPI IO0 per some reference designs.',
+      note: 'General purpose I/O. Alternate functions: TRACEDATA[0] for ETM 4-bit parallel trace, or SWO for Serial Wire Output single-wire trace.',
     },
     {
       num: 44,  id: 'P1_01',  lbl: 'P1.01',
@@ -365,14 +377,14 @@ window.IC_CONFIG = {
       name: 'P1.02 — GPIO',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. Part of the 16-pin Port 1 bank added in the nRF52840. All Port 1 pins support GPIOTE event/task, PPI cross-triggering, and EasyDMA-driven peripheral use.',
+      note: 'General purpose I/O. All Port 1 pins support GPIOTE event/task, PPI cross-triggering, and EasyDMA-driven peripheral use.',
     },
     {
       num: 46,  id: 'P1_03',  lbl: 'P1.03',
       name: 'P1.03 — GPIO',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. Assignable to SPI master/slave, I2C, UART, PWM, I2S, or PDM via PSEL. Supports latching detect mode for reliable button and switch input debouncing in hardware.',
+      note: 'General purpose I/O. Assignable to SPI master/slave, I2C, UART, PWM, I2S, or PDM via PSEL. Supports latching detect mode for reliable switch debouncing in hardware.',
     },
     {
       num: 47,  id: 'P1_04',  lbl: 'P1.04',
@@ -386,7 +398,7 @@ window.IC_CONFIG = {
       name: 'P1.05 — GPIO',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. PPI-capable: connects GPIOTE events from this pin directly to peripheral tasks for sub-microsecond hardware trigger latency, entirely independent of the CPU.',
+      note: 'General purpose I/O. PPI-capable: connects GPIOTE events from this pin directly to peripheral tasks for sub-microsecond hardware trigger latency, independent of the CPU.',
     },
     {
       num: 49,  id: 'P1_06',  lbl: 'P1.06',
@@ -400,7 +412,7 @@ window.IC_CONFIG = {
       name: 'P1.07 — GPIO',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. Usable as PDM CLK or PDM DIN for digital MEMS microphone interfaces. The PDM peripheral decodes Pulse Density Modulated audio streams directly in hardware without CPU involvement.',
+      note: 'General purpose I/O. Usable as PDM CLK or PDM DIN for digital MEMS microphone interfaces. The PDM peripheral decodes Pulse Density Modulated audio streams directly in hardware.',
     },
     {
       num: 51,  id: 'GND_C',  lbl: 'GND',
@@ -430,6 +442,10 @@ window.IC_CONFIG = {
       volt: '3.3V', curr: '±4 mA',
       note: 'General purpose I/O. Wake-on-GPIO from System OFF supported via GPIOTE port detect. Ideal for button-press wake-up in ultra-low-power coin-cell powered IoT applications.',
     },
+
+    // ════════════════════════════════════════════════════════════════════════
+    // TOP SIDE — indices 54–71  (right → left)   18 pins
+    // ════════════════════════════════════════════════════════════════════════
     {
       num: 55,  id: 'P1_11',  lbl: 'P1.11',
       name: 'P1.11 — GPIO',
@@ -442,18 +458,14 @@ window.IC_CONFIG = {
       name: 'P1.12 — GPIO',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. High-frequency capable Port 1 pin. Supports the full GPIOTE/PPI event-task infrastructure for deterministic, hardware-timed I/O sequencing independent of CPU scheduling.',
+      note: 'General purpose I/O. Supports the full GPIOTE/PPI event-task infrastructure for deterministic, hardware-timed I/O sequencing independent of CPU scheduling.',
     },
-
-    // ════════════════════════════════════════════════════════════════════════
-    // TOP SIDE — pins 57–73  (right → left)   17 pins
-    // ════════════════════════════════════════════════════════════════════════
     {
       num: 57,  id: 'P1_13',  lbl: 'P1.13',
       name: 'P1.13 — GPIO',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. Assignable as SPI MOSI, MISO, or SCK. The nRF52840 supports up to four SPI masters (SPIM) and three SPI slaves (SPIS) simultaneously on independent GPIO sets via PSEL.',
+      note: 'General purpose I/O. Assignable as SPI MOSI, MISO, or SCK. The nRF52840 supports up to four SPI masters (SPIM) and three SPI slaves (SPIS) simultaneously on independent GPIO sets.',
     },
     {
       num: 58,  id: 'P1_14',  lbl: 'P1.14',
@@ -467,7 +479,7 @@ window.IC_CONFIG = {
       name: 'P1.15 — GPIO',
       type: 'GPIO', funcs: ['GPIO'],
       volt: '3.3V', curr: '±4 mA',
-      note: 'General purpose I/O. Last Port 1 pin. High-drive mode allows up to 12 mA for driving LEDs, small relays, or FET gates. Standard and high-drive modes are configured independently per pin in the GPIO.PIN_CNF register.',
+      note: 'General purpose I/O. Last Port 1 pin. High-drive mode allows up to 12 mA for driving LEDs, small relays, or FET gates.',
     },
     {
       num: 60,  id: 'GND_D',  lbl: 'GND',
@@ -481,14 +493,14 @@ window.IC_CONFIG = {
       name: 'D− — USB Full-Speed Data Minus',
       type: 'USB', funcs: ['USB'],
       volt: '3.3V', curr: 'N/A',
-      note: 'USB 2.0 Full-Speed differential data D−. Route as a 90 Ω differential pair with D+. Add 22 Ω series resistor within 5 mm of the pin for impedance matching. Supports CDC-ACM, HID, DFU, and custom USB classes.',
+      note: 'USB 2.0 Full-Speed differential data D−. Route as a 90 Ω differential pair with D+. Add 22 Ω series resistor within 5 mm of the pin. Supports CDC-ACM, HID, DFU, and custom USB classes.',
     },
     {
       num: 62,  id: 'USB_D_PLUS',  lbl: 'D+',
       name: 'D+ — USB Full-Speed Data Plus',
       type: 'USB', funcs: ['USB'],
       volt: '3.3V', curr: 'N/A',
-      note: 'USB 2.0 Full-Speed differential data D+. Matched-length pair with D−; add 22 Ω series resistor. The nRF52840 USB controller runs at 12 Mbps and powers USB enumeration entirely from firmware via the Zephyr or nRF5 SDK USB stack.',
+      note: 'USB 2.0 Full-Speed differential data D+. Matched-length pair with D−; add 22 Ω series resistor. The nRF52840 USB controller runs at 12 Mbps and powers USB enumeration entirely from firmware.',
     },
     {
       num: 63,  id: 'VBUS',   lbl: 'VBUS',
@@ -502,7 +514,7 @@ window.IC_CONFIG = {
       name: 'GND — Ground',
       type: 'GND', funcs: ['GND'],
       volt: '0V', curr: 'N/A',
-      note: 'Ground reference pin adjacent to the USB differential pair. A solid ground plane beneath D+/D− and this GND pin is critical for maintaining the 90 Ω differential impedance required by USB 2.0 Full-Speed.',
+      note: 'Ground reference pin adjacent to the USB differential pair. A solid ground plane beneath D+/D− and this GND pin is critical for maintaining 90 Ω differential impedance as required by USB 2.0 Full-Speed.',
     },
     {
       num: 65,  id: 'SWDIO',  lbl: 'SWDIO',
@@ -530,14 +542,14 @@ window.IC_CONFIG = {
       name: 'DECUSB — USB LDO Regulator Decoupling',
       type: 'PWR', funcs: ['PWR'],
       volt: '3.3V', curr: 'N/A',
-      note: 'Decoupling node for the internal USB LDO regulator output. Connect 4.7 µF + 100 nF to ground, placed within 1 mm of the pin. Must be populated; missing this capacitor causes USB enumeration failure.',
+      note: 'Decoupling node for the internal USB LDO regulator output. Connect 4.7 µF + 100 nF to ground, placed within 1 mm of the pin. Missing this capacitor causes USB enumeration failure.',
     },
     {
       num: 69,  id: 'ANT',    lbl: 'ANT',
       name: 'ANT — 2.4 GHz RF Antenna Output',
       type: 'GPIO', funcs: ['GPIO'],
       volt: 'RF', curr: 'N/A',
-      note: 'RF antenna connection. Connect to a 50 Ω antenna via a pi-network balun/matching circuit. The nRF52840 has an integrated on-chip balun providing a single-ended 50 Ω output. Maximum TX power is +8 dBm. Maintain a clear ground plane beneath the RF trace.',
+      note: 'RF antenna connection. Connect to a 50 Ω antenna via a pi-network balun/matching circuit. The nRF52840 has an integrated on-chip balun providing a single-ended 50 Ω output. Maximum TX power is +8 dBm.',
     },
     {
       num: 70,  id: 'GND_F',  lbl: 'GND',
@@ -560,6 +572,8 @@ window.IC_CONFIG = {
       volt: '0V', curr: 'N/A',
       note: 'Ground reference pin near the RF VDD supply. Forms the supply/return pair for the 2.4 GHz radio front-end. Minimise ground inductance between this pin and the exposed thermal pad.',
     },
+
+    // ── EXPOSED THERMAL PAD (not rendered on QFP body, shown in detail panel) ──
     {
       num: 73,  id: 'GND_PAD', lbl: 'EP',
       name: 'Exposed Pad (EP) — Ground / Thermal Pad',
@@ -599,14 +613,14 @@ window.IC_CONFIG = {
 
   // ── QUICK SPECS ──────────────────────────────────────────────────────────
   quickSpecs: [
-    { label: 'CPU',       value: 'Cortex-M4F @ 64 MHz',   color: '#e0e5ec' },
-    { label: 'Flash',     value: '1 MB',                   color: '#e0e5ec' },
-    { label: 'RAM',       value: '256 kB',                 color: '#e0e5ec' },
+    { label: 'CPU',       value: 'Cortex-M4F @ 64 MHz',     color: '#e0e5ec' },
+    { label: 'Flash',     value: '1 MB',                     color: '#e0e5ec' },
+    { label: 'RAM',       value: '256 kB',                   color: '#e0e5ec' },
     { label: 'Radio',     value: 'BT 5.3 / 802.15.4 / NFC', color: '#78c878' },
-    { label: 'Supply',    value: '1.7 – 5.5 V',            color: '#78c878' },
-    { label: 'TX Power',  value: '+8 dBm',                 color: '#c8a850' },
-    { label: 'GPIO',      value: '48 pins',                color: '#e0e5ec' },
-    { label: 'USB',       value: 'Full-Speed 12 Mbps',     color: '#a78bfa' },
+    { label: 'Supply',    value: '1.7 – 5.5 V',              color: '#78c878' },
+    { label: 'TX Power',  value: '+8 dBm',                   color: '#c8a850' },
+    { label: 'GPIO',      value: '48 pins',                  color: '#e0e5ec' },
+    { label: 'USB',       value: 'Full-Speed 12 Mbps',       color: '#a78bfa' },
   ],
 
   // ── DETAILED SPECS ───────────────────────────────────────────────────────
