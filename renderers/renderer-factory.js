@@ -1,54 +1,69 @@
-/**
- * Renderer Factory - Auto-selects the right renderer based on package
- */
+// ============================================================
+//  renderers/renderer-factory.js
+//  IC Explorer — maps package/partName strings → renderer objects
+//
+//  LOAD ORDER (in HTML):
+//    renderer-factory.js       ← this file
+//    dip-renderer.js
+//    qfp-renderer.js
+//    custom-board-renderer.js
+//    arduino-uno-renderer.js   ← new
+//    ic-explorer-base.js
+// ============================================================
 
-var RendererFactory = {
-  getPackageType: function(packageName, partName) {
-    var pkg = (packageName || '').toUpperCase();
-    var name = (partName || '').toUpperCase();
-    
-    // Custom boards (by name)
-    if (name.indexOf('RASPBERRY') >= 0 || name.indexOf('RPI') >= 0) return 'custom';
-    if (name.indexOf('TEENSY') >= 0) return 'custom';
-    if (name.indexOf('ARDUINO') >= 0 || name.indexOf('NANO') >= 0) return 'custom';
-    
-    // DIP packages
-    if (pkg.indexOf('DIP') >= 0) return 'dip';
+var RendererFactory = (function () {
+  'use strict';
 
-    // QFN packages with uneven pin distribution (e.g. QFN-73)
-    // These use the QFNRenderer which supports per-side pin counts via qfnConfig.sides[]
-    if (pkg.indexOf('QFN') >= 0) return 'qfn';
-    
-    // QFP/LQFP/TQFP packages — evenly divisible by 4
-    if (pkg.indexOf('QFP') >= 0 || pkg.indexOf('LQFP') >= 0 || pkg.indexOf('TQFP') >= 0) {
-      return 'qfp';
+  /**
+   * Returns the correct renderer object for the given package / partName.
+   *
+   * @param  {string} pkg      — config.package  e.g. 'DIP-28', 'LQFP-64', 'Arduino Uno'
+   * @param  {string} partName — config.partName e.g. 'ATmega328P', 'Arduino Uno R3'
+   * @returns renderer object with { draw, updatePins }
+   */
+  function getRenderer(pkg, partName) {
+    var p   = (pkg      || '').toLowerCase();
+    var pn  = (partName || '').toLowerCase();
+
+    // ── Arduino Uno ───────────────────────────────────────────
+    if (p.indexOf('arduino uno') >= 0 || pn.indexOf('arduino uno') >= 0) {
+      if (typeof window.ArduinoUnoRenderer !== 'undefined') {
+        return window.ArduinoUnoRenderer;
+      }
     }
-    
-    // Default to DIP for now
-    return 'dip';
-  },
-  
-  getRenderer: function(packageName, partName) {
-    var type = this.getPackageType(packageName, partName);
 
-    // Teensy 4.1
-    if (partName && partName.toLowerCase().indexOf('teensy 4.1') >= 0) {
-      return window.Teensy41Renderer;
-    }
-    
-    switch(type) {
-      case 'dip':
-        return window.DIPRenderer;
-      case 'qfp':
-        return window.QFPRenderer;
-      case 'qfn':
-        return window.QFNRenderer;
-      case 'custom':
+    // ── Other Arduino / Teensy / dev-boards → CustomBoardRenderer
+    if (
+      pn.indexOf('arduino') >= 0 ||
+      pn.indexOf('teensy')  >= 0 ||
+      pn.indexOf('raspberry pi') >= 0
+    ) {
+      if (typeof window.CustomBoardRenderer !== 'undefined') {
         return window.CustomBoardRenderer;
-      default:
-        return window.DIPRenderer;
+      }
     }
-  }
-};
 
-window.RendererFactory = RendererFactory;
+    // ── QFP / LQFP / TQFP ────────────────────────────────────
+    if (p.indexOf('qfp') >= 0 || p.indexOf('lqfp') >= 0 || p.indexOf('tqfp') >= 0) {
+      if (typeof window.QFPRenderer !== 'undefined') {
+        return window.QFPRenderer;
+      }
+    }
+
+    // ── DIP (default for all DIP-N packages) ──────────────────
+    if (p.indexOf('dip') >= 0) {
+      if (typeof window.DIPRenderer !== 'undefined') {
+        return window.DIPRenderer;
+      }
+    }
+
+    // ── Fallback — DIPRenderer handles most standard ICs ──────
+    if (typeof window.DIPRenderer !== 'undefined') {
+      return window.DIPRenderer;
+    }
+
+    throw new Error('RendererFactory: no renderer found for package="' + pkg + '" partName="' + partName + '"');
+  }
+
+  return { getRenderer: getRenderer };
+}());
