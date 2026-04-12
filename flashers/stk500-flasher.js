@@ -1,235 +1,158 @@
-window.STK500Flasher = (function () {
+window.STK500Flasher=(function(){
 
-  var STK_INSYNC     = 0x14;
-  var STK_OK         = 0x10;
-  var STK_CRC_EOP    = 0x20;
-  var STK_GET_SYNC   = 0x30;
-  var STK_ENTER_PROG = 0x50;
-  var STK_LEAVE_PROG = 0x51;
-  var STK_LOAD_ADDR  = 0x55;
-  var STK_PROG_PAGE  = 0x64;
+  var INSYNC=0x14,OK=0x10,CRC_EOP=0x20;
+  var GET_SYNC=0x30,ENTER=0x50,LEAVE=0x51,LOAD=0x55,PROG=0x64;
+  var PAGE=128;
+  var _log,_q=[],_waiters=[],_rawReader=null,_writer=null,_dead=false;
 
-  var PAGE_SIZE = 128;
-  var _logFn;
+  function log(m,c){if(_log)_log(m,c);}
+  function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
 
-  // Single shared byte queue — all reads go through here
-  var _queue = [];
-  var _queueWaiters = [];
-  var _readerRunning = false;
-  var _readerAbort = false;
-  var _rawReader = null;
-  var _writer = null;
-
-  function log(msg, cls) { if (_logFn) _logFn(msg, cls); }
-  function delay(ms) { return new Promise(function(r){setTimeout(r,ms);}); }
-
-  // Start pumping bytes from the port into _queue
-  function startPump(port) {
-    _queue = [];
-    _queueWaiters = [];
-    _readerAbort = false;
-    _readerRunning = true;
-    _rawReader = port.readable.getReader();
-
-    (function pump() {
-      if (_readerAbort) {
-        _readerRunning = false;
-        return;
-      }
-      _rawReader.read().then(function(result) {
-        if (_readerAbort || result.done) {
-          _readerRunning = false;
-          return;
+  function pump(port){
+    _q=[];_waiters=[];_dead=false;
+    _rawReader=port.readable.getReader();
+    (function go(){
+      if(_dead)return;
+      _rawReader.read().then(function(r){
+        if(_dead||r.done)return;
+        if(r.value)for(var i=0;i<r.value.length;i++){
+          var b=r.value[i];
+          if(_waiters.length)_waiters.shift()(b);
+          else _q.push(b);
         }
-        if (result.value && result.value.length > 0) {
-          for (var i = 0; i < result.value.length; i++) {
-            var byte = result.value[i];
-            if (_queueWaiters.length > 0) {
-              var resolve = _queueWaiters.shift();
-              resolve(byte);
-            } else {
-              _queue.push(byte);
-            }
-          }
-        }
-        pump();
-      }).catch(function() {
-        _readerRunning = false;
-      });
+        go();
+      }).catch(function(){});
     })();
   }
 
-  async function stopPump() {
-    _readerAbort = true;
-    try { await _rawReader.cancel(); } catch(e) {}
-    try { _rawReader.releaseLock(); } catch(e) {}
-    _rawReader = null;
+  async function stopPump(){
+    _dead=true;
+    try{await _rawReader.cancel();}catch(e){}
+    try{_rawReader.releaseLock();}catch(e){}
   }
 
-  function readByte(timeoutMs) {
-    if (timeoutMs === undefined) timeoutMs = 4000;
-    return new Promise(function(res, rej) {
-      if (_queue.length > 0) {
-        res(_queue.shift());
-        return;
-      }
-      var settled = false;
-      var timer = setTimeout(function() {
-        if (settled) return;
-        settled = true;
-        // remove this waiter
-        var idx = _queueWaiters.indexOf(resolver);
-        if (idx >= 0) _queueWaiters.splice(idx, 1);
+  function rb(ms){
+    ms=ms||5000;
+    return new Promise(function(res,rej){
+      if(_q.length){res(_q.shift());return;}
+      var done=false;
+      var t=setTimeout(function(){
+        if(done)return;done=true;
+        var i=_waiters.indexOf(fn);
+        if(i>=0)_waiters.splice(i,1);
         rej(new Error('Read timeout'));
-      }, timeoutMs);
-      function resolver(b) {
-        if (settled) return;
-        settled = true;
-        clearTimeout(timer);
-        res(b);
-      }
-      _queueWaiters.push(resolver);
+      },ms);
+      function fn(b){if(done)return;done=true;clearTimeout(t);res(b);}
+      _waiters.push(fn);
     });
   }
 
-  async function expect(val, timeoutMs) {
-    var b = await readByte(timeoutMs || 4000);
-    if (b !== val) {
-      throw new Error('Protocol error: expected 0x' + val.toString(16) +
-        ' got 0x' + b.toString(16));
-    }
+  async function expect(v,ms){
+    var b=await rb(ms||5000);
+    if(b!==v)throw new Error('Expected 0x'+v.toString(16)+' got 0x'+b.toString(16));
   }
 
-  async function sendCmd(bytes) {
-    var buf = new Uint8Array(bytes.length + 1);
-    for (var i = 0; i < bytes.length; i++) buf[i] = bytes[i];
-    buf[bytes.length] = STK_CRC_EOP;
+  async function send(bytes){
+    var buf=new Uint8Array(bytes.length+1);
+    for(var i=0;i<bytes.length;i++)buf[i]=bytes[i];
+    buf[bytes.length]=CRC_EOP;
     await _writer.write(buf);
-    await expect(STK_INSYNC, 5000);
-    await expect(STK_OK, 5000);
   }
 
-  async function getSync() {
-    // Drain anything in queue first
-    _queue = [];
-    for (var attempt = 0; attempt < 10; attempt++) {
-      try {
-        // Send two GET_SYNC to clear any partial state
-        await _writer.write(new Uint8Array([
-          STK_GET_SYNC, STK_CRC_EOP,
-          STK_GET_SYNC, STK_CRC_EOP
-        ]));
-        var b1 = await readByte(500);
-        if (b1 === STK_INSYNC) {
-          var b2 = await readByte(500);
-          if (b2 === STK_OK) {
-            // drain second response if it arrives
-            try {
-              var b3 = await readByte(200);
-              if (b3 === STK_INSYNC) await readByte(200);
-            } catch(e) {}
-            log('Bootloader sync OK', 'rx');
-            return;
-          }
-        }
-        // drain queue on bad response
-        _queue = [];
-      } catch(e) {}
-      log('Sync attempt ' + (attempt + 1) + '…');
-      await delay(80);
-    }
-    throw new Error('Cannot sync — make sure Arduino IDE is closed and baud rate is 115200.');
+  async function cmd(bytes){
+    await send(bytes);
+    await expect(INSYNC,5000);
+    await expect(OK,5000);
   }
 
-  async function loadAddress(addr) {
-    var word = Math.floor(addr / 2);
-    await sendCmd([STK_LOAD_ADDR, word & 0xff, (word >> 8) & 0xff]);
-  }
-
-  async function progPage(pageBytes) {
-    var buf = new Uint8Array(4 + pageBytes.length + 1);
-    buf[0] = STK_PROG_PAGE;
-    buf[1] = 0x00;
-    buf[2] = pageBytes.length;
-    buf[3] = 0x46; // 'F' = flash
-    for (var i = 0; i < pageBytes.length; i++) buf[4 + i] = pageBytes[i];
-    buf[buf.length - 1] = STK_CRC_EOP;
-    await _writer.write(buf);
-    await expect(STK_INSYNC, 6000);
-    await expect(STK_OK, 6000);
-  }
-
-  function parseHex(hexText) {
-    var data = new Uint8Array(0x20000);
-    var maxAddr = 0;
-    var lines = hexText.split('\n');
-    for (var i = 0; i < lines.length; i++) {
-      var l = lines[i].trim();
-      if (!l.startsWith(':')) continue;
-      var len  = parseInt(l.slice(1,3), 16);
-      var addr = parseInt(l.slice(3,7), 16);
-      var type = parseInt(l.slice(7,9), 16);
-      if (type === 0x01) break;
-      if (type !== 0x00) continue;
-      for (var b = 0; b < len; b++) {
-        data[addr+b] = parseInt(l.slice(9+b*2, 11+b*2), 16);
+  // Sync AND enter progmode in one tight loop — no gap between them
+  async function syncAndEnter(){
+    for(var attempt=0;attempt<12;attempt++){
+      try{
+        _q=[];
+        // Send GET_SYNC
+        await _writer.write(new Uint8Array([GET_SYNC,CRC_EOP]));
+        var b=await rb(300);
+        if(b!==INSYNC){await delay(50);continue;}
+        var b2=await rb(300);
+        if(b2!==OK){await delay(50);continue;}
+        // Got sync — NOW immediately send ENTER_PROGMODE with no delay
+        await _writer.write(new Uint8Array([ENTER,CRC_EOP]));
+        var c=await rb(2000);
+        if(c!==INSYNC){await delay(50);continue;}
+        var c2=await rb(2000);
+        if(c2!==OK){await delay(50);continue;}
+        log('Sync + programming mode OK','rx');
+        return;
+      }catch(e){
+        log('Attempt '+(attempt+1)+'…');
+        await delay(60);
       }
-      if (addr+len > maxAddr) maxAddr = addr+len;
     }
-    return data.slice(0, maxAddr);
+    throw new Error('Cannot sync — close Arduino IDE, check baud 115200, try pressing reset manually just before clicking Flash.');
   }
 
-  async function flash(port, hexText, onLog, onProgress) {
-    _logFn = onLog;
+  function parseHex(hex){
+    var data=new Uint8Array(0x20000),max=0;
+    hex.split('\n').forEach(function(line){
+      var l=line.trim();
+      if(!l.startsWith(':'))return;
+      var len=parseInt(l.slice(1,3),16);
+      var addr=parseInt(l.slice(3,7),16);
+      var type=parseInt(l.slice(7,9),16);
+      if(type===1)return;
+      if(type!==0)return;
+      for(var i=0;i<len;i++)data[addr+i]=parseInt(l.slice(9+i*2,11+i*2),16);
+      if(addr+len>max)max=addr+len;
+    });
+    return data.slice(0,max);
+  }
 
-    // Start the byte pump — keeps reader always draining
-    startPump(port);
+  async function flash(port,hexText,onLog,onProgress){
+    _log=onLog;
+    pump(port);
+    _writer=port.writable.getWriter();
+    try{
+      log('Syncing and entering programming mode…');
+      await syncAndEnter();
 
-    // Get writer
-    _writer = port.writable.getWriter();
+      var data=parseHex(hexText);
+      var pages=Math.ceil(data.length/PAGE);
+      log('Flashing '+data.length+' bytes / '+pages+' pages…');
 
-    try {
-      log('Syncing with bootloader…');
-      await getSync();
-
-      // Small pause between sync and first real command
-      await delay(20);
-
-      log('Entering programming mode…');
-      await sendCmd([STK_ENTER_PROG]);
-      log('Programming mode active', 'rx');
-
-      var data = parseHex(hexText);
-      var pages = Math.ceil(data.length / PAGE_SIZE);
-      log('Flashing ' + data.length + ' bytes / ' + pages + ' pages…');
-
-      for (var p = 0; p < pages; p++) {
-        var addr = p * PAGE_SIZE;
-        var chunk = data.slice(addr, addr + PAGE_SIZE);
-        var page = new Uint8Array(PAGE_SIZE);
+      for(var p=0;p<pages;p++){
+        var addr=p*PAGE;
+        var chunk=data.slice(addr,addr+PAGE);
+        var page=new Uint8Array(PAGE);
         page.set(chunk);
-        page.fill(0xff, chunk.length);
+        page.fill(0xff,chunk.length);
 
-        await loadAddress(addr);
-        await progPage(Array.from(page));
+        // LOAD ADDRESS
+        var word=Math.floor(addr/2);
+        await cmd([LOAD,word&0xff,(word>>8)&0xff]);
 
-        var pct = Math.round(((p+1)/pages)*100);
-        if (onProgress) onProgress(pct);
-        if (p % 8 === 0 || p === pages-1) {
-          log('Page '+(p+1)+'/'+pages+' ('+pct+'%)');
-        }
+        // PROG PAGE — single write
+        var buf=new Uint8Array(4+PAGE+1);
+        buf[0]=PROG;buf[1]=0x00;buf[2]=PAGE;buf[3]=0x46;
+        for(var i=0;i<PAGE;i++)buf[4+i]=page[i];
+        buf[4+PAGE]=CRC_EOP;
+        await _writer.write(buf);
+        await expect(INSYNC,6000);
+        await expect(OK,6000);
+
+        var pct=Math.round(((p+1)/pages)*100);
+        if(onProgress)onProgress(pct);
+        if(p%8===0||p===pages-1)log('Page '+(p+1)+'/'+pages+' ('+pct+'%)');
       }
 
-      log('Leaving programming mode…');
-      await sendCmd([STK_LEAVE_PROG]);
-      log('Flash complete!', 'rx');
+      await cmd([LEAVE]);
+      log('Flash complete!','rx');
 
-    } finally {
+    }finally{
       await stopPump();
-      try { _writer.releaseLock(); } catch(e) {}
+      try{_writer.releaseLock();}catch(e){}
     }
   }
 
-  return { flash: flash };
-
+  return{flash:flash};
 })();
