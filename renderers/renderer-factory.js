@@ -6,8 +6,9 @@
 //    renderer-factory.js       ← this file
 //    dip-renderer.js
 //    qfp-renderer.js
+//    qfn-renderer.js           ← new (QFN top-down pad view)
 //    custom-board-renderer.js
-//    arduino-uno-renderer.js   ← new
+//    arduino-uno-renderer.js
 //    ic-explorer-base.js
 // ============================================================
 
@@ -43,8 +44,15 @@ var RendererFactory = (function () {
       }
     }
 
-    // ── QFP / LQFP / TQFP / QFN (all 4-sided SMD packages) ──
-    if (p.indexOf('qfp') >= 0 || p.indexOf('lqfp') >= 0 || p.indexOf('tqfp') >= 0 || p.indexOf('qfn') >= 0) {
+    // ── QFN / SON / DFN (flush pad, no-lead packages) ────────
+    if (p.indexOf('qfn') >= 0 || p.indexOf('son') >= 0 || p.indexOf('dfn') >= 0) {
+      if (typeof window.QFNRenderer !== 'undefined') {
+        return window.QFNRenderer;
+      }
+    }
+
+    // ── QFP / LQFP / TQFP (gull-wing lead packages) ──────────
+    if (p.indexOf('qfp') >= 0 || p.indexOf('lqfp') >= 0 || p.indexOf('tqfp') >= 0) {
       if (typeof window.QFPRenderer !== 'undefined') {
         return window.QFPRenderer;
       }
