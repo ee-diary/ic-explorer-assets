@@ -5,8 +5,8 @@
  * Draws a true top-down view of a QFN package:
  *   - IC body fills the viewport
  *   - Pads are drawn INSIDE the body along each edge (flush, no leads extending out)
- *   - Pin numbers appear outside the body edge
- *   - Pin labels appear just inside the pad, rotated along the edge
+ *   - Pin labels appear outside the body edge (where numbers used to be)
+ *   - Pin numbers appear inside the pad, rotated along the edge
  *   - Pin 1 marker (chamfered corner notch) at top-left
  *   - Exposed centre pad drawn if config.qfnConfig.exposedPad === true
  *
@@ -258,73 +258,74 @@ window.QFNRenderer = (function () {
       'stroke-width': '1.5'
     }));
 
-    // ── Pin number — outside the body edge ───────────────────────────────
-    var numAttrs = {
-      fill: col,
-      'font-size': '10',
-      'font-family': 'monospace',
-      'font-weight': 'bold'
-    };
-    var numEl;
-    var numOffset = 14;
-
-    if (side === 'left') {
-      numEl = txt(pin.num, Object.assign({}, numAttrs, {
-        x: -half - numOffset, y: pos.cy + 4, 'text-anchor': 'end'
-      }));
-    } else if (side === 'right') {
-      numEl = txt(pin.num, Object.assign({}, numAttrs, {
-        x: half + numOffset, y: pos.cy + 4, 'text-anchor': 'start'
-      }));
-    } else if (side === 'bottom') {
-      numEl = txt(pin.num, Object.assign({}, numAttrs, {
-        x: pos.cx, y: half + numOffset + 2, 'text-anchor': 'middle'
-      }));
-    } else { // top
-      numEl = txt(pin.num, Object.assign({}, numAttrs, {
-        x: pos.cx, y: -half - numOffset + 4, 'text-anchor': 'middle'
-      }));
-    }
-    pinGroup.appendChild(numEl);
-
-    // ── Pin label — inside the pad, rotated to follow the edge ──────────
+    // ── Pin label (name) — outside the body edge, where number used to be ─
     if (pin.lbl) {
-      var lblAttrs = {
+      var lblOutAttrs = {
         fill: col,
-        'font-size': '8',
+        'font-size': '9',
         'font-family': 'monospace',
-        'text-anchor': 'middle'
+        'font-weight': 'bold'
       };
-      var lblEl;
-      var padMidX, padMidY, rotate;
+      var lblOutEl;
+      var lblOffset = 14;
 
       if (side === 'left') {
-        padMidX = rx + pl / 2;
-        padMidY = pos.cy;
-        rotate  = -90;
+        lblOutEl = txt(pin.lbl, Object.assign({}, lblOutAttrs, {
+          x: -half - lblOffset, y: pos.cy + 4, 'text-anchor': 'end'
+        }));
       } else if (side === 'right') {
-        padMidX = rx + pl / 2;
-        padMidY = pos.cy;
-        rotate  = 90;
+        lblOutEl = txt(pin.lbl, Object.assign({}, lblOutAttrs, {
+          x: half + lblOffset, y: pos.cy + 4, 'text-anchor': 'start'
+        }));
       } else if (side === 'bottom') {
-        padMidX = pos.cx;
-        padMidY = ry + pl / 2;
-        rotate  = 0;
+        lblOutEl = txt(pin.lbl, Object.assign({}, lblOutAttrs, {
+          x: pos.cx, y: half + lblOffset + 2, 'text-anchor': 'middle'
+        }));
       } else { // top
-        padMidX = pos.cx;
-        padMidY = ry + pl / 2;
-        rotate  = 0;
+        lblOutEl = txt(pin.lbl, Object.assign({}, lblOutAttrs, {
+          x: pos.cx, y: -half - lblOffset + 4, 'text-anchor': 'middle'
+        }));
       }
-
-      lblEl = txt(pin.lbl, Object.assign({}, lblAttrs, {
-        x: padMidX,
-        y: padMidY + 3,
-        transform: rotate !== 0
-          ? 'rotate(' + rotate + ',' + padMidX + ',' + padMidY + ')'
-          : ''
-      }));
-      pinGroup.appendChild(lblEl);
+      pinGroup.appendChild(lblOutEl);
     }
+
+    // ── Pin number — inside the pad, rotated to follow the edge ─────────
+    var numAttrs = {
+      fill: col,
+      'font-size': '8',
+      'font-family': 'monospace',
+      'font-weight': 'bold',
+      'text-anchor': 'middle'
+    };
+    var numEl;
+    var padMidX, padMidY, rotate;
+
+    if (side === 'left') {
+      padMidX = rx + pl / 2;
+      padMidY = pos.cy;
+      rotate  = -90;
+    } else if (side === 'right') {
+      padMidX = rx + pl / 2;
+      padMidY = pos.cy;
+      rotate  = 90;
+    } else if (side === 'bottom') {
+      padMidX = pos.cx;
+      padMidY = ry + pl / 2;
+      rotate  = 0;
+    } else { // top
+      padMidX = pos.cx;
+      padMidY = ry + pl / 2;
+      rotate  = 0;
+    }
+
+    numEl = txt(pin.num, Object.assign({}, numAttrs, {
+      x: padMidX,
+      y: padMidY + 3,
+      transform: rotate !== 0
+        ? 'rotate(' + rotate + ',' + padMidX + ',' + padMidY + ')'
+        : ''
+    }));
+    pinGroup.appendChild(numEl);
 
     return pinGroup;
   }
