@@ -64,16 +64,15 @@
     'D10':    { x: 380, y: 264, side: 'right' },
     'D9':     { x: 380, y: 286, side: 'right' },
     'D8':     { x: 380, y: 309, side: 'right' },
-    // Right lower block: starts y=310, pitch=19, ends y=443 (all inside board y=470)
-    'D7':     { x: 380, y: 310, side: 'right' },
-    'D6':     { x: 380, y: 329, side: 'right' },
-    'D5':     { x: 380, y: 348, side: 'right' },
-    'D4':     { x: 380, y: 367, side: 'right' },
-    'D3':     { x: 380, y: 386, side: 'right' },
-    'D2':     { x: 380, y: 405, side: 'right' },
-    'TX0':    { x: 380, y: 424, side: 'right' },
-    'RX0':    { x: 380, y: 443, side: 'right' },
-    // Left upper block: distributed within y=184 to y=323 (h=139), margin=12, pitch≈19.2
+    // Right lower block: distributed within y=327 to y=460 (h=133), margin=10, pitch=19
+    'D7':     { x: 380, y: 337, side: 'right' },
+    'D6':     { x: 380, y: 356, side: 'right' },
+    'D5':     { x: 380, y: 375, side: 'right' },
+    'D4':     { x: 380, y: 394, side: 'right' },
+    'D3':     { x: 380, y: 413, side: 'right' },
+    'D2':     { x: 380, y: 432, side: 'right' },
+    'TX0':    { x: 380, y: 451, side: 'right' },
+    'RX0':    { x: 380, y: 460, side: 'right' },
     // Left upper block: distributed within y=184 to y=323 (h=139), margin=12, pitch≈19.2
     'IOREF':  { x: 8,   y: 196, side: 'left'  },
     'RST':    { x: 8,   y: 215, side: 'left'  },
@@ -82,14 +81,13 @@
     'GND_P':  { x: 8,   y: 273, side: 'left'  },
     'GND_P2': { x: 8,   y: 292, side: 'left'  },
     'VIN':    { x: 8,   y: 311, side: 'left'  },
-    // Left lower block: starts y=330, pitch=19, ends y=445 (all inside board y=470)
-    'A0':     { x: 8,   y: 330, side: 'left'  },
-    'A1':     { x: 8,   y: 349, side: 'left'  },
-    'A2':     { x: 8,   y: 368, side: 'left'  },
-    'A3':     { x: 8,   y: 387, side: 'left'  },
-    'A4':     { x: 8,   y: 406, side: 'left'  },
-    'A5':     { x: 8,   y: 425, side: 'left'  },
-  };
+    // Left lower block: distributed within y=349 to y=459 (h=110), margin=10, pitch=20
+    'A0':     { x: 8,   y: 359, side: 'left'  },
+    'A1':     { x: 8,   y: 379, side: 'left'  },
+    'A2':     { x: 8,   y: 399, side: 'left'  },
+    'A3':     { x: 8,   y: 419, side: 'left'  },
+    'A4':     { x: 8,   y: 439, side: 'left'  },
+    'A5':     { x: 8,   y: 459, side: 'left'  },
   };
 
   var PS = 18;
@@ -308,12 +306,12 @@
     // Upper block pins (AREF→D8) redistributed evenly within y=138 to y=321 (h=183)
     // Lower block pins (D7→RX0) redistributed evenly within y=327 to y=443 (h=116)
     app(g, mk('rect', { x: '372', y: '138', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    app(g, mk('rect', { x: '372', y: '301', width: '16', height: '151', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    app(g, mk('rect', { x: '372', y: '327', width: '16', height: '143', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     // Left header: extended by half of the right-side extension (34px instead of 68px)
     // Original upper block: y=214, h=109 → new y=184, h=139 (only 34px extension upward)
     // Original lower block: y=349, h=94  → extended to y=469
     app(g, mk('rect', { x: '0',   y: '184', width: '16', height: '139', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    app(g, mk('rect', { x: '0',   y: '321', width: '16', height: '113',  rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    app(g, mk('rect', { x: '0',   y: '349', width: '16', height: '120',  rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
     // Silkscreen labels — recentred to match new header spans
     // Right DIGITAL label: moved 24px to the left (360 → 336)
@@ -321,7 +319,7 @@
     // Left POWER label: moved 24px to the right (28 → 52)
     g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,253)',    x: '52',  y: '253' }));
     // Left ANALOG IN label: moved 24px to the right (28 → 52)
-    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,377)',    x: '52',  y: '377' }));
+    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,396)',    x: '52',  y: '396' }));
   }
 
   // ── interactive pin squares ───────────────────────────────────
