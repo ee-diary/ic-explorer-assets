@@ -298,15 +298,25 @@
     app(g, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '170', y: '177' }));
 
     // Header housings
-    app(g, mk('rect', { x: '372', y: '206', width: '16', height: '115', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    // Right header: extended up to ATmega16U2 top edge (y=138), bottom fixed at y=443 (RX0 bottom)
+    // Two blocks kept to preserve the visual gap between digital groups; upper block grows upward.
+    // Original upper block: y=206, h=115 → new y=138, h=183 (extended 68px up)
+    // Original lower block: y=327, h=116 → unchanged (bottom pins A5/RX0 fixed)
+    app(g, mk('rect', { x: '372', y: '138', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     app(g, mk('rect', { x: '372', y: '327', width: '16', height: '116', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    app(g, mk('rect', { x: '0',   y: '214', width: '16', height: '109', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    // Left header: extended by same 68px upward relative to original tops
+    // Original upper block: y=214, h=109 → new y=146, h=177
+    // Original lower block: y=349, h=94  → unchanged
+    app(g, mk('rect', { x: '0',   y: '146', width: '16', height: '177', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     app(g, mk('rect', { x: '0',   y: '349', width: '16', height: '94',  rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
-    // Silkscreen labels
-    g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,345,310)', x: '345', y: '310' }));
-    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,44,268)',   x: '44',  y: '268' }));
-    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,44,396)',   x: '44',  y: '396' }));
+    // Silkscreen labels — recentred to match new header spans
+    // Right DIGITAL label: spans y=138 to y=321 (upper block) → centre y=229
+    g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,358,242)', x: '358', y: '242' }));
+    // Left POWER label: spans y=146 to y=323 → centre y=234
+    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,30,234)',    x: '30',  y: '234' }));
+    // Left ANALOG IN label: unchanged
+    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,30,396)',    x: '30',  y: '396' }));
   }
 
   // ── interactive pin squares ───────────────────────────────────
