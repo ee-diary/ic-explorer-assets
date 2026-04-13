@@ -205,7 +205,7 @@
     (function () {
       var by = 196, bh = 417 - 196; // y=196 to y=417 → height=221
       var bw = 64;
-      var bx = 56; // 40px gap from left header edge (x=16)
+      var bx = 136; // moved 80px right from original position
       var nPins = 14;
       // distribute 14 pins evenly within the body height with a small margin
       var margin = 10;
@@ -233,7 +233,7 @@
         var py = pinStartY + i * pitch;
         app(g, mk('rect', { x: bx - stubW, y: py - stubH/2,
           width: stubW, height: stubH, rx: '1',
-          fill: '#b8a060', stroke: '#8a7040', 'stroke-width': '0.5' }));
+          fill: '#d0d8e0', stroke: '#909090', 'stroke-width': '0.5' }));
       }
 
       // Right pins: 15-28 bottom to top
@@ -241,7 +241,7 @@
         var ry = pinStartY + (nPins - 1 - j) * pitch;
         app(g, mk('rect', { x: bx + bw, y: ry - stubH/2,
           width: stubW, height: stubH, rx: '1',
-          fill: '#b8a060', stroke: '#8a7040', 'stroke-width': '0.5' }));
+          fill: '#d0d8e0', stroke: '#909090', 'stroke-width': '0.5' }));
       }
 
       // Labels
