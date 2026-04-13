@@ -48,8 +48,8 @@ window.IC_CONFIG = {
   qfnConfig: {
     pinsPerSide:  7,
     bodySize:     380,
-    padLength:    28,
-    padWidth:     16,
+    padLength:    36,
+    padWidth:     22,
     padGap:       4,
     padInset:     60,    // distance from corner to first pad centre — keeps pads away from corners
     exposedPad:   false,
