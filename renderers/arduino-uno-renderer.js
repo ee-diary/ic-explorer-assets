@@ -21,6 +21,7 @@
   var NS    = 'http://www.w3.org/2000/svg';
   var SCALE = 0.55;   // board scale — change this one value to resize
   var PAD   = 20;     // gap (px in viewBox units) between board and viewport edge
+  var USB_OVERHANG = Math.ceil(30 * SCALE); // extra top space for USB protrusion
 
   function mk(tag, attrs) {
     var el = document.createElementNS(NS, tag);
@@ -99,17 +100,17 @@
 
     while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-    // viewBox = scaled board size + padding on both sides
+    // viewBox = scaled board size + padding on both sides + extra top for USB overhang
     var vw = Math.round(390 * SCALE) + PAD * 2;
-    var vh = Math.round(470 * SCALE) + PAD * 2;
+    var vh = Math.round(470 * SCALE) + PAD * 2 + USB_OVERHANG;
     svg.setAttribute('viewBox', '0 0 ' + vw + ' ' + vh);
     svg.setAttribute('xmlns', NS);
     svg.style.cssText = 'display:block;width:100%;height:auto;overflow:visible;';
 
     _buildDefs(svg);
 
-    // Offset by PAD so board doesn't touch the viewport edge, then scale
-    var g = mk('g', { transform: 'translate(' + PAD + ',' + PAD + ') scale(' + SCALE + ')' });
+    // Offset by PAD + USB_OVERHANG on top so USB protrusion is visible, then scale
+    var g = mk('g', { transform: 'translate(' + PAD + ',' + (PAD + USB_OVERHANG) + ') scale(' + SCALE + ')' });
     svg.appendChild(g);
 
     _buildBoard(g);
@@ -159,16 +160,17 @@
       app(g, mk('circle', { cx: h.cx, cy: h.cy, r: '5',  fill: '#060e1a' }));
     });
 
-    // USB-B
-    app(g, mk('rect', { x: '245', y: '0',  width: '88', height: '96', rx: '3', fill: 'url(#unoUsbGr)', stroke: '#444', 'stroke-width': '1.5' }));
-    app(g, mk('rect', { x: '250', y: '3',  width: '78', height: '90', rx: '2', fill: '#333' }));
-    app(g, mk('rect', { x: '256', y: '0',  width: '66', height: '18', rx: '2', fill: '#1a1a1a', stroke: '#666', 'stroke-width': '1' }));
-    app(g, mk('rect', { x: '265', y: '22', width: '48', height: '32', rx: '3', fill: '#1a1a1a', stroke: '#555', 'stroke-width': '1' }));
-    app(g, mk('rect', { x: '270', y: '26', width: '38', height: '24', rx: '2', fill: '#222' }));
-    app(g, mkt('USB',    { fill: '#666', 'font-family': 'monospace', 'font-size': '9', 'text-anchor': 'middle', x: '289', y: '66' }));
-    app(g, mkt('TYPE-B', { fill: '#555', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '289', y: '75' }));
+    // USB-B — shifted up 30px so it protrudes above the board edge like the real Uno
+    var USB_Y = -30;
+    app(g, mk('rect', { x: '245', y: USB_Y,      width: '88', height: '96', rx: '3', fill: 'url(#unoUsbGr)', stroke: '#444', 'stroke-width': '1.5' }));
+    app(g, mk('rect', { x: '250', y: USB_Y + 3,  width: '78', height: '90', rx: '2', fill: '#333' }));
+    app(g, mk('rect', { x: '256', y: USB_Y,      width: '66', height: '18', rx: '2', fill: '#1a1a1a', stroke: '#666', 'stroke-width': '1' }));
+    app(g, mk('rect', { x: '265', y: USB_Y + 22, width: '48', height: '32', rx: '3', fill: '#1a1a1a', stroke: '#555', 'stroke-width': '1' }));
+    app(g, mk('rect', { x: '270', y: USB_Y + 26, width: '38', height: '24', rx: '2', fill: '#222' }));
+    app(g, mkt('USB',    { fill: '#666', 'font-family': 'monospace', 'font-size': '9', 'text-anchor': 'middle', x: '289', y: USB_Y + 66 }));
+    app(g, mkt('TYPE-B', { fill: '#555', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '289', y: USB_Y + 75 }));
     [267, 279, 291, 303].forEach(function (x) {
-      app(g, mk('rect', { x: x, y: '80', width: '8', height: '8', rx: '1', fill: '#b87333' }));
+      app(g, mk('rect', { x: x, y: USB_Y + 80, width: '8', height: '8', rx: '1', fill: '#b87333' }));
     });
 
     // DC jack
