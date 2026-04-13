@@ -1,27 +1,15 @@
 // ============================================================
 //  renderers/arduino-uno-renderer.js
 //  IC Explorer — Arduino Uno R3 board renderer
-//
-//  KEY FIX: pin <g> elements now use class="ic-pin" (not "uno-pin")
-//  so that ic-explorer-base.js attachPinEvents() and
-//  updateBoardHighlight() can find them via querySelectorAll('.ic-pin')
-//
-//  SECOND FIX: glow filter id changed from 'unoRendererPinGlow'
-//  to 'pinGlow' to match the url(#pinGlow) reference in base engine.
-//
-//  SIZE FIX: board scaled to 55% with a 20px padding gap on all sides.
-//  All drawing uses a <g transform="translate(PAD,PAD) scale(0.55)"> so
-//  existing coordinates are preserved exactly — only SCALE and PAD need
-//  changing to resize or reposition the board.
 // ============================================================
 
 (function (global) {
   'use strict';
 
   var NS    = 'http://www.w3.org/2000/svg';
-  var SCALE = 0.55;   // board scale — change this one value to resize
-  var PAD   = 20;     // gap (px in viewBox units) between board and viewport edge
-  var USB_OVERHANG = Math.ceil(30 * SCALE); // extra top space for USB protrusion
+  var SCALE = 0.55;
+  var PAD   = 20;
+  var USB_OVERHANG = Math.ceil(30 * SCALE);
 
   function mk(tag, attrs) {
     var el = document.createElementNS(NS, tag);
@@ -52,10 +40,9 @@
     return STD_COLORS[type] || STD_COLORS.SPEC;
   }
 
-  // Pin coordinates are in the original 390×470 space.
-  // The translate+scale group transform brings them into the padded viewBox.
+  // ── Pin coordinates (original 390x470 space) ─────────────────
   var PIN_COORDS = {
-    // Right upper block: distributed within y=138 to y=321 (h=183), margin=12, pitch≈22.7
+    // Right upper block: y=138-321, 8 pins, pitch~22.7
     'AREF':   { x: 380, y: 150, side: 'right' },
     'GND_D':  { x: 380, y: 173, side: 'right' },
     'D13':    { x: 380, y: 195, side: 'right' },
@@ -64,16 +51,16 @@
     'D10':    { x: 380, y: 264, side: 'right' },
     'D9':     { x: 380, y: 286, side: 'right' },
     'D8':     { x: 380, y: 309, side: 'right' },
-    // Right lower block: distributed within y=327 to y=460 (h=133), margin=10, pitch=19
-    'D7':     { x: 380, y: 337, side: 'right' },
-    'D6':     { x: 380, y: 356, side: 'right' },
-    'D5':     { x: 380, y: 375, side: 'right' },
-    'D4':     { x: 380, y: 394, side: 'right' },
-    'D3':     { x: 380, y: 413, side: 'right' },
-    'D2':     { x: 380, y: 432, side: 'right' },
-    'TX0':    { x: 380, y: 451, side: 'right' },
-    'RX0':    { x: 380, y: 460, side: 'right' },
-    // Left upper block: distributed within y=184 to y=323 (h=139), margin=12, pitch≈19.2
+    // Right lower block: pitch=19, D7 y=310 -> RX0 y=443, all inside board
+    'D7':     { x: 380, y: 310, side: 'right' },
+    'D6':     { x: 380, y: 329, side: 'right' },
+    'D5':     { x: 380, y: 348, side: 'right' },
+    'D4':     { x: 380, y: 367, side: 'right' },
+    'D3':     { x: 380, y: 386, side: 'right' },
+    'D2':     { x: 380, y: 405, side: 'right' },
+    'TX0':    { x: 380, y: 424, side: 'right' },
+    'RX0':    { x: 380, y: 443, side: 'right' },
+    // Left upper block: y=184-323, 7 pins, pitch~19.2
     'IOREF':  { x: 8,   y: 196, side: 'left'  },
     'RST':    { x: 8,   y: 215, side: 'left'  },
     '3V3':    { x: 8,   y: 234, side: 'left'  },
@@ -81,13 +68,13 @@
     'GND_P':  { x: 8,   y: 273, side: 'left'  },
     'GND_P2': { x: 8,   y: 292, side: 'left'  },
     'VIN':    { x: 8,   y: 311, side: 'left'  },
-    // Left lower block: distributed within y=349 to y=459 (h=110), margin=10, pitch=20
-    'A0':     { x: 8,   y: 359, side: 'left'  },
-    'A1':     { x: 8,   y: 379, side: 'left'  },
-    'A2':     { x: 8,   y: 399, side: 'left'  },
-    'A3':     { x: 8,   y: 419, side: 'left'  },
-    'A4':     { x: 8,   y: 439, side: 'left'  },
-    'A5':     { x: 8,   y: 459, side: 'left'  },
+    // Left lower block: pitch=19, A0 y=330 -> A5 y=425, all inside board
+    'A0':     { x: 8,   y: 330, side: 'left'  },
+    'A1':     { x: 8,   y: 349, side: 'left'  },
+    'A2':     { x: 8,   y: 368, side: 'left'  },
+    'A3':     { x: 8,   y: 387, side: 'left'  },
+    'A4':     { x: 8,   y: 406, side: 'left'  },
+    'A5':     { x: 8,   y: 425, side: 'left'  },
   };
 
   var PS = 18;
@@ -104,7 +91,6 @@
 
     while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-    // viewBox = scaled board size + padding on both sides + extra top for USB overhang
     var vw = Math.round(390 * SCALE) + PAD * 2;
     var vh = Math.round(470 * SCALE) + PAD * 2 + USB_OVERHANG;
     svg.setAttribute('viewBox', '0 0 ' + vw + ' ' + vh);
@@ -113,7 +99,6 @@
 
     _buildDefs(svg);
 
-    // Offset by PAD + USB_OVERHANG on top so USB protrusion is visible, then scale
     var g = mk('g', { transform: 'translate(' + PAD + ',' + (PAD + USB_OVERHANG) + ') scale(' + SCALE + ')' });
     svg.appendChild(g);
 
@@ -143,7 +128,6 @@
     app(pat, mk('circle', { cx: '9', cy: '9', r: '0.6', fill: 'rgba(100,160,255,0.12)' }));
     defs.appendChild(pat);
 
-    // id must be 'pinGlow' — base engine writes url(#pinGlow)
     var filt = mk('filter', { id: 'pinGlow', x: '-50%', y: '-50%', width: '200%', height: '200%' });
     var fgb  = mk('feGaussianBlur', { stdDeviation: '3.5', result: 'blur' });
     filt.appendChild(fgb);
@@ -164,7 +148,7 @@
       app(g, mk('circle', { cx: h.cx, cy: h.cy, r: '5',  fill: '#060e1a' }));
     });
 
-    // USB-B — shifted up 30px so it protrudes above the board edge like the real Uno
+    // USB-B
     var USB_Y = -30;
     app(g, mk('rect', { x: '245', y: USB_Y,      width: '88', height: '96', rx: '3', fill: 'url(#unoUsbGr)', stroke: '#444', 'stroke-width': '1.5' }));
     app(g, mk('rect', { x: '250', y: USB_Y + 3,  width: '78', height: '90', rx: '2', fill: '#333' }));
@@ -177,7 +161,7 @@
       app(g, mk('rect', { x: x, y: USB_Y + 80, width: '8', height: '8', rx: '1', fill: '#b87333' }));
     });
 
-    // DC jack — shifted up 12px so it slightly protrudes above the board edge; circles removed
+    // DC jack
     var DC_Y = -12;
     app(g, mk('rect',   { x: '35', y: DC_Y,     width: '68', height: '68', rx: '4', fill: 'url(#unoUsbGr)', stroke: '#444', 'stroke-width': '1.5' }));
     app(g, mk('rect',   { x: '39', y: DC_Y + 3, width: '60', height: '62', rx: '3', fill: '#2a2a2a' }));
@@ -199,44 +183,32 @@
     app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
     // ATmega328P — DIP-28
-    // Top aligned to IOREF pin (y=196), bottom to A4 pin (y=417)
-    // Left edge 40px from the left header right edge (header centre x=8, PS=15 → edge=16, so bx=56)
-    // Width scaled to DIP-28 proportions (~1:3 w:h) → 64px wide
     (function () {
-      var by = 196, bh = 417 - 196; // y=196 to y=417 → height=221
+      var by = 196, bh = 417 - 196;
       var bw = 64;
-      var bx = 96;  // moved 40px right from original (116 - 20)
+      var bx = 96;
       var nPins = 14;
-      // distribute 14 pins evenly within the body height with a small margin
       var margin = 10;
       var usable = bh - margin * 2;
       var pitch  = usable / (nPins - 1);
       var stubW  = 12, stubH = 6;
       var pinStartY = by + margin;
 
-      // IC body
       app(g, mk('rect', { x: bx, y: by, width: bw, height: bh, rx: '4',
         fill: 'url(#unoChipGr)', stroke: '#3a3a3a', 'stroke-width': '2' }));
-
-      // Notch (semicircle) at top centre
       app(g, mk('path', {
         d: 'M ' + (bx + bw/2 - 10) + ',' + by +
            ' A 10 10 0 0 0 ' + (bx + bw/2 + 10) + ',' + by,
         fill: '#0a0a0a', stroke: '#3a3a3a', 'stroke-width': '1.5'
       }));
-
-      // Pin 1 dot (top-left corner)
       app(g, mk('circle', { cx: bx + 8, cy: by + 12, r: '2.5', fill: '#555' }));
 
-      // Left pins: 1-14 top to bottom
       for (var i = 0; i < nPins; i++) {
         var py = pinStartY + i * pitch;
         app(g, mk('rect', { x: bx - stubW, y: py - stubH/2,
           width: stubW, height: stubH, rx: '1',
           fill: '#d0d8e0', stroke: '#909090', 'stroke-width': '0.5' }));
       }
-
-      // Right pins: 15-28 bottom to top
       for (var j = 0; j < nPins; j++) {
         var ry = pinStartY + (nPins - 1 - j) * pitch;
         app(g, mk('rect', { x: bx + bw, y: ry - stubH/2,
@@ -244,14 +216,10 @@
           fill: '#d0d8e0', stroke: '#909090', 'stroke-width': '0.5' }));
       }
 
-      // Labels
       var cx = bx + bw/2, cy = by + bh/2;
-      app(g, mkt('ATmega',  { fill: '#555', 'font-family': 'monospace', 'font-size': '13',
-        'font-weight': 'bold', 'text-anchor': 'middle', x: cx, y: cy - 12 }));
-      app(g, mkt('328P-PU', { fill: '#555', 'font-family': 'monospace', 'font-size': '13',
-        'font-weight': 'bold', 'text-anchor': 'middle', x: cx, y: cy + 4  }));
-      app(g, mkt('ARDUINO', { fill: '#383838', 'font-family': 'monospace', 'font-size': '9',
-        'text-anchor': 'middle', x: cx, y: cy + 20 }));
+      app(g, mkt('ATmega',  { fill: '#555', 'font-family': 'monospace', 'font-size': '13', 'font-weight': 'bold', 'text-anchor': 'middle', x: cx, y: cy - 12 }));
+      app(g, mkt('328P-PU', { fill: '#555', 'font-family': 'monospace', 'font-size': '13', 'font-weight': 'bold', 'text-anchor': 'middle', x: cx, y: cy + 4  }));
+      app(g, mkt('ARDUINO', { fill: '#383838', 'font-family': 'monospace', 'font-size': '9', 'text-anchor': 'middle', x: cx, y: cy + 20 }));
     }());
 
     // ATmega16U2
@@ -302,30 +270,22 @@
     app(g, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '170', y: '177' }));
 
     // Header housings
-    // Right header: extended up to ATmega16U2 top edge (y=138), bottom fixed at y=443
-    // Upper block pins (AREF→D8) redistributed evenly within y=138 to y=321 (h=183)
-    // Lower block pins (D7→RX0) redistributed evenly within y=327 to y=443 (h=116)
+    // Right upper: y=138, h=183 (covers AREF y=150 -> D8 y=309)
     app(g, mk('rect', { x: '372', y: '138', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    app(g, mk('rect', { x: '372', y: '327', width: '16', height: '143', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Left header: extended by half of the right-side extension (34px instead of 68px)
-    // Original upper block: y=214, h=109 → new y=184, h=139 (only 34px extension upward)
-    // Original lower block: y=349, h=94  → extended to y=469
+    // Right lower: y=301, h=151 (covers D7 y=310 -> RX0 y=443)
+    app(g, mk('rect', { x: '372', y: '301', width: '16', height: '151', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    // Left upper: y=184, h=139 (covers IOREF y=196 -> VIN y=311)
     app(g, mk('rect', { x: '0',   y: '184', width: '16', height: '139', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    app(g, mk('rect', { x: '0',   y: '349', width: '16', height: '120',  rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    // Left lower: y=321, h=113 (covers A0 y=330 -> A5 y=425)
+    app(g, mk('rect', { x: '0',   y: '321', width: '16', height: '113', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
-    // Silkscreen labels — recentred to match new header spans
-    // Right DIGITAL label: moved 24px to the left (360 → 336)
+    // Silkscreen labels
     g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,336,242)', x: '336', y: '242' }));
-    // Left POWER label: moved 24px to the right (28 → 52)
     g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,253)',    x: '52',  y: '253' }));
-    // Left ANALOG IN label: moved 24px to the right (28 → 52)
-    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,396)',    x: '52',  y: '396' }));
+    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,377)',    x: '52',  y: '377' }));
   }
 
   // ── interactive pin squares ───────────────────────────────────
-  // Note: pin <g> elements are appended to the scale group (scaleG),
-  // but event delegation in ic-explorer-base.js uses querySelectorAll('.ic-pin')
-  // on the svg, which finds descendants regardless of nesting — this works fine.
   function _buildPins(scaleG, svg, config) {
     var customTypes = config.customTypes || {};
 
@@ -339,14 +299,12 @@
       var g = mk('g', { 'class': 'ic-pin', 'data-id': p.id });
       g.style.cursor = 'pointer';
 
-      // PCB pad
       app(g, mk('rect', {
         x: coord.x - PS / 2 - 2, y: coord.y - PS / 2 - 2,
         width: PS + 4, height: PS + 4, rx: '2',
         fill: 'rgba(184,130,60,0.30)', stroke: 'rgba(184,130,60,0.55)', 'stroke-width': '0.5'
       }));
 
-      // Coloured square — class 'pin-sq' required by base engine
       var sq = mk('rect', {
         x: coord.x - PS / 2, y: coord.y - PS / 2,
         width: PS, height: PS, rx: '2',
@@ -355,13 +313,11 @@
       });
       app(g, sq);
 
-      // Centre hole
       app(g, mk('rect', {
         x: coord.x - 3.5, y: coord.y - 3.5, width: '7', height: '7', rx: '1',
         fill: '#050810', 'pointer-events': 'none'
       }));
 
-      // Face label
       var lbl = mkt(p.lbl.length > 4 ? p.lbl.slice(0, 4) : p.lbl, {
         x: coord.x, y: coord.y + 3.5, 'text-anchor': 'middle',
         fill: col.c, 'font-size': '8', 'font-family': 'monospace',
@@ -369,13 +325,11 @@
       });
       app(g, lbl);
 
-      // Hit-target
       app(g, mk('rect', {
         x: coord.x - 16, y: coord.y - 16, width: '32', height: '32',
         fill: 'transparent'
       }));
 
-      // Silkscreen label (outside the interactive group)
       var silkX  = onRight ? coord.x - PS - 3 : coord.x + PS + 4;
       var anchor = onRight ? 'end' : 'start';
       app(scaleG, mkt(p.lbl, {
