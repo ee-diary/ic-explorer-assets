@@ -43,8 +43,8 @@ var RendererFactory = (function () {
       }
     }
 
-    // ── QFP / LQFP / TQFP ────────────────────────────────────
-    if (p.indexOf('qfp') >= 0 || p.indexOf('lqfp') >= 0 || p.indexOf('tqfp') >= 0) {
+    // ── QFP / LQFP / TQFP / QFN (all 4-sided SMD packages) ──
+    if (p.indexOf('qfp') >= 0 || p.indexOf('lqfp') >= 0 || p.indexOf('tqfp') >= 0 || p.indexOf('qfn') >= 0) {
       if (typeof window.QFPRenderer !== 'undefined') {
         return window.QFPRenderer;
       }
