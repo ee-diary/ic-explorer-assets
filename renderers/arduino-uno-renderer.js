@@ -195,50 +195,59 @@
     app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
     // ATmega328P — DIP-28
-    // Body: 50px wide x 154px tall, centred at x=165, top at y=200
-    // 14 pins per side, pitch=11px, pin stubs 10px long
+    // Top aligned to IOREF pin (y=222), bottom to A4 pin (y=419)
+    // Left edge 40px from the left header right edge (header centre x=8, PS=15 → edge=16, so bx=56)
+    // Width scaled to DIP-28 proportions (~1:3 w:h) → 64px wide
     (function () {
-      var bx = 140, by = 200, bw = 50, bh = 154; // body rect
-      var pitch = 11, stubW = 10, stubH = 5;
-      var pinStartY = by + 10; // first pin y centre
+      var by = 222, bh = 419 - 222; // y=222 to y=419 → height=197
+      var bw = 64;
+      var bx = 56; // 40px gap from left header edge (x=16)
+      var nPins = 14;
+      // distribute 14 pins evenly within the body height with a small margin
+      var margin = 10;
+      var usable = bh - margin * 2;
+      var pitch  = usable / (nPins - 1);
+      var stubW  = 12, stubH = 6;
+      var pinStartY = by + margin;
 
       // IC body
-      app(g, mk('rect', { x: bx, y: by, width: bw, height: bh, rx: '3',
+      app(g, mk('rect', { x: bx, y: by, width: bw, height: bh, rx: '4',
         fill: 'url(#unoChipGr)', stroke: '#3a3a3a', 'stroke-width': '2' }));
 
       // Notch (semicircle) at top centre
       app(g, mk('path', {
-        d: 'M ' + (bx + bw/2 - 8) + ',' + by +
-           ' A 8 8 0 0 0 ' + (bx + bw/2 + 8) + ',' + by,
+        d: 'M ' + (bx + bw/2 - 10) + ',' + by +
+           ' A 10 10 0 0 0 ' + (bx + bw/2 + 10) + ',' + by,
         fill: '#0a0a0a', stroke: '#3a3a3a', 'stroke-width': '1.5'
       }));
 
-      // Pin 1 dot (bottom-left of notch)
-      app(g, mk('circle', { cx: bx + 6, cy: by + 10, r: '2', fill: '#555' }));
+      // Pin 1 dot (top-left corner)
+      app(g, mk('circle', { cx: bx + 8, cy: by + 12, r: '2.5', fill: '#555' }));
 
       // Left pins: 1-14 top to bottom
-      for (var i = 0; i < 14; i++) {
+      for (var i = 0; i < nPins; i++) {
         var py = pinStartY + i * pitch;
         app(g, mk('rect', { x: bx - stubW, y: py - stubH/2,
           width: stubW, height: stubH, rx: '1',
           fill: '#b8a060', stroke: '#8a7040', 'stroke-width': '0.5' }));
       }
 
-      // Right pins: 15-28 bottom to top (pin 15 at bottom, 28 at top)
-      for (var j = 0; j < 14; j++) {
-        var ry = pinStartY + (13 - j) * pitch;
+      // Right pins: 15-28 bottom to top
+      for (var j = 0; j < nPins; j++) {
+        var ry = pinStartY + (nPins - 1 - j) * pitch;
         app(g, mk('rect', { x: bx + bw, y: ry - stubH/2,
           width: stubW, height: stubH, rx: '1',
           fill: '#b8a060', stroke: '#8a7040', 'stroke-width': '0.5' }));
       }
 
       // Labels
-      app(g, mkt('ATmega',  { fill: '#555', 'font-family': 'monospace', 'font-size': '10',
-        'font-weight': 'bold', 'text-anchor': 'middle', x: bx + bw/2, y: by + bh/2 - 8 }));
-      app(g, mkt('328P-PU', { fill: '#555', 'font-family': 'monospace', 'font-size': '10',
-        'font-weight': 'bold', 'text-anchor': 'middle', x: bx + bw/2, y: by + bh/2 + 6 }));
-      app(g, mkt('ARDUINO', { fill: '#383838', 'font-family': 'monospace', 'font-size': '7',
-        'text-anchor': 'middle', x: bx + bw/2, y: by + bh/2 + 18 }));
+      var cx = bx + bw/2, cy = by + bh/2;
+      app(g, mkt('ATmega',  { fill: '#555', 'font-family': 'monospace', 'font-size': '13',
+        'font-weight': 'bold', 'text-anchor': 'middle', x: cx, y: cy - 12 }));
+      app(g, mkt('328P-PU', { fill: '#555', 'font-family': 'monospace', 'font-size': '13',
+        'font-weight': 'bold', 'text-anchor': 'middle', x: cx, y: cy + 4  }));
+      app(g, mkt('ARDUINO', { fill: '#383838', 'font-family': 'monospace', 'font-size': '9',
+        'text-anchor': 'middle', x: cx, y: cy + 20 }));
     }());
 
     // ATmega16U2
