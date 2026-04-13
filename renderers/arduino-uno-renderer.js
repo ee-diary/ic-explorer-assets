@@ -173,15 +173,12 @@
       app(g, mk('rect', { x: x, y: USB_Y + 80, width: '8', height: '8', rx: '1', fill: '#b87333' }));
     });
 
-    // DC jack
-    app(g, mk('rect',   { x: '35', y: '0',  width: '68', height: '68', rx: '4', fill: 'url(#unoUsbGr)', stroke: '#444', 'stroke-width': '1.5' }));
-    app(g, mk('rect',   { x: '39', y: '3',  width: '60', height: '62', rx: '3', fill: '#2a2a2a' }));
-    app(g, mk('circle', { cx: '69', cy: '22', r: '14', fill: '#111',    stroke: '#555', 'stroke-width': '1.5' }));
-    app(g, mk('circle', { cx: '69', cy: '22', r: '9',  fill: '#0a0a0a', stroke: '#444', 'stroke-width': '1'   }));
-    app(g, mk('circle', { cx: '69', cy: '22', r: '4',  fill: '#1a1a1a', stroke: '#555', 'stroke-width': '1'   }));
-    app(g, mk('circle', { cx: '69', cy: '22', r: '1.5', fill: '#888' }));
-    app(g, mkt('DC',    { fill: '#555', 'font-family': 'monospace', 'font-size': '8', 'text-anchor': 'middle', x: '69', y: '42' }));
-    app(g, mkt('7-12V', { fill: '#444', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '69', y: '50' }));
+    // DC jack — shifted up 12px so it slightly protrudes above the board edge; circles removed
+    var DC_Y = -12;
+    app(g, mk('rect',   { x: '35', y: DC_Y,     width: '68', height: '68', rx: '4', fill: 'url(#unoUsbGr)', stroke: '#444', 'stroke-width': '1.5' }));
+    app(g, mk('rect',   { x: '39', y: DC_Y + 3, width: '60', height: '62', rx: '3', fill: '#2a2a2a' }));
+    app(g, mkt('DC',    { fill: '#555', 'font-family': 'monospace', 'font-size': '8', 'text-anchor': 'middle', x: '69', y: DC_Y + 42 }));
+    app(g, mkt('7-12V', { fill: '#444', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '69', y: DC_Y + 50 }));
 
     // Reset button
     app(g, mk('rect',   { x: '346', y: '4',  width: '32', height: '32', rx: '4', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '1' }));
