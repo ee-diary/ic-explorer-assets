@@ -205,7 +205,7 @@
     (function () {
       var by = 196, bh = 417 - 196; // y=196 to y=417 → height=221
       var bw = 64;
-      var bx = 116; // moved 60px right from original (136 - 20)
+      var bx = 96;  // moved 40px right from original (116 - 20)
       var nPins = 14;
       // distribute 14 pins evenly within the body height with a small margin
       var margin = 10;
@@ -315,11 +315,11 @@
 
     // Silkscreen labels — recentred to match new header spans
     // Right DIGITAL label: spans y=138 to y=321 (upper block) → centre y=229
-    g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,350,242)', x: '350', y: '242' }));
+    g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,360,242)', x: '360', y: '242' }));
     // Left POWER label: spans y=184 to y=323 → centre y=253
-    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,38,253)',    x: '38',  y: '253' }));
+    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,28,253)',    x: '28',  y: '253' }));
     // Left ANALOG IN label: unchanged
-    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,38,396)',    x: '38',  y: '396' }));
+    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,28,396)',    x: '28',  y: '396' }));
   }
 
   // ── interactive pin squares ───────────────────────────────────
