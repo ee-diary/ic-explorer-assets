@@ -55,35 +55,39 @@
   // Pin coordinates are in the original 390×470 space.
   // The translate+scale group transform brings them into the padded viewBox.
   var PIN_COORDS = {
-    'AREF':   { x: 380, y: 214, side: 'right' },
-    'GND_D':  { x: 380, y: 228, side: 'right' },
-    'D13':    { x: 380, y: 242, side: 'right' },
-    'D12':    { x: 380, y: 256, side: 'right' },
-    'D11':    { x: 380, y: 271, side: 'right' },
-    'D10':    { x: 380, y: 285, side: 'right' },
-    'D9':     { x: 380, y: 299, side: 'right' },
-    'D8':     { x: 380, y: 313, side: 'right' },
-    'D7':     { x: 380, y: 335, side: 'right' },
-    'D6':     { x: 380, y: 349, side: 'right' },
-    'D5':     { x: 380, y: 364, side: 'right' },
-    'D4':     { x: 380, y: 377, side: 'right' },
+    // Right upper block: distributed within y=138 to y=321 (h=183), margin=12, pitch≈22.7
+    'AREF':   { x: 380, y: 150, side: 'right' },
+    'GND_D':  { x: 380, y: 173, side: 'right' },
+    'D13':    { x: 380, y: 195, side: 'right' },
+    'D12':    { x: 380, y: 218, side: 'right' },
+    'D11':    { x: 380, y: 241, side: 'right' },
+    'D10':    { x: 380, y: 264, side: 'right' },
+    'D9':     { x: 380, y: 286, side: 'right' },
+    'D8':     { x: 380, y: 309, side: 'right' },
+    // Right lower block: distributed within y=327 to y=443 (h=116), margin=12, pitch≈13.1
+    'D7':     { x: 380, y: 339, side: 'right' },
+    'D6':     { x: 380, y: 352, side: 'right' },
+    'D5':     { x: 380, y: 365, side: 'right' },
+    'D4':     { x: 380, y: 378, side: 'right' },
     'D3':     { x: 380, y: 392, side: 'right' },
-    'D2':     { x: 380, y: 406, side: 'right' },
-    'TX0':    { x: 380, y: 421, side: 'right' },
-    'RX0':    { x: 380, y: 435, side: 'right' },
-    'IOREF':  { x: 8,   y: 222, side: 'left'  },
-    'RST':    { x: 8,   y: 237, side: 'left'  },
-    '3V3':    { x: 8,   y: 253, side: 'left'  },
-    '5V':     { x: 8,   y: 268, side: 'left'  },
-    'GND_P':  { x: 8,   y: 284, side: 'left'  },
-    'GND_P2': { x: 8,   y: 300, side: 'left'  },
-    'VIN':    { x: 8,   y: 315, side: 'left'  },
-    'A0':     { x: 8,   y: 357, side: 'left'  },
-    'A1':     { x: 8,   y: 372, side: 'left'  },
-    'A2':     { x: 8,   y: 387, side: 'left'  },
-    'A3':     { x: 8,   y: 404, side: 'left'  },
-    'A4':     { x: 8,   y: 419, side: 'left'  },
-    'A5':     { x: 8,   y: 435, side: 'left'  },
+    'D2':     { x: 380, y: 405, side: 'right' },
+    'TX0':    { x: 380, y: 418, side: 'right' },
+    'RX0':    { x: 380, y: 431, side: 'right' },
+    // Left upper block: distributed within y=184 to y=323 (h=139), margin=12, pitch≈19.2
+    'IOREF':  { x: 8,   y: 196, side: 'left'  },
+    'RST':    { x: 8,   y: 215, side: 'left'  },
+    '3V3':    { x: 8,   y: 234, side: 'left'  },
+    '5V':     { x: 8,   y: 254, side: 'left'  },
+    'GND_P':  { x: 8,   y: 273, side: 'left'  },
+    'GND_P2': { x: 8,   y: 292, side: 'left'  },
+    'VIN':    { x: 8,   y: 311, side: 'left'  },
+    // Left lower block: distributed within y=349 to y=443 (h=94), margin=12, pitch=14
+    'A0':     { x: 8,   y: 361, side: 'left'  },
+    'A1':     { x: 8,   y: 375, side: 'left'  },
+    'A2':     { x: 8,   y: 389, side: 'left'  },
+    'A3':     { x: 8,   y: 403, side: 'left'  },
+    'A4':     { x: 8,   y: 417, side: 'left'  },
+    'A5':     { x: 8,   y: 431, side: 'left'  },
   };
 
   var PS = 15;
@@ -195,11 +199,11 @@
     app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
     // ATmega328P — DIP-28
-    // Top aligned to IOREF pin (y=222), bottom to A4 pin (y=419)
+    // Top aligned to IOREF pin (y=196), bottom to A4 pin (y=417)
     // Left edge 40px from the left header right edge (header centre x=8, PS=15 → edge=16, so bx=56)
     // Width scaled to DIP-28 proportions (~1:3 w:h) → 64px wide
     (function () {
-      var by = 222, bh = 419 - 222; // y=222 to y=419 → height=197
+      var by = 196, bh = 417 - 196; // y=196 to y=417 → height=221
       var bw = 64;
       var bx = 56; // 40px gap from left header edge (x=16)
       var nPins = 14;
@@ -298,23 +302,22 @@
     app(g, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '170', y: '177' }));
 
     // Header housings
-    // Right header: extended up to ATmega16U2 top edge (y=138), bottom fixed at y=443 (RX0 bottom)
-    // Two blocks kept to preserve the visual gap between digital groups; upper block grows upward.
-    // Original upper block: y=206, h=115 → new y=138, h=183 (extended 68px up)
-    // Original lower block: y=327, h=116 → unchanged (bottom pins A5/RX0 fixed)
+    // Right header: extended up to ATmega16U2 top edge (y=138), bottom fixed at y=443
+    // Upper block pins (AREF→D8) redistributed evenly within y=138 to y=321 (h=183)
+    // Lower block pins (D7→RX0) redistributed evenly within y=327 to y=443 (h=116)
     app(g, mk('rect', { x: '372', y: '138', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     app(g, mk('rect', { x: '372', y: '327', width: '16', height: '116', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Left header: extended by same 68px upward relative to original tops
-    // Original upper block: y=214, h=109 → new y=146, h=177
+    // Left header: extended by half of the right-side extension (34px instead of 68px)
+    // Original upper block: y=214, h=109 → new y=184, h=139 (only 34px extension upward)
     // Original lower block: y=349, h=94  → unchanged
-    app(g, mk('rect', { x: '0',   y: '146', width: '16', height: '177', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    app(g, mk('rect', { x: '0',   y: '184', width: '16', height: '139', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     app(g, mk('rect', { x: '0',   y: '349', width: '16', height: '94',  rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
     // Silkscreen labels — recentred to match new header spans
     // Right DIGITAL label: spans y=138 to y=321 (upper block) → centre y=229
     g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,358,242)', x: '358', y: '242' }));
-    // Left POWER label: spans y=146 to y=323 → centre y=234
-    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,30,234)',    x: '30',  y: '234' }));
+    // Left POWER label: spans y=184 to y=323 → centre y=253
+    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,30,253)',    x: '30',  y: '253' }));
     // Left ANALOG IN label: unchanged
     g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,30,396)',    x: '30',  y: '396' }));
   }
