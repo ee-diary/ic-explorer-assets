@@ -51,7 +51,7 @@ window.IC_CONFIG = {
     padLength:    28,
     padWidth:     16,
     padGap:       4,
-    padInset:     40,    // distance from corner to first pad centre — keeps pads away from corners
+    padInset:     60,    // distance from corner to first pad centre — keeps pads away from corners
     exposedPad:   false,
   },
 
