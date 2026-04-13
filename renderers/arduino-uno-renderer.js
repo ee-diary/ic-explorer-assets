@@ -9,17 +9,18 @@
 //  SECOND FIX: glow filter id changed from 'unoRendererPinGlow'
 //  to 'pinGlow' to match the url(#pinGlow) reference in base engine.
 //
-//  SIZE FIX: viewBox scaled from 390×470 to 273×329 (70%).
-//  All drawing uses a <g transform="scale(0.7)"> so existing
-//  coordinates are preserved exactly.
+//  SIZE FIX: board scaled to 55% with a 20px padding gap on all sides.
+//  All drawing uses a <g transform="translate(PAD,PAD) scale(0.55)"> so
+//  existing coordinates are preserved exactly — only SCALE and PAD need
+//  changing to resize or reposition the board.
 // ============================================================
 
 (function (global) {
   'use strict';
 
-  var NS = 'http://www.w3.org/2000/svg';
-
-  var SCALE = 0.7;
+  var NS    = 'http://www.w3.org/2000/svg';
+  var SCALE = 0.55;   // board scale — change this one value to resize
+  var PAD   = 20;     // gap (px in viewBox units) between board and viewport edge
 
   function mk(tag, attrs) {
     var el = document.createElementNS(NS, tag);
@@ -51,7 +52,7 @@
   }
 
   // Pin coordinates are in the original 390×470 space.
-  // The scale(0.7) group transform brings them into the 273×329 viewBox.
+  // The translate+scale group transform brings them into the padded viewBox.
   var PIN_COORDS = {
     'AREF':   { x: 380, y: 214, side: 'right' },
     'GND_D':  { x: 380, y: 228, side: 'right' },
@@ -98,17 +99,17 @@
 
     while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-    // Scaled-down viewBox
-    var vw = Math.round(390 * SCALE);
-    var vh = Math.round(470 * SCALE);
+    // viewBox = scaled board size + padding on both sides
+    var vw = Math.round(390 * SCALE) + PAD * 2;
+    var vh = Math.round(470 * SCALE) + PAD * 2;
     svg.setAttribute('viewBox', '0 0 ' + vw + ' ' + vh);
     svg.setAttribute('xmlns', NS);
     svg.style.cssText = 'display:block;width:100%;height:auto;overflow:visible;';
 
     _buildDefs(svg);
 
-    // Wrap all drawing in a scale group
-    var g = mk('g', { transform: 'scale(' + SCALE + ')' });
+    // Offset by PAD so board doesn't touch the viewport edge, then scale
+    var g = mk('g', { transform: 'translate(' + PAD + ',' + PAD + ') scale(' + SCALE + ')' });
     svg.appendChild(g);
 
     _buildBoard(g);
