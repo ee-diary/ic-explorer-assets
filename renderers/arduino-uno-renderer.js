@@ -314,12 +314,12 @@
     app(g, mk('rect', { x: '0',   y: '349', width: '16', height: '94',  rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
     // Silkscreen labels — recentred to match new header spans
-    // Right DIGITAL label: spans y=138 to y=321 (upper block) → centre y=229
-    g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,360,242)', x: '360', y: '242' }));
-    // Left POWER label: spans y=184 to y=323 → centre y=253
-    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,28,253)',    x: '28',  y: '253' }));
-    // Left ANALOG IN label: unchanged
-    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,28,396)',    x: '28',  y: '396' }));
+    // Right DIGITAL label: moved 24px to the left (360 → 336)
+    g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,336,242)', x: '336', y: '242' }));
+    // Left POWER label: moved 24px to the right (28 → 52)
+    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,253)',    x: '52',  y: '253' }));
+    // Left ANALOG IN label: moved 24px to the right (28 → 52)
+    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,396)',    x: '52',  y: '396' }));
   }
 
   // ── interactive pin squares ───────────────────────────────────
