@@ -194,13 +194,52 @@
     });
     app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
-    // ATmega328P
-    app(g, mk('rect', { x: '110', y: '202', width: '110', height: '110', rx: '5', fill: 'url(#unoChipGr)', stroke: '#2a2a2a', 'stroke-width': '2' }));
-    app(g, mk('rect', { x: '113', y: '205', width: '104', height: '104', rx: '3', fill: 'none', stroke: '#1a1a1a', 'stroke-width': '1', 'stroke-dasharray': '4,4' }));
-    app(g, mk('circle', { cx: '118', cy: '210', r: '3', fill: '#333' }));
-    app(g, mkt('ATmega',  { fill: '#333', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', x: '165', y: '255' }));
-    app(g, mkt('328P-PU', { fill: '#333', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', x: '165', y: '269' }));
-    app(g, mkt('ARDUINO', { fill: '#282828', 'font-family': 'monospace', 'font-size': '8', 'text-anchor': 'middle', x: '165', y: '284' }));
+    // ATmega328P — DIP-28
+    // Body: 50px wide x 154px tall, centred at x=165, top at y=200
+    // 14 pins per side, pitch=11px, pin stubs 10px long
+    (function () {
+      var bx = 140, by = 200, bw = 50, bh = 154; // body rect
+      var pitch = 11, stubW = 10, stubH = 5;
+      var pinStartY = by + 10; // first pin y centre
+
+      // IC body
+      app(g, mk('rect', { x: bx, y: by, width: bw, height: bh, rx: '3',
+        fill: 'url(#unoChipGr)', stroke: '#3a3a3a', 'stroke-width': '2' }));
+
+      // Notch (semicircle) at top centre
+      app(g, mk('path', {
+        d: 'M ' + (bx + bw/2 - 8) + ',' + by +
+           ' A 8 8 0 0 0 ' + (bx + bw/2 + 8) + ',' + by,
+        fill: '#0a0a0a', stroke: '#3a3a3a', 'stroke-width': '1.5'
+      }));
+
+      // Pin 1 dot (bottom-left of notch)
+      app(g, mk('circle', { cx: bx + 6, cy: by + 10, r: '2', fill: '#555' }));
+
+      // Left pins: 1-14 top to bottom
+      for (var i = 0; i < 14; i++) {
+        var py = pinStartY + i * pitch;
+        app(g, mk('rect', { x: bx - stubW, y: py - stubH/2,
+          width: stubW, height: stubH, rx: '1',
+          fill: '#b8a060', stroke: '#8a7040', 'stroke-width': '0.5' }));
+      }
+
+      // Right pins: 15-28 bottom to top (pin 15 at bottom, 28 at top)
+      for (var j = 0; j < 14; j++) {
+        var ry = pinStartY + (13 - j) * pitch;
+        app(g, mk('rect', { x: bx + bw, y: ry - stubH/2,
+          width: stubW, height: stubH, rx: '1',
+          fill: '#b8a060', stroke: '#8a7040', 'stroke-width': '0.5' }));
+      }
+
+      // Labels
+      app(g, mkt('ATmega',  { fill: '#555', 'font-family': 'monospace', 'font-size': '10',
+        'font-weight': 'bold', 'text-anchor': 'middle', x: bx + bw/2, y: by + bh/2 - 8 }));
+      app(g, mkt('328P-PU', { fill: '#555', 'font-family': 'monospace', 'font-size': '10',
+        'font-weight': 'bold', 'text-anchor': 'middle', x: bx + bw/2, y: by + bh/2 + 6 }));
+      app(g, mkt('ARDUINO', { fill: '#383838', 'font-family': 'monospace', 'font-size': '7',
+        'text-anchor': 'middle', x: bx + bw/2, y: by + bh/2 + 18 }));
+    }());
 
     // ATmega16U2
     app(g, mk('rect', { x: '270', y: '138', width: '56', height: '56', rx: '3', fill: 'url(#unoChipGr)', stroke: '#1e1e1e', 'stroke-width': '1.5' }));
