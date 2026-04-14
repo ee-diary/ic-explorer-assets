@@ -171,9 +171,10 @@
     app(g, mkt('7-12V', { fill: '#444', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '69', y: DC_Y + 50 }));
 
     // AMS1117-5V - Detailed version
+    // AMS1117-5V Voltage Regulator - Corrected pin layout
     (function() {
       var regX = 120;
-      var regY = 10;  
+      var regY = 10;
       // Heatsink tab (top)
       app(g, mk('rect', { x: regX + 4, y: regY - 6, width: '20', height: '6', rx: '1', 
           fill: '#b8b8b8', stroke: '#888', 'stroke-width': '1' }));
@@ -191,24 +192,25 @@
           'font-weight': 'bold', 'text-anchor': 'middle', x: regX + 14, y: regY + 8 }));
       app(g, mkt('5V', { fill: '#ccaa77', 'font-family': 'monospace', 'font-size': '7', 
           'font-weight': 'bold', 'text-anchor': 'middle', x: regX + 14, y: regY + 14 }));
+      // ALL 3 PINS ON BOTTOM EDGE (opposite to heatsink tab)
       // Pin 1 - GND/ADJ (left)
-      app(g, mk('rect', { x: regX - 5, y: regY + 5, width: '5', height: '9', rx: '0.5', 
-          fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' })); 
-      // Pin 2 - VOUT (bottom center)
-      app(g, mk('rect', { x: regX + 9, y: regY + 32, width: '10', height: '4', rx: '0.5', 
-          fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' })); 
-      // Pin 3 - VIN (right)
-      app(g, mk('rect', { x: regX + 28, y: regY + 5, width: '5', height: '9', rx: '0.5', 
+      app(g, mk('rect', { x: regX + 3, y: regY + 32, width: '6', height: '5', rx: '0.5', 
           fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
-      // Small dot for pin 1 indicator
-      app(g, mk('circle', { cx: regX + 4, cy: regY + 4, r: '1', fill: '#666' })); 
-      // Silkscreen labels
-      app(g, mkt('VIN', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
-          'font-size': '5', 'text-anchor': 'middle', x: regX + 31, y: regY + 4 }));
+      // Pin 2 - VOUT (center)
+      app(g, mk('rect', { x: regX + 11, y: regY + 32, width: '6', height: '5', rx: '0.5', 
+          fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
+      // Pin 3 - VIN (right)
+      app(g, mk('rect', { x: regX + 19, y: regY + 32, width: '6', height: '5', rx: '0.5', 
+          fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
+      // Small dot for pin 1 indicator (top-left corner)
+      app(g, mk('circle', { cx: regX + 4, cy: regY + 4, r: '1.5', fill: '#666' }));
+      // Silkscreen labels (below the pins)
       app(g, mkt('GND', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
-          'font-size': '5', 'text-anchor': 'middle', x: regX - 2, y: regY + 4 }));
+          'font-size': '5', 'text-anchor': 'middle', x: regX + 6, y: regY + 42 }));
       app(g, mkt('VOUT', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
-          'font-size': '5', 'text-anchor': 'middle', x: regX + 14, y: regY + 39 }));
+          'font-size': '5', 'text-anchor': 'middle', x: regX + 14, y: regY + 42 }));
+      app(g, mkt('VIN', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
+          'font-size': '5', 'text-anchor': 'middle', x: regX + 22, y: regY + 42 }));
     })();
 
     // Reset button
