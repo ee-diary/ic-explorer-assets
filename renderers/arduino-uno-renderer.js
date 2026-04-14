@@ -182,16 +182,17 @@
     });
     app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
-    // ATmega328P — DIP-28
+    // ATmega328P — DIP-28 (SHIFTED LEFT BY 10px, PINS SHORTENED)
     (function () {
       var by = 196, bh = 417 - 196;
       var bw = 64;
-      var bx = 96;
+      var bx = 86;  // CHANGED: was 96, now shifted left by 10px
       var nPins = 14;
       var margin = 10;
       var usable = bh - margin * 2;
       var pitch  = usable / (nPins - 1);
-      var stubW  = 12, stubH = 6;
+      var stubW  = 8;   // CHANGED: was 12, now shorter pins
+      var stubH  = 5;   // CHANGED: was 6, now slightly shorter
       var pinStartY = by + margin;
 
       app(g, mk('rect', { x: bx, y: by, width: bw, height: bh, rx: '4',
