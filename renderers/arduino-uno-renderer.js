@@ -203,12 +203,23 @@
     g.appendChild(icspGroup);
     //app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
-    // ATmega16U2
-    app(g, mk('rect', { x: '246', y: '120', width: '40', height: '40', rx: '3', fill: 'url(#unoChipGr)', stroke: '#1e1e1e', 'stroke-width': '1.5' }));
-    app(g, mk('circle', { cx: '262', cy: '144', r: '2', fill: '#2a2a2a' }));
-    app(g, mkt('ATmega',     { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '161' }));
-    app(g, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '171' }));
-    app(g, mkt('USB-SERIAL', { fill: '#242424', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '284', y: '181' }));
+    // ATmega16U2 - calculate center position
+    var chipX = 246;      // Left edge
+    var chipY = 120;      // Top edge
+    var chipW = 40;       // Width
+    var chipH = 40;       // Height
+    var centerX = chipX + (chipW / 2);   // 246 + 20 = 266
+    var centerY = chipY + (chipH / 2);   // 120 + 20 = 140
+    app(g, mk('rect', { x: chipX, y: chipY, width: chipW, height: chipH, rx: '3', 
+        fill: 'url(#unoChipGr)', stroke: '#1e1e1e', 'stroke-width': '1.5' }));
+    app(g, mk('circle', { cx: chipX + 16, cy: chipY + 24, r: '2', fill: '#2a2a2a' }));  // Pin 1 marker
+    // Centered text
+    app(g, mkt('ATmega',     { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 
+        'font-weight': 'bold', 'text-anchor': 'middle', x: centerX, y: centerY - 8 }));
+    app(g, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 
+        'font-weight': 'bold', 'text-anchor': 'middle', x: centerX, y: centerY + 2 }));
+    app(g, mkt('USB-SERIAL', { fill: '#242424', 'font-family': 'monospace', 'font-size': '6', 
+        'text-anchor': 'middle', x: centerX, y: centerY + 12 }));
 
     // Crystal Oscillator 16MHz — moved left by 30px total (215→185, 219→189, 226→196)
     app(g, mk('rect',   { x: '185', y: '155', width: '22', height: '45', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
