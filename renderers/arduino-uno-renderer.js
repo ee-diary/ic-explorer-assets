@@ -256,7 +256,7 @@
     app(g, mk('rect', { x: '230', y: '182', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
-    // Arduino Logo (NOT rotated) - MOVED RIGHT BY 24px (was cx:239/283, now cx:263/307)
+    // Arduino Logo (NOT rotated - original orientation) - MOVED RIGHT BY 24px
     var logoG = mk('g', { opacity: '0.5' });
     app(logoG, mk('circle', { cx: '263', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
     app(logoG, mk('circle', { cx: '307', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
@@ -265,7 +265,7 @@
     app(logoG, mk('line',   { x1: '299', y1: '280', x2: '315', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
     g.appendChild(logoG);
 
-    // Arduino UNO R3 Text - ROTATED 90 DEGREES - MOVED RIGHT BY 24px (was x:261, now x:285)
+    // Arduino UNO R3 Text - ROTATED 90 DEGREES ONLY - MOVED RIGHT BY 24px
     var rotatedTextGroup = mk('g', { transform: 'rotate(90, 285, 315)' });
     app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '285', y: '315' }));
     app(rotatedTextGroup, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '285', y: '328' }));
