@@ -252,11 +252,11 @@
     // LEDs
     app(g, mk('rect', { x: '120',  y: '112', width: '14', height: '6', rx: '3', fill: '#00cc44' }));
     //app(g, mkt('ON', { fill: 'rgba(140,200,140,0.55)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '40',  y: '118' }));
-    app(g, mk('rect', { x: '235', y: '200', width: '10', height: '6', rx: '2', fill: '#eecc00' }));
+    app(g, mk('rect', { x: '250', y: '200', width: '10', height: '6', rx: '2', fill: '#eecc00' }));
     //app(g, mkt('L',  { fill: 'rgba(200,190,80,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '161' }));
-    app(g, mk('rect', { x: '250', y: '200', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
-    //app(g, mkt('TX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '176' }));
     app(g, mk('rect', { x: '265', y: '200', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
+    //app(g, mkt('TX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '176' }));
+    app(g, mk('rect', { x: '280', y: '200', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     //app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
     // Arduino Logo — rotated 90° clockwise around its centre (261, 280), shifted right 28px (was 16px, +12px)
