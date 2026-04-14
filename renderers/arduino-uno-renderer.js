@@ -177,53 +177,42 @@
       var bodyW = 42;   // Longer width
       var bodyH = 22;   // Smaller height
       var centerX = regX + (bodyW / 2);
-      
       // Heatsink tab (top) - centered
       var tabW = 26;
       var tabX = centerX - (tabW / 2);
       app(g, mk('rect', { x: tabX, y: regY - 5, width: tabW, height: '5', rx: '1', 
           fill: '#b8b8b8', stroke: '#888', 'stroke-width': '1' }));
-      
       // Main body
       app(g, mk('rect', { x: regX, y: regY, width: bodyW, height: bodyH, rx: '2', 
           fill: '#1e1e1e', stroke: '#555', 'stroke-width': '1.5' }));
-      
       // Mold line (package seam) - horizontal
       app(g, mk('line', { x1: regX, y1: regY + 12, x2: regX + bodyW, y2: regY + 12, 
           stroke: '#333', 'stroke-width': '0.8' }));
-      
       // Top marking area
       app(g, mk('rect', { x: regX + 4, y: regY + 2, width: '34', height: '9', rx: '1', 
           fill: '#252525' }));
-      
       // Text
       app(g, mkt('AMS1117', { fill: '#999', 'font-family': 'monospace', 'font-size': '5', 
           'font-weight': 'bold', 'text-anchor': 'middle', x: centerX, y: regY + 6 }));
       app(g, mkt('5V', { fill: '#ccaa77', 'font-family': 'monospace', 'font-size': '6', 
           'font-weight': 'bold', 'text-anchor': 'middle', x: centerX, y: regY + 11 }));
-      
       // ALL 3 PINS ON BOTTOM EDGE - properly centered
       var pinW = 6;
       var pinH = 5;
       var gap = 8;  // Gap between pins
       var totalPinsWidth = (pinW * 3) + (gap * 2);  // 6+8+6+8+6 = 34
       var startX = centerX - (totalPinsWidth / 2);  // Center the pins under the body
-      
       // Pin 1 - GND (left)
       app(g, mk('rect', { x: startX, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
           fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
-      
       // Pin 2 - VOUT (center)
       app(g, mk('rect', { x: startX + pinW + gap, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
           fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
-      
       // Pin 3 - VIN (right)
       app(g, mk('rect', { x: startX + (pinW + gap) * 2, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
           fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
-      
       // Small dot for pin 1 indicator (top-left corner)
-      app(g, mk('circle', { cx: regX + 5, cy: regY + 4, r: '1.5', fill: '#666' }));
-      
+      app(g, mk('circle', { cx: regX + 5, cy: regY + 4, r: '1.5', fill: '#666' }));   
       // Silkscreen labels (below the pins)
       var labelY = regY + bodyH + 9;
       app(g, mkt('GND', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
@@ -269,7 +258,7 @@
 
     // ATmega16U2 - calculate center position
     var chipX = 246;      // Left edge
-    var chipY = 120;      // Top edge
+    var chipY = 100;      // Top edge
     var chipW = 40;       // Width
     var chipH = 40;       // Height
     var centerX = chipX + (chipW / 2);   // 246 + 20 = 266
