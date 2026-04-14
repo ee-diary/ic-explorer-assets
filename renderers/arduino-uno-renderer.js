@@ -51,30 +51,30 @@
     'D10':    { x: 380, y: 264, side: 'right' },
     'D9':     { x: 380, y: 286, side: 'right' },
     'D8':     { x: 380, y: 309, side: 'right' },
-    // Right lower block: pitch=19, D7 y=310 -> RX0 y=443, all inside board
-    'D7':     { x: 380, y: 332, side: 'right' },
-    'D6':     { x: 380, y: 351, side: 'right' },
-    'D5':     { x: 380, y: 370, side: 'right' },
-    'D4':     { x: 380, y: 389, side: 'right' },
-    'D3':     { x: 380, y: 408, side: 'right' },
-    'D2':     { x: 380, y: 427, side: 'right' },
-    'TX0':    { x: 380, y: 446, side: 'right' },
-    'RX0':    { x: 380, y: 465, side: 'right' },
-    // Left upper block: MOVED UP BY 5px (y-5 for all pins)
-    'IOREF':  { x: 8,   y: 191, side: 'left'  },  // was 196
-    'RST':    { x: 8,   y: 210, side: 'left'  },  // was 215
-    '3V3':    { x: 8,   y: 229, side: 'left'  },  // was 234
-    '5V':     { x: 8,   y: 249, side: 'left'  },  // was 254
-    'GND_P':  { x: 8,   y: 268, side: 'left'  },  // was 273
-    'GND_P2': { x: 8,   y: 287, side: 'left'  },  // was 292
-    'VIN':    { x: 8,   y: 306, side: 'left'  },  // was 311
-    // Left lower block: MOVED UP BY 5px (y-5 for all pins)
-    'A0':     { x: 8,   y: 335, side: 'left'  },  // was 340
-    'A1':     { x: 8,   y: 354, side: 'left'  },  // was 359
-    'A2':     { x: 8,   y: 373, side: 'left'  },  // was 378
-    'A3':     { x: 8,   y: 392, side: 'left'  },  // was 397
-    'A4':     { x: 8,   y: 411, side: 'left'  },  // was 416
-    'A5':     { x: 8,   y: 430, side: 'left'  },  // was 435
+    // Right lower block: 10px gap between D8 and D7 (D7 moved from 332 to 342)
+    'D7':     { x: 380, y: 342, side: 'right' },  // MOVED: was 332 (+10px gap)
+    'D6':     { x: 380, y: 361, side: 'right' },  // was 351
+    'D5':     { x: 380, y: 380, side: 'right' },  // was 370
+    'D4':     { x: 380, y: 399, side: 'right' },  // was 389
+    'D3':     { x: 380, y: 418, side: 'right' },  // was 408
+    'D2':     { x: 380, y: 437, side: 'right' },  // was 427
+    'TX0':    { x: 380, y: 456, side: 'right' },  // was 446
+    'RX0':    { x: 380, y: 475, side: 'right' },  // was 465
+    // Left upper block: moved up by 5px
+    'IOREF':  { x: 8,   y: 191, side: 'left'  },
+    'RST':    { x: 8,   y: 210, side: 'left'  },
+    '3V3':    { x: 8,   y: 229, side: 'left'  },
+    '5V':     { x: 8,   y: 249, side: 'left'  },
+    'GND_P':  { x: 8,   y: 268, side: 'left'  },
+    'GND_P2': { x: 8,   y: 287, side: 'left'  },
+    'VIN':    { x: 8,   y: 306, side: 'left'  },
+    // Left lower block: moved up by 5px
+    'A0':     { x: 8,   y: 335, side: 'left'  },
+    'A1':     { x: 8,   y: 354, side: 'left'  },
+    'A2':     { x: 8,   y: 373, side: 'left'  },
+    'A3':     { x: 8,   y: 392, side: 'left'  },
+    'A4':     { x: 8,   y: 411, side: 'left'  },
+    'A5':     { x: 8,   y: 430, side: 'left'  },
   };
 
   var PS = 18;
@@ -254,26 +254,26 @@
     app(g, mk('rect', { x: '230', y: '182', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
-    // Arduino logo with text moved by 40px (from previous position)
+    // Arduino logo with text moved to the left by 150px (from x:314/336 to x:164/186)
     var logoG = mk('g', { opacity: '0.5' });
-    app(logoG, mk('circle', { cx: '314', cy: '210', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('circle', { cx: '358', cy: '210', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('line',   { x1: '306', y1: '210', x2: '322', y2: '210', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line',   { x1: '314', y1: '204', x2: '314', y2: '216', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line',   { x1: '350', y1: '210', x2: '366', y2: '210', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('circle', { cx: '164', cy: '210', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+    app(logoG, mk('circle', { cx: '208', cy: '210', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+    app(logoG, mk('line',   { x1: '156', y1: '210', x2: '172', y2: '210', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '164', y1: '204', x2: '164', y2: '216', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '200', y1: '210', x2: '216', y2: '210', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
     g.appendChild(logoG);
-    app(g, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '336', y: '245' }));
-    app(g, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '336', y: '258' }));
-    app(g, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '336', y: '269' }));
+    app(g, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '186', y: '245' }));
+    app(g, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '186', y: '258' }));
+    app(g, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '186', y: '269' }));
 
     // Header housings
     // Right upper: y=138, h=183 (covers AREF y=150 -> D8 y=309)
     app(g, mk('rect', { x: '372', y: '138', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Right lower: y=301, h=173 (covers D7 y=332 -> RX0 y=465)
-    app(g, mk('rect', { x: '372', y: '301', width: '16', height: '173', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Left upper: MOVED UP BY 5px (y=179, h=137)
+    // Right lower: y=301, h=183 (covers D7 y=342 -> RX0 y=475)
+    app(g, mk('rect', { x: '372', y: '301', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    // Left upper: y=179, h=137
     app(g, mk('rect', { x: '0',   y: '179', width: '16', height: '137', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Left lower: MOVED UP BY 5px (y=306, h=133)
+    // Left lower: y=306, h=133
     app(g, mk('rect', { x: '0',   y: '306', width: '16', height: '133', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
     // Silkscreen labels
