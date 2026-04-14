@@ -199,7 +199,8 @@
 
     // ATmega328P — DIP-28
     (function () {
-      var by = 225, bh = 500 - 225;
+      var by = 225;
+      var bh = 417 - 225 + 40; // Increase height (add 40px)
       var bw = 64;
       var bx = 86;
       var nPins = 14;
