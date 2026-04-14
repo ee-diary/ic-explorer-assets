@@ -267,9 +267,11 @@
 
     // Arduino UNO R3 Text - ROTATED 90 DEGREES CLOCKWISE only
     var rotatedTextGroup = mk('g', { transform: 'rotate(90, 261, 315)' });
-    app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '261', y: '315' }));
-    app(rotatedTextGroup, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '261', y: '328' }));
-    app(rotatedTextGroup, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '261', y: '339' }));
+    var logoG = mk('g', { opacity: '0.5', transform: 'translate(18, 14)' });
+app(logoG, mk('circle', { cx: '283', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+app(logoG, mk('line',   { x1: '231', y1: '280', x2: '247', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+app(logoG, mk('line',   { x1: '239', y1: '274', x2: '239', y2: '286', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+app(logoG, mk('line',   { x1: '275', y1: '280', x2: '291', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
     g.appendChild(rotatedTextGroup);
 
     // Header housings
