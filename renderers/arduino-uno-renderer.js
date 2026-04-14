@@ -182,10 +182,19 @@
     [[186,416],[202,416],[218,416],[186,429],[202,429],[218,429]].forEach(function (pos) {
       app(g, mk('rect', { x: pos[0], y: pos[1], width: '10', height: '9', rx: '1', fill: '#222', stroke: '#555', 'stroke-width': '0.7' }));
     });
-     app(g, mk('rect', { x: '270', y: '140', width: '54', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
-    [[186,416],[202,416],[218,416],[186,429],[202,429],[218,429]].forEach(function (pos) {
-      app(g, mk('rect', { x: pos[0], y: pos[1], width: '10', height: '9', rx: '1', fill: '#222', stroke: '#555', 'stroke-width': '0.7' }));
-    });
+     // New ICSP header at x: 270, y: 140
+app(g, mk('rect', { x: '270', y: '140', width: '54', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
+
+// Inner boxes - aligned with new position (x: 270, y: 140)
+[[276, 146],   // First row: x = 270+6, y = 140+6
+ [292, 146],   // x = 270+22, y = 140+6  
+ [308, 146],   // x = 270+38, y = 140+6
+ [276, 159],   // Second row: x = 270+6, y = 140+19
+ [292, 159],   // x = 270+22, y = 140+19
+ [308, 159]]   // x = 270+38, y = 140+19
+.forEach(function (pos) {
+  app(g, mk('rect', { x: pos[0], y: pos[1], width: '10', height: '9', rx: '1', fill: '#222', stroke: '#555', 'stroke-width': '0.7' }));
+});
     //app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
     // ATmega16U2
