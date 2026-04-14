@@ -268,7 +268,7 @@
 
     // Arduino UNO R3 Text - ROTATED 90 DEGREES CLOCKWISE only
     var rotatedTextGroup = mk('g', { transform: 'translate(-10, -30) rotate(90, 261, 315)' });
-    app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '18', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '261', y: '308' }));
+    app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '18', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '256', y: '315' }));
     g.appendChild(rotatedTextGroup);
     var UNOTextGroup = mk('g', { transform: 'translate(28, 40) rotate(90, 261, 315)' });
     app(UNOTextGroup, mkt('UNO', { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '40', 'font-weight': '500', 'letter-spacing': '4', 'text-anchor': 'middle', x: '261', y: '328' }));
@@ -282,8 +282,8 @@
     app(g, mk('rect', { x: '0',   y: '306', width: '16', height: '133', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
     // Silkscreen labels
-    g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,336,242)', x: '336', y: '242' }));
-    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,253)',    x: '52',  y: '260' }));
+    g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,336,242)', x: '330', y: '242' }));
+    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,253)',    x: '52',  y: '253' }));
     g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,377)',    x: '52',  y: '377' }));
   }
 
