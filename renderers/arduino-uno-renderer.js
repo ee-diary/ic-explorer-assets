@@ -170,6 +170,47 @@
     app(g, mkt('DC',    { fill: '#555', 'font-family': 'monospace', 'font-size': '8', 'text-anchor': 'middle', x: '69', y: DC_Y + 42 }));
     app(g, mkt('7-12V', { fill: '#444', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '69', y: DC_Y + 50 }));
 
+    // AMS1117-5V - Detailed version
+    (function() {
+      var regX = 120;
+      var regY = 10;  
+      // Heatsink tab (top)
+      app(g, mk('rect', { x: regX + 4, y: regY - 6, width: '20', height: '6', rx: '1', 
+          fill: '#b8b8b8', stroke: '#888', 'stroke-width': '1' }));
+      // Main body
+      app(g, mk('rect', { x: regX, y: regY, width: '28', height: '32', rx: '2', 
+          fill: '#1e1e1e', stroke: '#555', 'stroke-width': '1.5' }));
+      // Mold line (package seam)
+      app(g, mk('line', { x1: regX, y1: regY + 18, x2: regX + 28, y2: regY + 18, 
+          stroke: '#333', 'stroke-width': '0.8' }));
+      // Top marking area
+      app(g, mk('rect', { x: regX + 3, y: regY + 3, width: '22', height: '13', rx: '1', 
+          fill: '#252525' }));
+      // Text
+      app(g, mkt('AMS1117', { fill: '#999', 'font-family': 'monospace', 'font-size': '5', 
+          'font-weight': 'bold', 'text-anchor': 'middle', x: regX + 14, y: regY + 8 }));
+      app(g, mkt('5V', { fill: '#ccaa77', 'font-family': 'monospace', 'font-size': '7', 
+          'font-weight': 'bold', 'text-anchor': 'middle', x: regX + 14, y: regY + 14 }));
+      // Pin 1 - GND/ADJ (left)
+      app(g, mk('rect', { x: regX - 5, y: regY + 5, width: '5', height: '9', rx: '0.5', 
+          fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' })); 
+      // Pin 2 - VOUT (bottom center)
+      app(g, mk('rect', { x: regX + 9, y: regY + 32, width: '10', height: '4', rx: '0.5', 
+          fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' })); 
+      // Pin 3 - VIN (right)
+      app(g, mk('rect', { x: regX + 28, y: regY + 5, width: '5', height: '9', rx: '0.5', 
+          fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
+      // Small dot for pin 1 indicator
+      app(g, mk('circle', { cx: regX + 4, cy: regY + 4, r: '1', fill: '#666' })); 
+      // Silkscreen labels
+      app(g, mkt('VIN', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
+          'font-size': '5', 'text-anchor': 'middle', x: regX + 31, y: regY + 4 }));
+      app(g, mkt('GND', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
+          'font-size': '5', 'text-anchor': 'middle', x: regX - 2, y: regY + 4 }));
+      app(g, mkt('VOUT', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
+          'font-size': '5', 'text-anchor': 'middle', x: regX + 14, y: regY + 39 }));
+    })();
+
     // Reset button
     app(g, mk('rect',   { x: '346', y: '4',  width: '32', height: '32', rx: '4', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '1' }));
     app(g, mk('circle', { cx: '362', cy: '20', r: '10', fill: '#cc2222', stroke: '#991111', 'stroke-width': '1.5' }));
