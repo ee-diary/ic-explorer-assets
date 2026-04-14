@@ -258,7 +258,7 @@
 
     // ATmega16U2 - calculate center position
     var chipX = 246;      // Left edge
-    var chipY = 100;      // Top edge
+    var chipY = 130;      // Top edge
     var chipW = 40;       // Width
     var chipH = 40;       // Height
     var centerX = chipX + (chipW / 2);   // 246 + 20 = 266
