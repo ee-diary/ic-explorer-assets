@@ -1,7 +1,6 @@
 // ============================================================
 //  renderers/arduino-uno-renderer.js
 //  IC Explorer — Arduino Uno R3 board renderer
-//  ENHANCED: Larger POWER and ANALOG IN labels (font-size increased to 14px)
 // ============================================================
 
 (function (global) {
@@ -192,7 +191,7 @@
     app(g, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '171' }));
     app(g, mkt('USB-SERIAL', { fill: '#242424', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '284', y: '181' }));
 
-    // Crystal Oscillator 16MHz
+    // Crystal Oscillator 16MHz — moved left by 30px total (215→185, 219→189, 226→196)
     app(g, mk('rect',   { x: '185', y: '155', width: '22', height: '45', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
     app(g, mk('rect',   { x: '189', y: '163', width: '14', height: '31', rx: '5', fill: '#c0c0c0' }));
     app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '196', y: '179' }));
@@ -257,7 +256,7 @@
     app(g, mk('rect', { x: '230', y: '182', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
-    // Arduino Logo — rotated 90° clockwise
+    // Arduino Logo — rotated 90° clockwise around its centre (261, 280), shifted right 28px (was 16px, +12px)
     var logoG = mk('g', { opacity: '0.5', transform: 'translate(0, 14) rotate(90, 261, 280)' });
     app(logoG, mk('circle', { cx: '239', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
     app(logoG, mk('circle', { cx: '283', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
@@ -266,7 +265,7 @@
     app(logoG, mk('line',   { x1: '275', y1: '280', x2: '291', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
     g.appendChild(logoG);
 
-    // Arduino UNO R3 Text - ROTATED 90 DEGREES CLOCKWISE
+    // Arduino UNO R3 Text - ROTATED 90 DEGREES CLOCKWISE only
     var rotatedTextGroup = mk('g', { transform: 'rotate(90, 261, 315)' });
     app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '261', y: '315' }));
     app(rotatedTextGroup, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '261', y: '328' }));
@@ -281,16 +280,8 @@
 
     // Silkscreen labels
     g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,336,242)', x: '336', y: '242' }));
-    
-    // ============================================================
-    // ENHANCED: Larger POWER label (font-size increased to 14px)
-    // ============================================================
-    g.appendChild(mkt('POWER', { fill: 'rgba(140,190,255,0.85)', 'font-family': 'monospace', 'font-size': '14', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,253)', x: '52', y: '253' }));
-    
-    // ============================================================
-    // ENHANCED: Larger ANALOG IN label (font-size increased to 14px)
-    // ============================================================
-    g.appendChild(mkt('ANALOG IN', { fill: 'rgba(140,190,255,0.85)', 'font-family': 'monospace', 'font-size': '14', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,377)', x: '52', y: '377' }));
+    g.appendChild(mkt('POWER',          { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,253)',    x: '52',  y: '253' }));
+    g.appendChild(mkt('ANALOG IN',      { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,377)',    x: '52',  y: '377' }));
   }
 
   // ── interactive pin squares ───────────────────────────────────
