@@ -267,10 +267,10 @@
 
     // Arduino UNO R3 Text - ROTATED 90 DEGREES CLOCKWISE only
     var rotatedTextGroup = mk('g', { transform: 'translate(-10, -30) rotate(90, 261, 315)' });
-    app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '22', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '261', y: '315' }));
+    app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '18', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '261', y: '315' }));
     g.appendChild(rotatedTextGroup);
-    var UNOTextGroup = mk('g', { transform: 'translate(28, 4) rotate(90, 261, 315)' });
-    app(UNOTextGroup, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '18', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '261', y: '328' }));
+    var UNOTextGroup = mk('g', { transform: 'translate(28, 24) rotate(90, 261, 315)' });
+    app(UNOTextGroup, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '26', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '261', y: '328' }));
     g.appendChild(UNOTextGroup);
     
 
