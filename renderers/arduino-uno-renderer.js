@@ -178,7 +178,7 @@
     app(g, mkt('RESET', { fill: '#2a4a6a', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '362', y: '45' }));
 
     // ICSP header
-    app(g, mk('rect', { x: '180', y: '310', width: '64', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
+    app(g, mk('rect', { x: '180', y: '410', width: '64', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
     [[186,416],[202,416],[218,416],[186,429],[202,429],[218,429]].forEach(function (pos) {
       app(g, mk('rect', { x: pos[0], y: pos[1], width: '10', height: '9', rx: '1', fill: '#222', stroke: '#555', 'stroke-width': '0.7' }));
     });
