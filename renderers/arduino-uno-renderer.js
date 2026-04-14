@@ -141,9 +141,9 @@
   }
 
   function _buildBoard(g) {
-    app(g, mk('path', { d: 'M0,0 L390,0 L390,470 L40,470 L0,443 Z', fill: 'url(#unoPcbGr)', stroke: '#0a1830', 'stroke-width': '2' }));
-    app(g, mk('path', { d: 'M0,0 L390,0 L390,470 L40,470 L0,443 Z', fill: 'url(#unoDotsPat)' }));
-    app(g, mk('path', { d: 'M1,1 L389,1 L389,469 L41,469 L1,442 Z', fill: 'none', stroke: 'rgba(100,160,255,0.12)', 'stroke-width': '1' }));
+    app(g, mk('path', { d: 'M0,0 L390,0 L390,455 L40,455 L0,443 Z', fill: 'url(#unoPcbGr)', stroke: '#0a1830', 'stroke-width': '2' }));
+    app(g, mk('path', { d: 'M0,0 L390,0 L390,455 L40,455 L0,443 Z', fill: 'url(#unoDotsPat)' }));
+    app(g, mk('path', { d: 'M1,1 L389,1 L454,469 L41,454 L1,442 Z', fill: 'none', stroke: 'rgba(100,160,255,0.12)', 'stroke-width': '1' }));
 
     [{ cx: 15, cy: 14 }, { cx: 55, cy: 438 }].forEach(function (h) {
       app(g, mk('circle', { cx: h.cx, cy: h.cy, r: '10', fill: '#0a1830', stroke: '#0d2040', 'stroke-width': '1.5' }));
