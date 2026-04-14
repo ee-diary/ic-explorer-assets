@@ -178,7 +178,7 @@
     app(g, mkt('RESET', { fill: '#2a4a6a', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '362', y: '45' }));
 
     // ICSP header
-    app(g, mk('rect', { x: '180', y: '410', width: '58', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
+    app(g, mk('rect', { x: '180', y: '410', width: '56', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
     [[186,416],[202,416],[218,416],[186,429],[202,429],[218,429]].forEach(function (pos) {
       app(g, mk('rect', { x: pos[0], y: pos[1], width: '10', height: '9', rx: '1', fill: '#222', stroke: '#555', 'stroke-width': '0.7' }));
     });
@@ -199,7 +199,7 @@
 
     // ATmega328P — DIP-28
     (function () {
-      var by = 225 - 40;
+      var by = 225 - 32;
       var bh = 417 - 225 + 50; // Increase height (add 40px) downward
       var bw = 64;
       var bx = 86;
@@ -240,11 +240,11 @@
     }());
 
     // Capacitors
-    app(g, mk('ellipse', { cx: '80',  cy: '160', rx: '12', ry: '12', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '1.5' }));
-    app(g, mk('ellipse', { cx: '80',  cy: '160', rx: '8',  ry: '8',  fill: '#444' }));
+    app(g, mk('ellipse', { cx: '50',  cy: '160', rx: '12', ry: '12', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '1.5' }));
+    app(g, mk('ellipse', { cx: '50',  cy: '160', rx: '8',  ry: '8',  fill: '#444' }));
     app(g, mkt('10\u03bcF',  { fill: 'rgba(140,190,255,0.25)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '80',  y: '178' }));
-    app(g, mk('ellipse', { cx: '315', cy: '430', rx: '18', ry: '18', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '2' }));
-    app(g, mk('ellipse', { cx: '315', cy: '430', rx: '12', ry: '12', fill: '#444' }));
+    app(g, mk('ellipse', { cx: '50', cy: '120', rx: '18', ry: '18', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '2' }));
+    app(g, mk('ellipse', { cx: '50', cy: '120', rx: '12', ry: '12', fill: '#444' }));
     app(g, mkt('100\u03bcF', { fill: 'rgba(140,190,255,0.25)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '315', y: '450' }));
 
     // LEDs
