@@ -257,7 +257,7 @@
     app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
     // Arduino Logo — rotated 90° clockwise around its centre (261, 280), shifted right 28px (was 16px, +12px)
-    var logoG = mk('g', { opacity: '0.5', transform: 'translate(42, 0) rotate(90, 261, 280)' });
+    var logoG = mk('g', { opacity: '0.5', transform: 'translate(0, 14) rotate(90, 261, 280)' });
     app(logoG, mk('circle', { cx: '239', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
     app(logoG, mk('circle', { cx: '283', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
     app(logoG, mk('line',   { x1: '231', y1: '280', x2: '247', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
