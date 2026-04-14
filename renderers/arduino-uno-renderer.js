@@ -282,7 +282,7 @@
     app(g, mk('rect', { x: '0',   y: '306', width: '16', height: '133', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
     // Silkscreen labels
-    g.appendChild(mkt('DIGITAL (PWM~)', { x: '380', y: '210', fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,336,242)' }));
+    g.appendChild(mkt('DIGITAL (PWM~)', { x: '380', y: '250', fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,336,242)' }));
     g.appendChild(mkt('POWER',          { x: '62',  y: '253', fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,253)' }));
     g.appendChild(mkt('ANALOG IN',      { x: '52',  y: '377', fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '12', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(90,52,377)' }));
   }
