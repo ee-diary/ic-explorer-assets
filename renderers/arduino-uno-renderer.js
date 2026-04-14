@@ -222,10 +222,10 @@
         'text-anchor': 'middle', x: centerX, y: centerY + 12 }));
 
     // Crystal Oscillator 16MHz
-    app(g, mk('rect',   { x: '185', y: '139', width: '22', height: '45', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
-    app(g, mk('rect',   { x: '189', y: '147', width: '14', height: '31', rx: '5', fill: '#c0c0c0' }));
-    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '196', y: '163' }));
-    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '196', y: '171' }));
+    app(g, mk('rect',   { x: '185', y: '123', width: '22', height: '45', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
+    app(g, mk('rect',   { x: '189', y: '131', width: '14', height: '31', rx: '5', fill: '#c0c0c0' }));
+    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '196', y: '147' }));
+    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '196', y: '155' }));
 
     // ATmega328P — DIP-28
     (function () {
