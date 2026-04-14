@@ -141,9 +141,22 @@
   }
 
   function _buildBoard(g) {
-    app(g, mk('path', { d: 'M0,0 L390,0 L390,455 L40,455 L0,443 Z', fill: 'url(#unoPcbGr)', stroke: '#0a1830', 'stroke-width': '2' }));
-    app(g, mk('path', { d: 'M0,0 L390,0 L390,455 L40,455 L0,443 Z', fill: 'url(#unoDotsPat)' }));
-    app(g, mk('path', { d: 'M1,1 L389,1 L454,469 L41,454 L1,442 Z', fill: 'none', stroke: 'rgba(100,160,255,0.12)', 'stroke-width': '1' }));
+   // All three paths should have matching coordinates
+var boardW = 390;
+var boardH = 455;  // 470 - 15 = 455
+var cutY = 443;    // Keep the angled cut the same (or adjust if needed)
+
+// First path - Main board
+app(g, mk('path', { d: 'M0,0 L' + boardW + ',0 L' + boardW + ',' + boardH + ' L40,' + boardH + ' L0,' + (boardH - 12) + ' Z', 
+    fill: 'url(#unoPcbGr)', stroke: '#0a1830', 'stroke-width': '2' }));
+
+// Second path - Dots pattern (same coordinates)
+app(g, mk('path', { d: 'M0,0 L' + boardW + ',0 L' + boardW + ',' + boardH + ' L40,' + boardH + ' L0,' + (boardH - 12) + ' Z', 
+    fill: 'url(#unoDotsPat)' }));
+
+// Third path - Thin outline (adjusted to match board)
+app(g, mk('path', { d: 'M1,1 L' + (boardW - 1) + ',1 L' + (boardW - 1) + ',' + (boardH - 1) + ' L41,' + (boardH - 1) + ' L1,' + (boardH - 13) + ' Z', 
+    fill: 'none', stroke: 'rgba(100,160,255,0.12)', 'stroke-width': '1' }));
 
     [{ cx: 15, cy: 14 }, { cx: 55, cy: 438 }].forEach(function (h) {
       app(g, mk('circle', { cx: h.cx, cy: h.cy, r: '10', fill: '#0a1830', stroke: '#0d2040', 'stroke-width': '1.5' }));
