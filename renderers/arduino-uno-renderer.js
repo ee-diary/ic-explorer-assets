@@ -222,10 +222,37 @@
         'text-anchor': 'middle', x: centerX, y: centerY + 12 }));
 
     // Crystal Oscillator 16MHz
-    app(g, mk('rect',   { x: '185', y: '123', width: '22', height: '45', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
-    app(g, mk('rect',   { x: '189', y: '131', width: '14', height: '31', rx: '5', fill: '#c0c0c0' }));
-    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '196', y: '147' }));
-    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '196', y: '155' }));
+    var scale = 1.3;  // Increase by 30%
+
+// Original dimensions
+var origOuterW = 22, origOuterH = 45;
+var origInnerW = 14, origInnerH = 31;
+var origOuterX = 185, origOuterY = 123;
+var origInnerX = 189, origInnerY = 131;
+
+// New dimensions
+var newOuterW = Math.round(origOuterW * scale);  // 22 * 1.3 = 29
+var newOuterH = Math.round(origOuterH * scale);  // 45 * 1.3 = 59
+var newInnerW = Math.round(origInnerW * scale);  // 14 * 1.3 = 18
+var newInnerH = Math.round(origInnerH * scale);  // 31 * 1.3 = 40
+
+// Recalculate positions to keep centered around the same point
+var centerX = origOuterX + (origOuterW / 2);  // 185 + 11 = 196
+var centerY = origOuterY + (origOuterH / 2);  // 123 + 22.5 = 145.5
+
+var newOuterX = Math.round(centerX - (newOuterW / 2));  // 196 - 14.5 = 182
+var newOuterY = Math.round(centerY - (newOuterH / 2));  // 145.5 - 29.5 = 116
+var newInnerX = Math.round(centerX - (newInnerW / 2));  // 196 - 9 = 187
+var newInnerY = Math.round(centerY - (newInnerH / 2));  // 145.5 - 20 = 126
+
+app(g, mk('rect', { x: newOuterX, y: newOuterY, width: newOuterW, height: newOuterH, 
+    rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
+app(g, mk('rect', { x: newInnerX, y: newInnerY, width: newInnerW, height: newInnerH, 
+    rx: '5', fill: '#c0c0c0' }));
+app(g, mkt('16', { fill: '#555', 'font-family': 'monospace', 'font-size': '7', 
+    'text-anchor': 'middle', x: centerX, y: centerY - 4 }));
+app(g, mkt('MHz', { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 
+    'text-anchor': 'middle', x: centerX, y: centerY + 4 }));
 
     // ATmega328P — DIP-28
     (function () {
