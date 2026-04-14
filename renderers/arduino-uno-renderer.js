@@ -170,47 +170,64 @@
     app(g, mkt('DC',    { fill: '#555', 'font-family': 'monospace', 'font-size': '8', 'text-anchor': 'middle', x: '69', y: DC_Y + 42 }));
     app(g, mkt('7-12V', { fill: '#444', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '69', y: DC_Y + 50 }));
 
-    // AMS1117-5V - Detailed version
-    // AMS1117-5V Voltage Regulator - Corrected pin layout
+// AMS1117-5V Voltage Regulator - Wide & Low Profile
     (function() {
       var regX = 120;
-      var regY = 10;
-      // Heatsink tab (top)
-      app(g, mk('rect', { x: regX + 4, y: regY - 6, width: '20', height: '6', rx: '1', 
+      var regY = 15;
+      var bodyW = 42;   // Longer width
+      var bodyH = 22;   // Smaller height
+      var centerX = regX + (bodyW / 2);
+      
+      // Heatsink tab (top) - wider to match body
+      app(g, mk('rect', { x: regX + 8, y: regY - 5, width: '26', height: '5', rx: '1', 
           fill: '#b8b8b8', stroke: '#888', 'stroke-width': '1' }));
+      
       // Main body
-      app(g, mk('rect', { x: regX, y: regY, width: '28', height: '32', rx: '2', 
+      app(g, mk('rect', { x: regX, y: regY, width: bodyW, height: bodyH, rx: '2', 
           fill: '#1e1e1e', stroke: '#555', 'stroke-width': '1.5' }));
-      // Mold line (package seam)
-      app(g, mk('line', { x1: regX, y1: regY + 18, x2: regX + 28, y2: regY + 18, 
+      
+      // Mold line (package seam) - horizontal
+      app(g, mk('line', { x1: regX, y1: regY + 12, x2: regX + bodyW, y2: regY + 12, 
           stroke: '#333', 'stroke-width': '0.8' }));
+      
       // Top marking area
-      app(g, mk('rect', { x: regX + 3, y: regY + 3, width: '22', height: '13', rx: '1', 
+      app(g, mk('rect', { x: regX + 4, y: regY + 2, width: '34', height: '9', rx: '1', 
           fill: '#252525' }));
+      
       // Text
       app(g, mkt('AMS1117', { fill: '#999', 'font-family': 'monospace', 'font-size': '5', 
-          'font-weight': 'bold', 'text-anchor': 'middle', x: regX + 14, y: regY + 8 }));
-      app(g, mkt('5V', { fill: '#ccaa77', 'font-family': 'monospace', 'font-size': '7', 
-          'font-weight': 'bold', 'text-anchor': 'middle', x: regX + 14, y: regY + 14 }));
-      // ALL 3 PINS ON BOTTOM EDGE (opposite to heatsink tab)
+          'font-weight': 'bold', 'text-anchor': 'middle', x: centerX, y: regY + 6 }));
+      app(g, mkt('5V', { fill: '#ccaa77', 'font-family': 'monospace', 'font-size': '6', 
+          'font-weight': 'bold', 'text-anchor': 'middle', x: centerX, y: regY + 11 }));
+      
+      // ALL 3 PINS ON BOTTOM EDGE - with equal spacing
+      var pinW = 6;
+      var pinH = 5;
+      var totalPinsWidth = (pinW * 3) + 8;  // 6+8+6+8+6 = 34
+      var startX = regX + ((bodyW - totalPinsWidth) / 2);  // Center the pins
+      
       // Pin 1 - GND/ADJ (left)
-      app(g, mk('rect', { x: regX + 3, y: regY + 32, width: '6', height: '5', rx: '0.5', 
+      app(g, mk('rect', { x: startX, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
           fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
+      
       // Pin 2 - VOUT (center)
-      app(g, mk('rect', { x: regX + 11, y: regY + 32, width: '6', height: '5', rx: '0.5', 
+      app(g, mk('rect', { x: startX + pinW + 8, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
           fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
+      
       // Pin 3 - VIN (right)
-      app(g, mk('rect', { x: regX + 19, y: regY + 32, width: '6', height: '5', rx: '0.5', 
+      app(g, mk('rect', { x: startX + (pinW + 8) * 2, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
           fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
+      
       // Small dot for pin 1 indicator (top-left corner)
-      app(g, mk('circle', { cx: regX + 4, cy: regY + 4, r: '1.5', fill: '#666' }));
+      app(g, mk('circle', { cx: regX + 5, cy: regY + 4, r: '1.5', fill: '#666' }));
+      
       // Silkscreen labels (below the pins)
       app(g, mkt('GND', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
-          'font-size': '5', 'text-anchor': 'middle', x: regX + 6, y: regY + 42 }));
+          'font-size': '5', 'text-anchor': 'middle', x: startX + 3, y: regY + bodyH + 9 }));
       app(g, mkt('VOUT', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
-          'font-size': '5', 'text-anchor': 'middle', x: regX + 14, y: regY + 42 }));
+          'font-size': '5', 'text-anchor': 'middle', x: startX + pinW + 8 + 3, y: regY + bodyH + 9 }));
       app(g, mkt('VIN', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
-          'font-size': '5', 'text-anchor': 'middle', x: regX + 22, y: regY + 42 }));
+          'font-size': '5', 'text-anchor': 'middle', x: startX + (pinW + 8) * 2 + 3, y: regY + bodyH + 9 }));
     })();
 
     // Reset button
