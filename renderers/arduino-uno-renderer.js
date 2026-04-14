@@ -41,40 +41,42 @@
   }
 
   // ── Pin coordinates (original 390x470 space) ─────────────────
+  var RIGHT_OFFSET = -45;
+  
   var PIN_COORDS = {
-    // Right upper block: y=138-321, 8 pins, pitch~22.7
-    'AREF':   { x: 380, y: 150, side: 'right' },
-    'GND_D':  { x: 380, y: 173, side: 'right' },
-    'D13':    { x: 380, y: 195, side: 'right' },
-    'D12':    { x: 380, y: 218, side: 'right' },
-    'D11':    { x: 380, y: 241, side: 'right' },
-    'D10':    { x: 380, y: 264, side: 'right' },
-    'D9':     { x: 380, y: 286, side: 'right' },
-    'D8':     { x: 380, y: 309, side: 'right' },
-    // Right lower block: pitch=19, D7 y=310 -> RX0 y=443, all inside board
-    'D7':     { x: 380, y: 310, side: 'right' },
-    'D6':     { x: 380, y: 329, side: 'right' },
-    'D5':     { x: 380, y: 348, side: 'right' },
-    'D4':     { x: 380, y: 367, side: 'right' },
-    'D3':     { x: 380, y: 386, side: 'right' },
-    'D2':     { x: 380, y: 405, side: 'right' },
-    'TX0':    { x: 380, y: 424, side: 'right' },
-    'RX0':    { x: 380, y: 443, side: 'right' },
-    // Left upper block: y=184-323, 7 pins, pitch~19.2
-    'IOREF':  { x: 8,   y: 196, side: 'left'  },
-    'RST':    { x: 8,   y: 215, side: 'left'  },
-    '3V3':    { x: 8,   y: 234, side: 'left'  },
-    '5V':     { x: 8,   y: 254, side: 'left'  },
-    'GND_P':  { x: 8,   y: 273, side: 'left'  },
-    'GND_P2': { x: 8,   y: 292, side: 'left'  },
-    'VIN':    { x: 8,   y: 311, side: 'left'  },
-    // Left lower block: pitch=19, A0 y=330 -> A5 y=425, all inside board
-    'A0':     { x: 8,   y: 330, side: 'left'  },
-    'A1':     { x: 8,   y: 349, side: 'left'  },
-    'A2':     { x: 8,   y: 368, side: 'left'  },
-    'A3':     { x: 8,   y: 387, side: 'left'  },
-    'A4':     { x: 8,   y: 406, side: 'left'  },
-    'A5':     { x: 8,   y: 425, side: 'left'  },
+    // Right upper block
+    'AREF':   { x: 380, y: 150 + RIGHT_OFFSET, side: 'right' },
+    'GND_D':  { x: 380, y: 173 + RIGHT_OFFSET, side: 'right' },
+    'D13':    { x: 380, y: 195 + RIGHT_OFFSET, side: 'right' },
+    'D12':    { x: 380, y: 218 + RIGHT_OFFSET, side: 'right' },
+    'D11':    { x: 380, y: 241 + RIGHT_OFFSET, side: 'right' },
+    'D10':    { x: 380, y: 264 + RIGHT_OFFSET, side: 'right' },
+    'D9':     { x: 380, y: 286 + RIGHT_OFFSET, side: 'right' },
+    'D8':     { x: 380, y: 309 + RIGHT_OFFSET, side: 'right' },
+    // Right lower block
+    'D7':     { x: 380, y: 342 + RIGHT_OFFSET, side: 'right' },
+    'D6':     { x: 380, y: 361 + RIGHT_OFFSET, side: 'right' },
+    'D5':     { x: 380, y: 380 + RIGHT_OFFSET, side: 'right' },
+    'D4':     { x: 380, y: 399 + RIGHT_OFFSET, side: 'right' },
+    'D3':     { x: 380, y: 418 + RIGHT_OFFSET, side: 'right' },
+    'D2':     { x: 380, y: 437 + RIGHT_OFFSET, side: 'right' },
+    'TX0':    { x: 380, y: 456 + RIGHT_OFFSET, side: 'right' },
+    'RX0':    { x: 380, y: 475 + RIGHT_OFFSET, side: 'right' },
+    // Left upper block
+    'IOREF':  { x: 8,   y: 191, side: 'left'  },
+    'RST':    { x: 8,   y: 210, side: 'left'  },
+    '3V3':    { x: 8,   y: 229, side: 'left'  },
+    '5V':     { x: 8,   y: 249, side: 'left'  },
+    'GND_P':  { x: 8,   y: 268, side: 'left'  },
+    'GND_P2': { x: 8,   y: 287, side: 'left'  },
+    'VIN':    { x: 8,   y: 306, side: 'left'  },
+    // Left lower block
+    'A0':     { x: 8,   y: 335, side: 'left'  },
+    'A1':     { x: 8,   y: 354, side: 'left'  },
+    'A2':     { x: 8,   y: 373, side: 'left'  },
+    'A3':     { x: 8,   y: 392, side: 'left'  },
+    'A4':     { x: 8,   y: 411, side: 'left'  },
+    'A5':     { x: 8,   y: 430, side: 'left'  },
   };
 
   var PS = 18;
@@ -182,16 +184,30 @@
     });
     app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
+    // ATmega16U2
+    app(g, mk('rect', { x: '256', y: '138', width: '56', height: '56', rx: '3', fill: 'url(#unoChipGr)', stroke: '#1e1e1e', 'stroke-width': '1.5' }));
+    app(g, mk('circle', { cx: '262', cy: '144', r: '2', fill: '#2a2a2a' }));
+    app(g, mkt('ATmega',     { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '161' }));
+    app(g, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '171' }));
+    app(g, mkt('USB-SERIAL', { fill: '#242424', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '284', y: '181' }));
+
+    // Crystal Oscillator 16MHz — moved left by 30px total (215→185, 219→189, 226→196)
+    app(g, mk('rect',   { x: '185', y: '155', width: '22', height: '45', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
+    app(g, mk('rect',   { x: '189', y: '163', width: '14', height: '31', rx: '5', fill: '#c0c0c0' }));
+    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '196', y: '179' }));
+    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '196', y: '187' }));
+
     // ATmega328P — DIP-28
     (function () {
-      var by = 196, bh = 417 - 196;
+      var by = 225, bh = 417 - 225;
       var bw = 64;
-      var bx = 96;
+      var bx = 86;
       var nPins = 14;
       var margin = 10;
       var usable = bh - margin * 2;
       var pitch  = usable / (nPins - 1);
-      var stubW  = 12, stubH = 6;
+      var stubW  = 8;
+      var stubH  = 5;
       var pinStartY = by + margin;
 
       app(g, mk('rect', { x: bx, y: by, width: bw, height: bh, rx: '4',
@@ -222,19 +238,6 @@
       app(g, mkt('ARDUINO', { fill: '#383838', 'font-family': 'monospace', 'font-size': '9', 'text-anchor': 'middle', x: cx, y: cy + 20 }));
     }());
 
-    // ATmega16U2
-    app(g, mk('rect', { x: '270', y: '138', width: '56', height: '56', rx: '3', fill: 'url(#unoChipGr)', stroke: '#1e1e1e', 'stroke-width': '1.5' }));
-    app(g, mk('circle', { cx: '276', cy: '144', r: '2', fill: '#2a2a2a' }));
-    app(g, mkt('ATmega',     { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '298', y: '161' }));
-    app(g, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '298', y: '171' }));
-    app(g, mkt('USB-SERIAL', { fill: '#242424', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '298', y: '181' }));
-
-    // Crystal
-    app(g, mk('rect',   { x: '260', y: '358', width: '22', height: '35', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
-    app(g, mk('rect',   { x: '264', y: '366', width: '14', height: '21', rx: '5', fill: '#c0c0c0' }));
-    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '271', y: '378' }));
-    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '271', y: '386' }));
-
     // Capacitors
     app(g, mk('ellipse', { cx: '80',  cy: '160', rx: '12', ry: '12', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '1.5' }));
     app(g, mk('ellipse', { cx: '80',  cy: '160', rx: '8',  ry: '8',  fill: '#444' }));
@@ -242,10 +245,6 @@
     app(g, mk('ellipse', { cx: '315', cy: '430', rx: '18', ry: '18', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '2' }));
     app(g, mk('ellipse', { cx: '315', cy: '430', rx: '12', ry: '12', fill: '#444' }));
     app(g, mkt('100\u03bcF', { fill: 'rgba(140,190,255,0.25)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '315', y: '450' }));
-
-    // Voltage regulator
-    app(g, mk('rect', { x: '88', y: '368', width: '28', height: '34', rx: '2', fill: '#111', stroke: '#222', 'stroke-width': '1.5' }));
-    app(g, mkt('7805', { fill: '#1a3a5a', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '102', y: '410' }));
 
     // LEDs
     app(g, mk('rect', { x: '25',  y: '112', width: '14', height: '6', rx: '3', fill: '#00cc44' }));
@@ -257,27 +256,27 @@
     app(g, mk('rect', { x: '230', y: '182', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
-    // Arduino logo
-    var logoG = mk('g', { opacity: '0.5' });
-    app(logoG, mk('circle', { cx: '148', cy: '118', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('circle', { cx: '192', cy: '118', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('line',   { x1: '140', y1: '118', x2: '156', y2: '118', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line',   { x1: '148', y1: '112', x2: '148', y2: '125', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line',   { x1: '184', y1: '118', x2: '200', y2: '118', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    // Arduino Logo — rotated 90° clockwise around its centre (261, 280), shifted right 28px (was 16px, +12px)
+    var logoG = mk('g', { opacity: '0.5', transform: 'translate(0, 14) rotate(90, 261, 280)' });
+    app(logoG, mk('circle', { cx: '239', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+    app(logoG, mk('circle', { cx: '283', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+    app(logoG, mk('line',   { x1: '231', y1: '280', x2: '247', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '239', y1: '274', x2: '239', y2: '286', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '275', y1: '280', x2: '291', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
     g.appendChild(logoG);
-    app(g, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '170', y: '153' }));
-    app(g, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '170', y: '166' }));
-    app(g, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '170', y: '177' }));
+
+    // Arduino UNO R3 Text - ROTATED 90 DEGREES CLOCKWISE only
+    var rotatedTextGroup = mk('g', { transform: 'rotate(90, 261, 315)' });
+    app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '261', y: '315' }));
+    app(rotatedTextGroup, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '261', y: '328' }));
+    app(rotatedTextGroup, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '261', y: '339' }));
+    g.appendChild(rotatedTextGroup);
 
     // Header housings
-    // Right upper: y=138, h=183 (covers AREF y=150 -> D8 y=309)
-    app(g, mk('rect', { x: '372', y: '138', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Right lower: y=301, h=151 (covers D7 y=310 -> RX0 y=443)
-    app(g, mk('rect', { x: '372', y: '301', width: '16', height: '151', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Left upper: y=184, h=139 (covers IOREF y=196 -> VIN y=311)
-    app(g, mk('rect', { x: '0',   y: '184', width: '16', height: '139', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Left lower: y=321, h=113 (covers A0 y=330 -> A5 y=425)
-    app(g, mk('rect', { x: '0',   y: '321', width: '16', height: '113', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    app(g, mk('rect', { x: '372', y: '93', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    app(g, mk('rect', { x: '372', y: '256', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    app(g, mk('rect', { x: '0',   y: '179', width: '16', height: '137', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    app(g, mk('rect', { x: '0',   y: '306', width: '16', height: '133', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
     // Silkscreen labels
     g.appendChild(mkt('DIGITAL (PWM~)', { fill: 'rgba(140,190,255,0.65)', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', transform: 'rotate(-90,336,242)', x: '336', y: '242' }));
