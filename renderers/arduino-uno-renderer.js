@@ -41,25 +41,29 @@
   }
 
   // ── Pin coordinates (original 390x470 space) ─────────────────
+  // Calculate offset to align RX0 (right) with A5 (left y=430)
+  // Original RX0 was at y=475, need to move up by 45px (475 - 430 = 45)
+  var RIGHT_OFFSET = -45;  // Move right side up by 45px to align RX0 with A5
+  
   var PIN_COORDS = {
-    // Right upper block: y=138-321, 8 pins, pitch~22.7
-    'AREF':   { x: 380, y: 150, side: 'right' },
-    'GND_D':  { x: 380, y: 173, side: 'right' },
-    'D13':    { x: 380, y: 195, side: 'right' },
-    'D12':    { x: 380, y: 218, side: 'right' },
-    'D11':    { x: 380, y: 241, side: 'right' },
-    'D10':    { x: 380, y: 264, side: 'right' },
-    'D9':     { x: 380, y: 286, side: 'right' },
-    'D8':     { x: 380, y: 309, side: 'right' },
-    // Right lower block: 10px gap between D8 and D7 (D7 moved from 332 to 342)
-    'D7':     { x: 380, y: 342, side: 'right' },  // MOVED: was 332 (+10px gap)
-    'D6':     { x: 380, y: 361, side: 'right' },  // was 351
-    'D5':     { x: 380, y: 380, side: 'right' },  // was 370
-    'D4':     { x: 380, y: 399, side: 'right' },  // was 389
-    'D3':     { x: 380, y: 418, side: 'right' },  // was 408
-    'D2':     { x: 380, y: 437, side: 'right' },  // was 427
-    'TX0':    { x: 380, y: 456, side: 'right' },  // was 446
-    'RX0':    { x: 380, y: 475, side: 'right' },  // was 465
+    // Right upper block: moved up by 45px
+    'AREF':   { x: 380, y: 150 + RIGHT_OFFSET, side: 'right' },  // 105
+    'GND_D':  { x: 380, y: 173 + RIGHT_OFFSET, side: 'right' },  // 128
+    'D13':    { x: 380, y: 195 + RIGHT_OFFSET, side: 'right' },  // 150
+    'D12':    { x: 380, y: 218 + RIGHT_OFFSET, side: 'right' },  // 173
+    'D11':    { x: 380, y: 241 + RIGHT_OFFSET, side: 'right' },  // 196
+    'D10':    { x: 380, y: 264 + RIGHT_OFFSET, side: 'right' },  // 219
+    'D9':     { x: 380, y: 286 + RIGHT_OFFSET, side: 'right' },  // 241
+    'D8':     { x: 380, y: 309 + RIGHT_OFFSET, side: 'right' },  // 264
+    // Right lower block: moved up by 45px
+    'D7':     { x: 380, y: 342 + RIGHT_OFFSET, side: 'right' },  // 297
+    'D6':     { x: 380, y: 361 + RIGHT_OFFSET, side: 'right' },  // 316
+    'D5':     { x: 380, y: 380 + RIGHT_OFFSET, side: 'right' },  // 335
+    'D4':     { x: 380, y: 399 + RIGHT_OFFSET, side: 'right' },  // 354
+    'D3':     { x: 380, y: 418 + RIGHT_OFFSET, side: 'right' },  // 373
+    'D2':     { x: 380, y: 437 + RIGHT_OFFSET, side: 'right' },  // 392
+    'TX0':    { x: 380, y: 456 + RIGHT_OFFSET, side: 'right' },  // 411
+    'RX0':    { x: 380, y: 475 + RIGHT_OFFSET, side: 'right' },  // 430 (aligned with A5)
     // Left upper block: moved up by 5px
     'IOREF':  { x: 8,   y: 191, side: 'left'  },
     'RST':    { x: 8,   y: 210, side: 'left'  },
@@ -254,23 +258,23 @@
     app(g, mk('rect', { x: '230', y: '182', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
-    // Arduino logo with text moved to the left by 150px (from x:314/336 to x:164/186)
+    // Arduino logo with text moved to the right by 75px (from x:164/186 to x:239/261)
     var logoG = mk('g', { opacity: '0.5' });
-    app(logoG, mk('circle', { cx: '164', cy: '210', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('circle', { cx: '208', cy: '210', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('line',   { x1: '156', y1: '210', x2: '172', y2: '210', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line',   { x1: '164', y1: '204', x2: '164', y2: '216', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line',   { x1: '200', y1: '210', x2: '216', y2: '210', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('circle', { cx: '239', cy: '210', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+    app(logoG, mk('circle', { cx: '283', cy: '210', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+    app(logoG, mk('line',   { x1: '231', y1: '210', x2: '247', y2: '210', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '239', y1: '204', x2: '239', y2: '216', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '275', y1: '210', x2: '291', y2: '210', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
     g.appendChild(logoG);
-    app(g, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '186', y: '245' }));
-    app(g, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '186', y: '258' }));
-    app(g, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '186', y: '269' }));
+    app(g, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '261', y: '245' }));
+    app(g, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '261', y: '258' }));
+    app(g, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '261', y: '269' }));
 
     // Header housings
-    // Right upper: y=138, h=183 (covers AREF y=150 -> D8 y=309)
-    app(g, mk('rect', { x: '372', y: '138', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Right lower: y=301, h=183 (covers D7 y=342 -> RX0 y=475)
-    app(g, mk('rect', { x: '372', y: '301', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    // Right upper: moved up by 45px (y=93, h=183)
+    app(g, mk('rect', { x: '372', y: '93', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    // Right lower: moved up by 45px (y=256, h=183)
+    app(g, mk('rect', { x: '372', y: '256', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     // Left upper: y=179, h=137
     app(g, mk('rect', { x: '0',   y: '179', width: '16', height: '137', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     // Left lower: y=306, h=133
