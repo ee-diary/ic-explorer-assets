@@ -178,14 +178,18 @@
     app(g, mkt('RESET', { fill: '#2a4a6a', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '362', y: '45' }));
 
     // ICSP header
-    app(g, mk('rect', { x: '180', y: '410', width: '56', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
+    app(g, mk('rect', { x: '180', y: '410', width: '54', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
+    [[186,416],[202,416],[218,416],[186,429],[202,429],[218,429]].forEach(function (pos) {
+      app(g, mk('rect', { x: pos[0], y: pos[1], width: '10', height: '9', rx: '1', fill: '#222', stroke: '#555', 'stroke-width': '0.7' }));
+    });
+     app(g, mk('rect', { x: '270', y: '140', width: '54', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
     [[186,416],[202,416],[218,416],[186,429],[202,429],[218,429]].forEach(function (pos) {
       app(g, mk('rect', { x: pos[0], y: pos[1], width: '10', height: '9', rx: '1', fill: '#222', stroke: '#555', 'stroke-width': '0.7' }));
     });
     //app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
     // ATmega16U2
-    app(g, mk('rect', { x: '256', y: '138', width: '56', height: '56', rx: '3', fill: 'url(#unoChipGr)', stroke: '#1e1e1e', 'stroke-width': '1.5' }));
+    app(g, mk('rect', { x: '256', y: '120', width: '40', height: '40', rx: '3', fill: 'url(#unoChipGr)', stroke: '#1e1e1e', 'stroke-width': '1.5' }));
     app(g, mk('circle', { cx: '262', cy: '144', r: '2', fill: '#2a2a2a' }));
     app(g, mkt('ATmega',     { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '161' }));
     app(g, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '171' }));
