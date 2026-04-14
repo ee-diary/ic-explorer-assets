@@ -183,8 +183,8 @@
       app(g, mk('rect', { x: pos[0], y: pos[1], width: '10', height: '9', rx: '1', fill: '#222', stroke: '#555', 'stroke-width': '0.7' }));
     });
      // New ICSP header at x: 270, y: 140
-    var icspX = 270;
-    var icspY = 140;
+    var icspX = 280;
+    var icspY = 120;
     var icspGroup = mk('g', { transform: 'rotate(90, ' + (icspX + 27) + ', ' + (icspY + 18) + ')' });
     // Main ICSP box
     app(icspGroup, mk('rect', { x: icspX, y: icspY, width: '54', height: '36', rx: '2', fill: '#0d0d0d', stroke: '#333', 'stroke-width': '1.2' }));
