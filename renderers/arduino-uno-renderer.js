@@ -145,7 +145,7 @@
     app(g, mk('path', { d: 'M0,0 L390,0 L390,470 L40,470 L0,443 Z', fill: 'url(#unoDotsPat)' }));
     app(g, mk('path', { d: 'M1,1 L389,1 L389,469 L41,469 L1,442 Z', fill: 'none', stroke: 'rgba(100,160,255,0.12)', 'stroke-width': '1' }));
 
-    [{ cx: 15, cy: 12 }, { cx: 55, cy: 458 }].forEach(function (h) {
+    [{ cx: 15, cy: 14 }, { cx: 55, cy: 438 }].forEach(function (h) {
       app(g, mk('circle', { cx: h.cx, cy: h.cy, r: '10', fill: '#0a1830', stroke: '#0d2040', 'stroke-width': '1.5' }));
       app(g, mk('circle', { cx: h.cx, cy: h.cy, r: '5',  fill: '#060e1a' }));
     });
@@ -251,7 +251,6 @@
     .forEach(function (pos) {
       app(icspGroup, mk('rect', { x: pos[0], y: pos[1], width: '10', height: '9', rx: '1', fill: '#222', stroke: '#555', 'stroke-width': '0.7' }));
     });
-
     // Add the group to the main board
     g.appendChild(icspGroup);
     //app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
@@ -276,36 +275,32 @@
 
     // Crystal Oscillator 16MHz
     var scale = 1.3;  // Increase by 30%
+    // Original dimensions
+    var origOuterW = 22, origOuterH = 45;
+    var origInnerW = 14, origInnerH = 31;
+    var origOuterX = 185, origOuterY = 123;
+    var origInnerX = 189, origInnerY = 131;
+    // New dimensions
+    var newOuterW = Math.round(origOuterW * scale);  // 22 * 1.3 = 29
+    var newOuterH = Math.round(origOuterH * scale);  // 45 * 1.3 = 59
+    var newInnerW = Math.round(origInnerW * scale);  // 14 * 1.3 = 18
+    var newInnerH = Math.round(origInnerH * scale);  // 31 * 1.3 = 40
+    // Recalculate positions to keep centered around the same point
+    var centerX = origOuterX + (origOuterW / 2);  // 185 + 11 = 196
+    var centerY = origOuterY + (origOuterH / 2);  // 123 + 22.5 = 145.5
+    var newOuterX = Math.round(centerX - (newOuterW / 2));  // 196 - 14.5 = 182
+    var newOuterY = Math.round(centerY - (newOuterH / 2));  // 145.5 - 29.5 = 116
+    var newInnerX = Math.round(centerX - (newInnerW / 2));  // 196 - 9 = 187
+    var newInnerY = Math.round(centerY - (newInnerH / 2));  // 145.5 - 20 = 126
 
-// Original dimensions
-var origOuterW = 22, origOuterH = 45;
-var origInnerW = 14, origInnerH = 31;
-var origOuterX = 185, origOuterY = 123;
-var origInnerX = 189, origInnerY = 131;
-
-// New dimensions
-var newOuterW = Math.round(origOuterW * scale);  // 22 * 1.3 = 29
-var newOuterH = Math.round(origOuterH * scale);  // 45 * 1.3 = 59
-var newInnerW = Math.round(origInnerW * scale);  // 14 * 1.3 = 18
-var newInnerH = Math.round(origInnerH * scale);  // 31 * 1.3 = 40
-
-// Recalculate positions to keep centered around the same point
-var centerX = origOuterX + (origOuterW / 2);  // 185 + 11 = 196
-var centerY = origOuterY + (origOuterH / 2);  // 123 + 22.5 = 145.5
-
-var newOuterX = Math.round(centerX - (newOuterW / 2));  // 196 - 14.5 = 182
-var newOuterY = Math.round(centerY - (newOuterH / 2));  // 145.5 - 29.5 = 116
-var newInnerX = Math.round(centerX - (newInnerW / 2));  // 196 - 9 = 187
-var newInnerY = Math.round(centerY - (newInnerH / 2));  // 145.5 - 20 = 126
-
-app(g, mk('rect', { x: newOuterX, y: newOuterY, width: newOuterW, height: newOuterH, 
-    rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
-app(g, mk('rect', { x: newInnerX, y: newInnerY, width: newInnerW, height: newInnerH, 
-    rx: '5', fill: '#c0c0c0' }));
-app(g, mkt('16', { fill: '#555', 'font-family': 'monospace', 'font-size': '7', 
-    'text-anchor': 'middle', x: centerX, y: centerY - 4 }));
-app(g, mkt('MHz', { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 
-    'text-anchor': 'middle', x: centerX, y: centerY + 4 }));
+    app(g, mk('rect', { x: newOuterX, y: newOuterY, width: newOuterW, height: newOuterH, 
+        rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
+    app(g, mk('rect', { x: newInnerX, y: newInnerY, width: newInnerW, height: newInnerH, 
+        rx: '5', fill: '#c0c0c0' }));
+    app(g, mkt('16', { fill: '#555', 'font-family': 'monospace', 'font-size': '7', 
+        'text-anchor': 'middle', x: centerX, y: centerY - 4 }));
+    app(g, mkt('MHz', { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 
+        'text-anchor': 'middle', x: centerX, y: centerY + 4 }));
 
     // ATmega328P — DIP-28
     (function () {
@@ -362,11 +357,11 @@ app(g, mkt('MHz', { fill: '#555', 'font-family': 'monospace', 'font-size': '6',
     // LEDs
     app(g, mk('rect', { x: '120',  y: '112', width: '14', height: '6', rx: '3', fill: '#00cc44' }));
     //app(g, mkt('ON', { fill: 'rgba(140,200,140,0.55)', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '40',  y: '118' }));
-    app(g, mk('rect', { x: '250', y: '200', width: '10', height: '6', rx: '2', fill: '#eecc00' }));
+    app(g, mk('rect', { x: '250', y: '200', width: '8', height: '12', rx: '2', fill: '#eecc00' }));
     //app(g, mkt('L',  { fill: 'rgba(200,190,80,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '161' }));
-    app(g, mk('rect', { x: '265', y: '200', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
+    app(g, mk('rect', { x: '265', y: '200', width: '8', height: '12', rx: '2', fill: '#ff8800' }));
     //app(g, mkt('TX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '176' }));
-    app(g, mk('rect', { x: '280', y: '200', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
+    app(g, mk('rect', { x: '280', y: '200', width: '8', height: '12', rx: '2', fill: '#ff8800' }));
     //app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
     // Arduino Logo — rotated 90° clockwise around its centre (261, 280), shifted right 28px (was 16px, +12px)
