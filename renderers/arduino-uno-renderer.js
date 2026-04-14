@@ -191,11 +191,11 @@
     app(g, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '171' }));
     app(g, mkt('USB-SERIAL', { fill: '#242424', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '284', y: '181' }));
 
-    // Crystal Oscillator 16MHz - INCREASED HEIGHT by 10px
-    app(g, mk('rect',   { x: '215', y: '155', width: '22', height: '45', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
-    app(g, mk('rect',   { x: '219', y: '163', width: '14', height: '31', rx: '5', fill: '#c0c0c0' }));
-    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '226', y: '179' }));
-    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '226', y: '187' }));
+    // Crystal Oscillator 16MHz — moved left by 14px (215→201, 219→205, 226→212)
+    app(g, mk('rect',   { x: '201', y: '155', width: '22', height: '45', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
+    app(g, mk('rect',   { x: '205', y: '163', width: '14', height: '31', rx: '5', fill: '#c0c0c0' }));
+    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '212', y: '179' }));
+    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '212', y: '187' }));
 
     // ATmega328P — DIP-28
     (function () {
@@ -256,8 +256,8 @@
     app(g, mk('rect', { x: '230', y: '182', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
-    // Arduino Logo (NOT rotated - keeps original orientation)
-    var logoG = mk('g', { opacity: '0.5' });
+    // Arduino Logo — rotated 90° clockwise around its centre (261, 280)
+    var logoG = mk('g', { opacity: '0.5', transform: 'rotate(90, 261, 280)' });
     app(logoG, mk('circle', { cx: '239', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
     app(logoG, mk('circle', { cx: '283', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
     app(logoG, mk('line',   { x1: '231', y1: '280', x2: '247', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
