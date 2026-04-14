@@ -191,11 +191,11 @@
     app(g, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '171' }));
     app(g, mkt('USB-SERIAL', { fill: '#242424', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '284', y: '181' }));
 
-    // Crystal Oscillator 16MHz - INCREASED HEIGHT by 10px
-    app(g, mk('rect',   { x: '215', y: '155', width: '22', height: '45', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
-    app(g, mk('rect',   { x: '219', y: '163', width: '14', height: '31', rx: '5', fill: '#c0c0c0' }));
-    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '226', y: '179' }));
-    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '226', y: '187' }));
+    // Crystal Oscillator 16MHz - MOVED LEFT BY 18px (was x:215, now x:197)
+    app(g, mk('rect',   { x: '197', y: '155', width: '22', height: '45', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
+    app(g, mk('rect',   { x: '201', y: '163', width: '14', height: '31', rx: '5', fill: '#c0c0c0' }));
+    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '208', y: '179' }));
+    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '208', y: '187' }));
 
     // ATmega328P — DIP-28
     (function () {
@@ -256,20 +256,20 @@
     app(g, mk('rect', { x: '230', y: '182', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
-    // Arduino Logo (NOT rotated - keeps original orientation)
+    // Arduino Logo (NOT rotated) - MOVED RIGHT BY 24px (was cx:239/283, now cx:263/307)
     var logoG = mk('g', { opacity: '0.5' });
-    app(logoG, mk('circle', { cx: '239', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('circle', { cx: '283', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('line',   { x1: '231', y1: '280', x2: '247', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line',   { x1: '239', y1: '274', x2: '239', y2: '286', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line',   { x1: '275', y1: '280', x2: '291', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('circle', { cx: '263', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+    app(logoG, mk('circle', { cx: '307', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+    app(logoG, mk('line',   { x1: '255', y1: '280', x2: '271', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '263', y1: '274', x2: '263', y2: '286', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '299', y1: '280', x2: '315', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
     g.appendChild(logoG);
 
-    // Arduino UNO R3 Text - ROTATED 90 DEGREES CLOCKWISE only
-    var rotatedTextGroup = mk('g', { transform: 'rotate(90, 261, 315)' });
-    app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '261', y: '315' }));
-    app(rotatedTextGroup, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '261', y: '328' }));
-    app(rotatedTextGroup, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '261', y: '339' }));
+    // Arduino UNO R3 Text - ROTATED 90 DEGREES - MOVED RIGHT BY 24px (was x:261, now x:285)
+    var rotatedTextGroup = mk('g', { transform: 'rotate(90, 285, 315)' });
+    app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '285', y: '315' }));
+    app(rotatedTextGroup, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '285', y: '328' }));
+    app(rotatedTextGroup, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '285', y: '339' }));
     g.appendChild(rotatedTextGroup);
 
     // Header housings
