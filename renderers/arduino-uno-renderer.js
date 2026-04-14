@@ -184,9 +184,22 @@
     });
     app(g, mkt('ICSP2', { fill: 'rgba(140,190,255,0.4)', 'font-family': 'monospace', 'font-size': '7', 'text-anchor': 'middle', x: '212', y: '458' }));
 
-    // ATmega328P — DIP-28
+    // ATmega16U2 - MOVED UPWARDS BY 20px (was y:138, now y:118)
+    app(g, mk('rect', { x: '256', y: '118', width: '56', height: '56', rx: '3', fill: 'url(#unoChipGr)', stroke: '#1e1e1e', 'stroke-width': '1.5' }));
+    app(g, mk('circle', { cx: '262', cy: '124', r: '2', fill: '#2a2a2a' }));
+    app(g, mkt('ATmega',     { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '141' }));
+    app(g, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '151' }));
+    app(g, mkt('USB-SERIAL', { fill: '#242424', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '284', y: '161' }));
+
+    // Crystal - MOVED ABOVE ATmega328P IC (placed between ATmega16U2 and ATmega328P)
+    app(g, mk('rect',   { x: '260', y: '290', width: '22', height: '35', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
+    app(g, mk('rect',   { x: '264', y: '298', width: '14', height: '21', rx: '5', fill: '#c0c0c0' }));
+    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '271', y: '310' }));
+    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '271', y: '318' }));
+
+    // ATmega328P — DIP-28 (shifted down slightly to accommodate crystal above)
     (function () {
-      var by = 196, bh = 417 - 196;
+      var by = 210, bh = 417 - 210;  // Adjusted y from 196 to 210
       var bw = 64;
       var bx = 86;
       var nPins = 14;
@@ -225,19 +238,6 @@
       app(g, mkt('ARDUINO', { fill: '#383838', 'font-family': 'monospace', 'font-size': '9', 'text-anchor': 'middle', x: cx, y: cy + 20 }));
     }());
 
-    // Crystal - MOVED ABOVE ATmega328P IC BY 25px (was y:358, now y:333)
-    app(g, mk('rect',   { x: '260', y: '333', width: '22', height: '35', rx: '9', fill: 'url(#unoSilvGr)', stroke: '#888', 'stroke-width': '1.5' }));
-    app(g, mk('rect',   { x: '264', y: '341', width: '14', height: '21', rx: '5', fill: '#c0c0c0' }));
-    app(g, mkt('16',    { fill: '#555', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '271', y: '353' }));
-    app(g, mkt('MHz',   { fill: '#555', 'font-family': 'monospace', 'font-size': '5', 'text-anchor': 'middle', x: '271', y: '361' }));
-
-    // ATmega16U2
-    app(g, mk('rect', { x: '256', y: '138', width: '56', height: '56', rx: '3', fill: 'url(#unoChipGr)', stroke: '#1e1e1e', 'stroke-width': '1.5' }));
-    app(g, mk('circle', { cx: '262', cy: '144', r: '2', fill: '#2a2a2a' }));
-    app(g, mkt('ATmega',     { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '161' }));
-    app(g, mkt('16U2',       { fill: '#2e2e2e', 'font-family': 'monospace', 'font-size': '8', 'font-weight': 'bold', 'text-anchor': 'middle', x: '284', y: '171' }));
-    app(g, mkt('USB-SERIAL', { fill: '#242424', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '284', y: '181' }));
-
     // Capacitors
     app(g, mk('ellipse', { cx: '80',  cy: '160', rx: '12', ry: '12', fill: '#3a3a3a', stroke: '#2a2a2a', 'stroke-width': '1.5' }));
     app(g, mk('ellipse', { cx: '80',  cy: '160', rx: '8',  ry: '8',  fill: '#444' }));
@@ -256,8 +256,8 @@
     app(g, mk('rect', { x: '230', y: '182', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
-    // Arduino logo with text moved DOWN by 70px (from cy:210/245 to cy:280/315)
-    var logoG = mk('g', { opacity: '0.5' });
+    // Arduino logo with text - ROTATED BY 90 DEGREES
+    var logoG = mk('g', { opacity: '0.5', transform: 'rotate(90, 261, 280)' });
     app(logoG, mk('circle', { cx: '239', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
     app(logoG, mk('circle', { cx: '283', cy: '280', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
     app(logoG, mk('line',   { x1: '231', y1: '280', x2: '247', y2: '280', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
