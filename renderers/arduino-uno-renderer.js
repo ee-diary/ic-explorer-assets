@@ -266,7 +266,7 @@
     g.appendChild(logoG);
 
     // Arduino UNO R3 Text - ROTATED 90 DEGREES CLOCKWISE only
-    var rotatedTextGroup = mk('g', { transform: 'translate(0, 0) rotate(90, 261, 315)' });
+    var rotatedTextGroup = mk('g', { transform: 'translate(-20, -10) rotate(90, 261, 315)' });
     app(rotatedTextGroup, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '261', y: '315' }));
     app(rotatedTextGroup, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '261', y: '328' }));
     app(rotatedTextGroup, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '261', y: '339' }));
