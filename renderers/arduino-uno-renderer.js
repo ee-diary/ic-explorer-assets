@@ -170,7 +170,7 @@
     app(g, mkt('DC',    { fill: '#555', 'font-family': 'monospace', 'font-size': '8', 'text-anchor': 'middle', x: '69', y: DC_Y + 42 }));
     app(g, mkt('7-12V', { fill: '#444', 'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'middle', x: '69', y: DC_Y + 50 }));
 
-// AMS1117-5V Voltage Regulator - Wide & Low Profile
+// AMS1117-5V Voltage Regulator - Wide & Low Profile with Centered Legs
     (function() {
       var regX = 120;
       var regY = 15;
@@ -178,8 +178,10 @@
       var bodyH = 22;   // Smaller height
       var centerX = regX + (bodyW / 2);
       
-      // Heatsink tab (top) - wider to match body
-      app(g, mk('rect', { x: regX + 8, y: regY - 5, width: '26', height: '5', rx: '1', 
+      // Heatsink tab (top) - centered
+      var tabW = 26;
+      var tabX = centerX - (tabW / 2);
+      app(g, mk('rect', { x: tabX, y: regY - 5, width: tabW, height: '5', rx: '1', 
           fill: '#b8b8b8', stroke: '#888', 'stroke-width': '1' }));
       
       // Main body
@@ -200,34 +202,36 @@
       app(g, mkt('5V', { fill: '#ccaa77', 'font-family': 'monospace', 'font-size': '6', 
           'font-weight': 'bold', 'text-anchor': 'middle', x: centerX, y: regY + 11 }));
       
-      // ALL 3 PINS ON BOTTOM EDGE - with equal spacing
+      // ALL 3 PINS ON BOTTOM EDGE - properly centered
       var pinW = 6;
       var pinH = 5;
-      var totalPinsWidth = (pinW * 3) + 8;  // 6+8+6+8+6 = 34
-      var startX = regX + ((bodyW - totalPinsWidth) / 2);  // Center the pins
+      var gap = 8;  // Gap between pins
+      var totalPinsWidth = (pinW * 3) + (gap * 2);  // 6+8+6+8+6 = 34
+      var startX = centerX - (totalPinsWidth / 2);  // Center the pins under the body
       
-      // Pin 1 - GND/ADJ (left)
+      // Pin 1 - GND (left)
       app(g, mk('rect', { x: startX, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
           fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
       
       // Pin 2 - VOUT (center)
-      app(g, mk('rect', { x: startX + pinW + 8, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
+      app(g, mk('rect', { x: startX + pinW + gap, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
           fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
       
       // Pin 3 - VIN (right)
-      app(g, mk('rect', { x: startX + (pinW + 8) * 2, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
+      app(g, mk('rect', { x: startX + (pinW + gap) * 2, y: regY + bodyH, width: pinW, height: pinH, rx: '0.5', 
           fill: '#d0d0d0', stroke: '#999', 'stroke-width': '0.8' }));
       
       // Small dot for pin 1 indicator (top-left corner)
       app(g, mk('circle', { cx: regX + 5, cy: regY + 4, r: '1.5', fill: '#666' }));
       
       // Silkscreen labels (below the pins)
+      var labelY = regY + bodyH + 9;
       app(g, mkt('GND', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
-          'font-size': '5', 'text-anchor': 'middle', x: startX + 3, y: regY + bodyH + 9 }));
+          'font-size': '5', 'text-anchor': 'middle', x: startX + (pinW/2), y: labelY }));
       app(g, mkt('VOUT', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
-          'font-size': '5', 'text-anchor': 'middle', x: startX + pinW + 8 + 3, y: regY + bodyH + 9 }));
+          'font-size': '5', 'text-anchor': 'middle', x: startX + pinW + gap + (pinW/2), y: labelY }));
       app(g, mkt('VIN', { fill: 'rgba(200,180,120,0.55)', 'font-family': 'monospace', 
-          'font-size': '5', 'text-anchor': 'middle', x: startX + (pinW + 8) * 2 + 3, y: regY + bodyH + 9 }));
+          'font-size': '5', 'text-anchor': 'middle', x: startX + (pinW + gap) * 2 + (pinW/2), y: labelY }));
     })();
 
     // Reset button
