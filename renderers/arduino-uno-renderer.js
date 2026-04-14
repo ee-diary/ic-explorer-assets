@@ -67,14 +67,14 @@
     '5V':     { x: 8,   y: 254, side: 'left'  },
     'GND_P':  { x: 8,   y: 273, side: 'left'  },
     'GND_P2': { x: 8,   y: 292, side: 'left'  },
-    'VIN':    { x: 8,   y: 331, side: 'left'  },
-    // Left lower block: MOVED UP BY 10px (A0 y=340 -> A5 y=415, was 350-445)
-    'A0':     { x: 8,   y: 340, side: 'left'  },  // MOVED: was 350
-    'A1':     { x: 8,   y: 359, side: 'left'  },  // MOVED: was 369
-    'A2':     { x: 8,   y: 378, side: 'left'  },  // MOVED: was 388
-    'A3':     { x: 8,   y: 397, side: 'left'  },  // MOVED: was 407
-    'A4':     { x: 8,   y: 416, side: 'left'  },  // MOVED: was 426
-    'A5':     { x: 8,   y: 435, side: 'left'  },  // MOVED: was 445
+    'VIN':    { x: 8,   y: 311, side: 'left'  },  // MOVED: was 331, now touching GND_P2 (y=292, gap of 19px = pitch)
+    // Left lower block: A0-A5 positions
+    'A0':     { x: 8,   y: 340, side: 'left'  },
+    'A1':     { x: 8,   y: 359, side: 'left'  },
+    'A2':     { x: 8,   y: 378, side: 'left'  },
+    'A3':     { x: 8,   y: 397, side: 'left'  },
+    'A4':     { x: 8,   y: 416, side: 'left'  },
+    'A5':     { x: 8,   y: 435, side: 'left'  },
   };
 
   var PS = 18;
@@ -254,26 +254,26 @@
     app(g, mk('rect', { x: '230', y: '182', width: '10', height: '6', rx: '2', fill: '#ff8800' }));
     app(g, mkt('RX', { fill: 'rgba(200,130,50,0.5)',  'font-family': 'monospace', 'font-size': '6', 'text-anchor': 'start', x: '242', y: '188' }));
 
-    // Arduino logo with text placed between ATmega328P IC and DIGITAL (PWM~) label
+    // Arduino logo with text moved below ATmega16U2 IC
     var logoG = mk('g', { opacity: '0.5' });
-    app(logoG, mk('circle', { cx: '115', cy: '118', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('circle', { cx: '159', cy: '118', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
-    app(logoG, mk('line',   { x1: '107', y1: '118', x2: '123', y2: '118', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line',   { x1: '115', y1: '112', x2: '115', y2: '125', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
-    app(logoG, mk('line',   { x1: '151', y1: '118', x2: '167', y2: '118', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('circle', { cx: '274', cy: '210', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+    app(logoG, mk('circle', { cx: '318', cy: '210', r: '22', fill: 'none', stroke: 'rgba(160,210,255,0.7)', 'stroke-width': '3.5' }));
+    app(logoG, mk('line',   { x1: '266', y1: '210', x2: '282', y2: '210', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '274', y1: '204', x2: '274', y2: '216', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
+    app(logoG, mk('line',   { x1: '310', y1: '210', x2: '326', y2: '210', stroke: 'rgba(160,210,255,0.85)', 'stroke-width': '3', 'stroke-linecap': 'round' }));
     g.appendChild(logoG);
-    app(g, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '137', y: '153' }));
-    app(g, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '137', y: '166' }));
-    app(g, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '137', y: '177' }));
+    app(g, mkt('Arduino', { fill: 'rgba(180,220,255,0.5)',  'font-family': 'Georgia,serif', 'font-size': '12', 'font-style': 'italic', 'font-weight': 'bold', 'text-anchor': 'middle', x: '296', y: '245' }));
+    app(g, mkt('UNO',     { fill: 'rgba(160,205,255,0.3)',  'font-family': 'monospace', 'font-size': '12', 'font-weight': '900', 'letter-spacing': '4', 'text-anchor': 'middle', x: '296', y: '258' }));
+    app(g, mkt('R3',      { fill: 'rgba(120,170,220,0.25)', 'font-family': 'monospace', 'font-size': '9',  'letter-spacing': '3', 'text-anchor': 'middle', x: '296', y: '269' }));
 
     // Header housings
     // Right upper: y=138, h=183 (covers AREF y=150 -> D8 y=309)
     app(g, mk('rect', { x: '372', y: '138', width: '16', height: '183', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
     // Right lower: y=301, h=173 (covers D7 y=332 -> RX0 y=465)
     app(g, mk('rect', { x: '372', y: '301', width: '16', height: '173', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Left upper: y=184, h=157 (covers IOREF y=196 -> VIN y=331)
-    app(g, mk('rect', { x: '0',   y: '184', width: '16', height: '157', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
-    // Left lower: MOVED UP BY 10px (y=311, h=133 to match A0-A5 new positions)
+    // Left upper: y=184, h=137 (covers IOREF y=196 -> VIN y=311)
+    app(g, mk('rect', { x: '0',   y: '184', width: '16', height: '137', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
+    // Left lower: y=311, h=133 to match A0-A5 positions
     app(g, mk('rect', { x: '0',   y: '311', width: '16', height: '133', rx: '2', fill: '#0d0d0d', stroke: '#1a1a1a', 'stroke-width': '1' }));
 
     // Silkscreen labels
