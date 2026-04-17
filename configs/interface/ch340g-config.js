@@ -1,10 +1,10 @@
-window.IC_CONFIG = {
+  window.IC_CONFIG = {
 
   // ── IDENTITY ──────────────────────────────────────────────────
   partName:     'CH340G',
   partMPN:      'CH340G',
   manufacturer: 'WCH (Nanjing Qinheng Microelectronics)',
-  package:      'SOP-16',
+  package:      'DIP-16',   // SOP-16 physical package; DIP-16 string selects DIPRenderer (2-column layout)
   pinCount:     16,
 
   // ── LINKS ─────────────────────────────────────────────────────
@@ -12,17 +12,17 @@ window.IC_CONFIG = {
   downloadURL:  'https://www.snapeda.com/parts/CH340G/WCH/view-part/?ref=snapeda',
   datasheetURL: 'https://www.wch-ic.com/downloads/CH340DS1_PDF.html',
 
-  // ── LAYOUT HINT (QFP / SOP — rendered by QFPRenderer) ────────
-  // SOP-16 is a 2-sided package but is rendered as a 4-sided QFP
-  // with 4 pins per side (left side pins 1-8, right side pins 9-16).
-  // We use a slim qfpConfig; pinsPerSide = 4 so the renderer draws
-  // a 16-pin layout: 4 left, 4 bottom, 4 right, 4 top.
-  qfpConfig: {
-    pinsPerSide: 4,
-    bodySize:    320,
-    pinLength:   28,
-    pinWidth:    20,
-    pinGap:      2
+  // ── LAYOUT HINT (DIP renderer for SOP-16) ────────────────────
+  // SOP-16 is a 2-sided package: pins 1–8 on the left, pins 9–16
+  // on the right — identical column layout to a DIP. DIPRenderer
+  // handles this correctly; QFPRenderer is for 4-sided packages only.
+  dipConfig: {
+    pinsPerSide: 8,
+    bodyX: 122, bodyY: 25, bodyW: 260, bodyH: 420,
+    pinLength: 34, pinWidthHalf: 16,
+    notchSize: 8, notchX: 14, notchY: 14,
+    textSizes: { mfr: 11, part: 20, pkg: 14, pinCount: 11 },
+    labelSize: 11, pinNumSize: 13, yOffset: -30
   },
 
   // ── CUSTOM TYPE COLOURS ───────────────────────────────────────
@@ -52,90 +52,111 @@ window.IC_CONFIG = {
   // SOP-16: pins 1–8 on the left side (top→bottom),
   //         pins 9–16 on the right side (bottom→top, mirrored).
   // Mapped into QFP order: LEFT(1-4) → BOTTOM(5-8) → RIGHT(9-12) → TOP(13-16).
+  // DIP pin ordering:
+  //   Pins 1–8  → LEFT side,  top → bottom  (no _rightSlot)
+  //   Pins 9–16 → RIGHT side, bottom → top  (_rightSlot: 0 = top-right … 7 = bottom-right)
+  //
+  // CH340G SOP-16 pinout (per WCH datasheet):
+  //   Pin  1  GND      Pin 16  VCC
+  //   Pin  2  TXD      Pin 15  SLEEP
+  //   Pin  3  RXD      Pin 14  RTS
+  //   Pin  4  V3       Pin 13  DTR
+  //   Pin  5  UD+      Pin 12  DCD
+  //   Pin  6  UD−      Pin 11  RI
+  //   Pin  7  XI       Pin 10  DSR
+  //   Pin  8  XO       Pin  9  CTS
   pins: [
-    // ── LEFT side (pins 1–4, top → bottom) ───────────────────
-    { num:  1, id: 'GND1',  lbl: 'GND',   name: 'Ground',
+    // ── LEFT side (pins 1–8, top → bottom) ───────────────────
+    { num:  1, id: 'GND1',    lbl: 'GND',   name: 'Ground',
       type: 'GND',   funcs: ['GND'],
       volt: '0V',    curr: 'N/A',
-      note: 'Ground reference. Connect to system ground plane.' },
+      note: 'Ground reference. Connect to the system ground plane.' },
 
-    { num:  2, id: 'TXD',   lbl: 'TXD',   name: 'UART Transmit Data',
+    { num:  2, id: 'TXD',     lbl: 'TXD',   name: 'UART Transmit Data',
       type: 'UART',  funcs: ['UART'],
       volt: '3.3/5V', curr: '4 mA',
-      note: 'Serial data output from CH340G to the host device. Logic high when idle. Connect to the RXD pin of the target UART device.' },
+      note: 'Serial data output from CH340G to the target device. Logic high when idle. Connect to the RXD pin of the downstream UART device.' },
 
-    { num:  3, id: 'RXD',   lbl: 'RXD',   name: 'UART Receive Data',
+    { num:  3, id: 'RXD',     lbl: 'RXD',   name: 'UART Receive Data',
       type: 'UART',  funcs: ['UART'],
       volt: '3.3/5V', curr: '4 mA',
-      note: 'Serial data input to CH340G from the host device. Connect to the TXD pin of the target UART device. Has an internal pull-up resistor.' },
+      note: 'Serial data input to CH340G from the target device. Connect to the TXD pin of the downstream UART device. Has an internal pull-up resistor.' },
 
-    { num:  4, id: 'V3',    lbl: 'V3',    name: '3.3 V Regulator / Reference',
+    { num:  4, id: 'V3',      lbl: 'V3',    name: '3.3 V Regulator / Reference',
       type: 'PWR',   funcs: ['PWR'],
       volt: '3.3V',  curr: '4 mA',
-      note: 'Internal 3.3 V regulator output. When operating at 5 V (VCC = 5 V), connect a 100 nF decoupling capacitor to GND. When operating at 3.3 V, tie directly to VCC and leave the capacitor off.' },
+      note: 'Internal 3.3 V regulator output. At 5 V supply: decouple with a 100 nF capacitor to GND. At 3.3 V supply: tie directly to VCC and omit the capacitor.' },
 
-    // ── BOTTOM side (pins 5–8, left → right) ─────────────────
-    { num:  5, id: 'UD_PLUS',  lbl: 'UD+',  name: 'USB Data D+',
+    { num:  5, id: 'UD_PLUS', lbl: 'UD+',   name: 'USB Data D+',
       type: 'USB',   funcs: ['USB'],
       volt: '3.3V',  curr: 'N/A',
-      note: 'USB differential data line D+. Connect directly to the USB D+ line with a 22 Ω series resistor as recommended. Must have the required USB pull-up.' },
+      note: 'USB differential data line D+. Route to the USB connector D+ line, typically with a 22 Ω series resistor. The chip integrates the required USB termination.' },
 
-    { num:  6, id: 'UD_MINUS', lbl: 'UD−',  name: 'USB Data D−',
+    { num:  6, id: 'UD_MINUS',lbl: 'UD−',   name: 'USB Data D−',
       type: 'USB',   funcs: ['USB'],
       volt: '3.3V',  curr: 'N/A',
-      note: 'USB differential data line D−. Connect directly to the USB D− line with a 22 Ω series resistor as recommended.' },
+      note: 'USB differential data line D−. Route to the USB connector D− line with a 22 Ω series resistor.' },
 
-    { num:  7, id: 'XI',    lbl: 'XI',    name: 'Crystal Oscillator Input',
+    { num:  7, id: 'XI',      lbl: 'XI',    name: 'Crystal Oscillator Input',
       type: 'XTAL',  funcs: ['XTAL'],
       volt: '3.3V',  curr: 'N/A',
-      note: 'Crystal oscillator input. Connect one leg of a 12 MHz crystal here (and the other to XO). Alternatively, drive with an external 12 MHz CMOS clock and leave XO unconnected.' },
+      note: 'Crystal oscillator input. Connect one leg of a 12 MHz crystal here (other leg to XO). Alternatively, drive with an external 12 MHz CMOS clock; leave XO unconnected in that case.' },
 
-    { num:  8, id: 'XO',    lbl: 'XO',    name: 'Crystal Oscillator Output',
+    { num:  8, id: 'XO',      lbl: 'XO',    name: 'Crystal Oscillator Output',
       type: 'XTAL',  funcs: ['XTAL'],
       volt: '3.3V',  curr: 'N/A',
-      note: 'Crystal oscillator output. Connect the other leg of the 12 MHz crystal here. Leave unconnected when an external clock source is fed into XI.' },
+      note: 'Crystal oscillator output. Connect the second leg of the 12 MHz crystal here. Leave unconnected when an external clock source drives XI.' },
 
-    // ── RIGHT side (pins 9–12, bottom → top) ─────────────────
-    { num:  9, id: 'CTS',   lbl: 'CTS',   name: 'Clear To Send (input)',
-      type: 'MODEM', funcs: ['MODEM'],
-      volt: '3.3/5V', curr: 'N/A',
-      note: 'RS-232 modem control input — Clear To Send. Active low. Used by the host application to gate transmission. Can be left unconnected if hardware flow control is not required.' },
-
-    { num: 10, id: 'DSR',   lbl: 'DSR',   name: 'Data Set Ready (input)',
-      type: 'MODEM', funcs: ['MODEM'],
-      volt: '3.3/5V', curr: 'N/A',
-      note: 'RS-232 modem status input — Data Set Ready. Active low. Readable by the host software via the virtual COM port API. Can be left unconnected if not used.' },
-
-    { num: 11, id: 'RI',    lbl: 'RI',    name: 'Ring Indicator (input)',
-      type: 'MODEM', funcs: ['MODEM'],
-      volt: '3.3/5V', curr: 'N/A',
-      note: 'RS-232 modem status input — Ring Indicator. Active low. Readable by the host software via the virtual COM port API. Leave unconnected if not used.' },
-
-    { num: 12, id: 'DCD',   lbl: 'DCD',   name: 'Data Carrier Detect (input)',
-      type: 'MODEM', funcs: ['MODEM'],
-      volt: '3.3/5V', curr: 'N/A',
-      note: 'RS-232 modem status input — Data Carrier Detect. Active low. Leave unconnected if modem status signals are not required.' },
-
-    // ── TOP side (pins 13–16, right → left) ──────────────────
-    { num: 13, id: 'DTR',   lbl: 'DTR',   name: 'Data Terminal Ready (output)',
-      type: 'MODEM', funcs: ['MODEM'],
-      volt: '3.3/5V', curr: '4 mA',
-      note: 'RS-232 modem control output — Data Terminal Ready. Active low. Commonly used as a reset signal (e.g., Arduino auto-reset) or to control an external device.' },
-
-    { num: 14, id: 'RTS',   lbl: 'RTS',   name: 'Request To Send (output)',
-      type: 'MODEM', funcs: ['MODEM'],
-      volt: '3.3/5V', curr: '4 mA',
-      note: 'RS-232 modem control output — Request To Send. Active low. Can be used for hardware flow control or as a general-purpose output toggled by the host software.' },
-
-    { num: 15, id: 'SLEEP', lbl: 'SLEEP', name: 'Sleep / Chip Select',
-      type: 'SLEEP',  funcs: ['SLEEP'],
-      volt: '3.3/5V', curr: 'N/A',
-      note: 'Sleep mode control input. Drive low to suspend USB activity and enter low-power mode. Pull high (or leave unconnected — has internal pull-up) for normal operation.' },
-
-    { num: 16, id: 'VCC',   lbl: 'VCC',   name: 'Power Supply',
+    // ── RIGHT side (pins 9–16, _rightSlot 0=top-right … 7=bottom-right)
+    // Physical order bottom→top: pin 9 (CTS) is bottom-right → _rightSlot: 7
+    //                             pin 16 (VCC) is top-right  → _rightSlot: 0
+    { num: 16, id: 'VCC',     lbl: 'VCC',   name: 'Power Supply',
       type: 'PWR',   funcs: ['PWR'],
       volt: '5V / 3.3V', curr: '≤30 mA',
-      note: 'Main power supply pin. Accepts 3.3 V or 5 V. Decouple with a 100 nF ceramic capacitor placed as close to the pin as possible.' },
+      note: 'Main power supply. Accepts 3.3 V or 5 V. Decouple with a 100 nF ceramic capacitor placed as close to the pin as possible.',
+      _rightSlot: 0 },
+
+    { num: 15, id: 'SLEEP',   lbl: 'SLEEP', name: 'Sleep / Chip Select',
+      type: 'SLEEP', funcs: ['SLEEP'],
+      volt: '3.3/5V', curr: 'N/A',
+      note: 'Sleep mode control input. Drive low to suspend USB activity and enter low-power mode. Has an internal pull-up — leave unconnected for normal operation.',
+      _rightSlot: 1 },
+
+    { num: 14, id: 'RTS',     lbl: 'RTS',   name: 'Request To Send (output)',
+      type: 'MODEM', funcs: ['MODEM'],
+      volt: '3.3/5V', curr: '4 mA',
+      note: 'RS-232 modem control output — Request To Send. Active low. Used for hardware flow control or as a general-purpose output toggled by host software.',
+      _rightSlot: 2 },
+
+    { num: 13, id: 'DTR',     lbl: 'DTR',   name: 'Data Terminal Ready (output)',
+      type: 'MODEM', funcs: ['MODEM'],
+      volt: '3.3/5V', curr: '4 mA',
+      note: 'RS-232 modem control output — Data Terminal Ready. Active low. Widely used to auto-reset Arduino and similar targets by connecting to the board reset pin via a 100 nF capacitor.',
+      _rightSlot: 3 },
+
+    { num: 12, id: 'DCD',     lbl: 'DCD',   name: 'Data Carrier Detect (input)',
+      type: 'MODEM', funcs: ['MODEM'],
+      volt: '3.3/5V', curr: 'N/A',
+      note: 'RS-232 modem status input — Data Carrier Detect. Active low. Readable by host software via the virtual COM port API. Leave unconnected if modem signals are not required.',
+      _rightSlot: 4 },
+
+    { num: 11, id: 'RI',      lbl: 'RI',    name: 'Ring Indicator (input)',
+      type: 'MODEM', funcs: ['MODEM'],
+      volt: '3.3/5V', curr: 'N/A',
+      note: 'RS-232 modem status input — Ring Indicator. Active low. Readable by host software via the virtual COM port API. Leave unconnected if not used.',
+      _rightSlot: 5 },
+
+    { num: 10, id: 'DSR',     lbl: 'DSR',   name: 'Data Set Ready (input)',
+      type: 'MODEM', funcs: ['MODEM'],
+      volt: '3.3/5V', curr: 'N/A',
+      note: 'RS-232 modem status input — Data Set Ready. Active low. Readable by host software via the virtual COM port API. Leave unconnected if not used.',
+      _rightSlot: 6 },
+
+    { num:  9, id: 'CTS',     lbl: 'CTS',   name: 'Clear To Send (input)',
+      type: 'MODEM', funcs: ['MODEM'],
+      volt: '3.3/5V', curr: 'N/A',
+      note: 'RS-232 modem control input — Clear To Send. Active low. Used by the host to gate transmission. Leave unconnected if hardware flow control is not required.',
+      _rightSlot: 7 },
   ],
 
   // ── ALTERNATE FUNCTIONS ───────────────────────────────────────
