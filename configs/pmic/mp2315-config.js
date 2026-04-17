@@ -32,7 +32,7 @@ window.IC_CONFIG = {
   // map onto the standard MCU palette (GPIO, ADC, UART, etc.).
   // SW, BST, FB, AAM are buck-converter-specific and need custom types.
   customTypes: {
-    SW:  { c: '#f4a261', bg: 'rgba(244,162,97,.13)',  bd: 'rgba(244,162,97,.38)'  },  // switch node — amber
+    SW:  { c: '#f4a261', bg: 'rgba(244,162,97,.13)',  bd: 'rgba(244,162,97,.38)', textFont:'11px'  },  // switch node — amber
     BST: { c: '#4a9aee', bg: 'rgba(74,154,238,.12)',  bd: 'rgba(74,154,238,.35)'  },  // bootstrap — blue
     FB:  { c: '#c8a850', bg: 'rgba(200,168,80,.13)',  bd: 'rgba(200,168,80,.35)'  },  // feedback — gold
     AAM: { c: '#50c8a0', bg: 'rgba(80,200,160,.12)',  bd: 'rgba(80,200,160,.32)'  },  // light-load mode — teal
