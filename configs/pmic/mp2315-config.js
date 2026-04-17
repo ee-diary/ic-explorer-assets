@@ -42,14 +42,14 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
-    { type: 'PWR', label: 'VIN (Power In)',   color: '#ff6b6b', fontSize:"11px" },
-    { type: 'SW',  label: 'SW (Switch Node)', color: '#f4a261', fontSize:"11px"},
-    { type: 'BST', label: 'BST (Bootstrap)',  color: '#4a9aee', fontSize:"11px" },
-    { type: 'EN',  label: 'EN / SYNC',        color: '#ff9944', fontSize:"11px" },
-    { type: 'FB',  label: 'FB (Feedback)',    color: '#c8a850', fontSize:"11px" },
-    { type: 'AAM', label: 'AAM (Light-Load)', color: '#50c8a0', fontSize:"11px" },
-    { type: 'VCC', label: 'VCC (Bias)',       color: '#e07070', fontSize:"11px" },
-    { type: 'GND', label: 'GND',              color: '#a8a8a8', fontSize:"11px" },
+    { type: 'PWR', label: 'VIN(Power)',   color: '#ff6b6b', fontSize:"11px" },
+    { type: 'SW',  label: 'SW(Switch)', color: '#f4a261', fontSize:"11px"},
+    { type: 'BST', label: 'BST(Bootstrap)',  color: '#4a9aee', fontSize:"11px" },
+    { type: 'EN',  label: 'EN / SYNC',        color: '#ff9944' },
+    { type: 'FB',  label: 'FB(Feedback)',    color: '#c8a850', fontSize:"11px" },
+    { type: 'AAM', label: 'AAM(Light-Load)', color: '#50c8a0', fontSize:"11px" },
+    { type: 'VCC', label: 'VCC(Bias)',       color: '#e07070' },
+    { type: 'GND', label: 'GND',              color: '#a8a8a8' },
   ],
 
   // ── PINS ──────────────────────────────────────────────────────
