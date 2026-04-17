@@ -42,10 +42,10 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
-    { type: 'PWR', label: 'VIN(Power)',   color: '#ff6b6b', fontSize:"13px" },
-    { type: 'SW',  label: 'SW(Switch)', color: '#f4a261', fontSize:"13px"},
+    { type: 'PWR', label: 'VIN(Power)',   color: '#ff6b6b', fontSize:"14px" },
+    { type: 'SW',  label: 'SW(Switch)', color: '#f4a261', fontSize:"14px"},
     { type: 'BST', label: 'BST(Bootstrap)',  color: '#4a9aee', fontSize:"11px" },
-    { type: 'EN',  label: 'EN / SYNC',        color: '#ff9944' },
+    { type: 'EN',  label: 'EN/SYNC',        color: '#ff9944' },
     { type: 'FB',  label: 'FB(Feedback)',    color: '#c8a850', fontSize:"13px" },
     { type: 'AAM', label: 'AAM(Light-Load)', color: '#50c8a0', fontSize:"11px" },
     { type: 'VCC', label: 'VCC(Bias)',       color: '#e07070' },
