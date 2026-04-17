@@ -41,7 +41,7 @@
   filterButtons: [
     { type: 'USB',   label: 'USB(D+/D−)',      color: '#4a9aee', fontSize:"14px" },
     { type: 'UART',  label: 'UART(TX/RX)',     color: '#cc6888' , fontSize:"14px"},
-    { type: 'MODEM', label: 'Modem Control',  color: '#50c8a0' , fontSize:"13px"},
+    { type: 'MODEM', label: 'Modem Control',  color: '#50c8a0' , fontSize:"12px"},
     { type: 'XTAL',  label: 'Crystal/CLK',  color: '#7090a8', fontSize:"13px" },
     { type: 'SLEEP', label: 'SLEEP/CS',     color: '#c078ff' },
     { type: 'PWR',   label: 'VCC/V3',       color: '#ff6b6b' },
