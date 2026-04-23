@@ -41,7 +41,7 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
-    { type: 'DIG',  label: 'Digit(DIG0–7)',   color: '#78c8f0', fontSize:"8" },
+    { type: 'DIG',  label: 'Digit(0–7)',   color: '#78c8f0', fontSize:"8" },
     { type: 'SEG',  label: 'Seg(A–G,DP)', color: '#f4a261', fontSize:"8" },
     { type: 'DIN',  label: 'Data In',       color: '#cc6888', fontSize:"11" },
     { type: 'DOUT', label: 'Data Out',       color: '#c078ff', fontSize:"11" },
