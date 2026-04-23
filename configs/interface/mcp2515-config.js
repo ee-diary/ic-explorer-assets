@@ -45,7 +45,7 @@ window.IC_CONFIG = {
     { type: 'INT',   label: 'Interrupt',      color: '#c8a850', fontSize:'10' },
     { type: 'TXRTS', label: 'TX RTS',         color: '#50c8a0' },
     { type: 'RXBF',  label: 'RX Buff Full', color: '#c078ff', fontSize:'7' },
-    { type: 'OSC',   label: 'Oscillator',     color: '#7090a8', , fontSize:'8' },
+    { type: 'OSC',   label: 'Oscillator',     color: '#7090a8', fontSize:'8' },
     { type: 'RESET', label: 'Reset',          color: '#ff9944' },
     { type: 'PWR',   label: 'VDD',            color: '#ff6b6b' },
     { type: 'GND',   label: 'VSS',            color: '#a8a8a8' },
