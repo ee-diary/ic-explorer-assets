@@ -38,7 +38,7 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
-    { type: 'PWM',  label: 'PWM  (LED0–15)', color: '#50c8c8', FontSize:'10px' },
+    { type: 'PWM',  label: 'PWM(LED0–15)', color: '#50c8c8', FontSize:'10px' },
     { type: 'I2C',  label: 'I²C(SDA/SCL)', color: '#9898d8',FontSize:'11px' },
     { type: 'ADDR', label: 'Addr(A0–A5)', color: '#50c8a0',FontSize:'11px' },
     { type: 'OE',   label: 'Out En', color: '#ff9944' },
