@@ -38,8 +38,8 @@ window.IC_CONFIG = {
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
     { type: 'USB',   label: 'USB',              color: '#4a9aee' },
-    { type: 'UART',  label: 'UART(TX/RX)',      color: '#cc6888', fontSize:'11' },
-    { type: 'MODEM', label: 'Modem Control',     color: '#f4a261', fontSize:'10' },
+    { type: 'UART',  label: 'UART',      color: '#cc6888' },
+    { type: 'MODEM', label: 'Modem Ctrl',     color: '#f4a261', fontSize:'10' },
     { type: 'CLK',   label: 'Clock Out',         color: '#7090a8', fontSize:'12' },
     { type: 'EE',    label: 'EEPROM',            color: '#9898d8' },
     { type: 'RESET', label: 'Reset',             color: '#ff9944' },
