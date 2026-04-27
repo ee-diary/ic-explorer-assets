@@ -149,20 +149,3 @@
   .aw-screen{flex:none;width:100%;min-height:300px;}
   .aw-ctrl{flex:none;width:100%;}
 }
-
-/* ============================================================
-   FILTER BUTTON FONT SIZE FIX — For labels like PWM(LED0–15)
-   ============================================================ */
-.aw-fbtns .aw-fb {
-  font-size: 9px !important;
-  padding: 4px 3px !important;
-  white-space: nowrap;
-}
-
-/* Even smaller for 4-column layout on narrow screens */
-@media (max-width: 500px) {
-  .aw-fbtns .aw-fb {
-    font-size: 7px !important;
-    padding: 4px 2px !important;
-  }
-}
