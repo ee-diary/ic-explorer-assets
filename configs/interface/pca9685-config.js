@@ -38,12 +38,12 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
-    { type: 'PWM',  label: 'PWM(LED0–15)', color: '#50c8c8', FontSize:'10px' },
-    { type: 'I2C',  label: 'I²C(SDA/SCL)', color: '#9898d8',FontSize:'11px' },
-    { type: 'ADDR', label: 'Addr(A0–A5)', color: '#50c8a0',FontSize:'11px' },
+    { type: 'PWM',  label: 'PWM(LED0–15)', color: '#50c8c8', FontSize:'9px' },
+    { type: 'I2C',  label: 'I²C(SDA/SCL)', color: '#9898d8', FontSize:'8px' },
+    { type: 'ADDR', label: 'Addr(A0–A5)', color: '#50c8a0', FontSize:'8px' },
     { type: 'OE',   label: 'Out En', color: '#ff9944' },
     { type: 'CLK',  label: 'Ext Clk', color: '#7090a8' },
-    { type: 'PWR',  label: 'Power(VDD)', color: '#ff6b6b',FontSize:'12px' },
+    { type: 'PWR',  label: 'Power(VDD)', color: '#ff6b6b', FontSize:'11px' },
     { type: 'GND',  label: 'GND(VSS)', color: '#a8a8a8', FontSize:'11px' },
   ],
 
@@ -62,7 +62,7 @@ window.IC_CONFIG = {
       funcs: ['ADDR'],
       volt:  '0V or VDD',
       curr:  '—',
-      note:  'I²C hardware address bit 0. Pull to VDD or GND to set the LSB of the 6-bit programmable I²C address. Up to 62 devices can share the same bus by using different A0–A5 combinations.',
+      note:  'Hardware address bit 0 (I2C address selection). Pull to VDD or GND to set the LSB of the 6-bit programmable I²C address. Up to 62 devices can share the same bus by using different A0–A5 combinations.',
     },
     {
       num:   2,
@@ -73,7 +73,7 @@ window.IC_CONFIG = {
       funcs: ['ADDR'],
       volt:  '0V or VDD',
       curr:  '—',
-      note:  'I²C hardware address bit 1. Pull to VDD or GND to set bit 1 of the 6-bit programmable I²C address. Combine with A0, A2–A5 to form a unique bus address.',
+      note:  'Hardware address bit 1 (I2C address selection). Pull to VDD or GND to set bit 1 of the 6-bit programmable I²C address.',
     },
     {
       num:   3,
@@ -84,7 +84,7 @@ window.IC_CONFIG = {
       funcs: ['ADDR'],
       volt:  '0V or VDD',
       curr:  '—',
-      note:  'I²C hardware address bit 2. Pull to VDD or GND to set bit 2 of the 6-bit programmable I²C address.',
+      note:  'Hardware address bit 2 (I2C address selection). Pull to VDD or GND to set bit 2 of the 6-bit programmable I²C address.',
     },
     {
       num:   4,
@@ -95,7 +95,7 @@ window.IC_CONFIG = {
       funcs: ['ADDR'],
       volt:  '0V or VDD',
       curr:  '—',
-      note:  'I²C hardware address bit 3. Pull to VDD or GND to set bit 3 of the 6-bit programmable I²C address.',
+      note:  'Hardware address bit 3 (I2C address selection). Pull to VDD or GND to set bit 3 of the 6-bit programmable I²C address.',
     },
     {
       num:   5,
@@ -106,7 +106,7 @@ window.IC_CONFIG = {
       funcs: ['ADDR'],
       volt:  '0V or VDD',
       curr:  '—',
-      note:  'I²C hardware address bit 4. Pull to VDD or GND to set bit 4 of the 6-bit programmable I²C address.',
+      note:  'Hardware address bit 4 (I2C address selection). Pull to VDD or GND to set bit 4 of the 6-bit programmable I²C address.',
     },
     {
       num:   6,
@@ -117,7 +117,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 0 open-drain output. 12-bit resolution (0–4095) controls the on/off time within each PWM period. Output is active (low) when OE# is driven low. Can drive LEDs directly or control servo signals.',
+      note:  'PWM output channel 0. 12-bit resolution (0–4095) controls the on/off time within each PWM period. Output is active (low) when OE# is driven low. Can drive LEDs directly or control servo signals.',
     },
     {
       num:   7,
@@ -128,7 +128,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 1 open-drain output. 12-bit resolution gives 4096 steps of duty-cycle control per channel. Each channel has independent on-time and off-time registers.',
+      note:  'PWM output channel 1. 12-bit resolution gives 4096 steps of duty-cycle control per channel. Each channel has independent on-time and off-time registers.',
     },
     {
       num:   8,
@@ -139,7 +139,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 2 open-drain output. Independently controlled via I²C registers LED2_ON_L, LED2_ON_H, LED2_OFF_L, LED2_OFF_H.',
+      note:  'PWM output channel 2. Independently controlled via I²C registers LED2_ON_L, LED2_ON_H, LED2_OFF_L, LED2_OFF_H.',
     },
     {
       num:   9,
@@ -150,7 +150,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 3 open-drain output. Independently controlled via I²C registers LED3_ON_L, LED3_ON_H, LED3_OFF_L, LED3_OFF_H.',
+      note:  'PWM output channel 3. Independently controlled via I²C registers LED3_ON_L, LED3_ON_H, LED3_OFF_L, LED3_OFF_H.',
     },
     {
       num:   10,
@@ -161,7 +161,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 4 open-drain output. Independently controlled via I²C registers LED4_ON_L, LED4_ON_H, LED4_OFF_L, LED4_OFF_H.',
+      note:  'PWM output channel 4. Independently controlled via I²C registers LED4_ON_L, LED4_ON_H, LED4_OFF_L, LED4_OFF_H.',
     },
     {
       num:   11,
@@ -172,7 +172,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 5 open-drain output. Independently controlled via I²C registers LED5_ON_L, LED5_ON_H, LED5_OFF_L, LED5_OFF_H.',
+      note:  'PWM output channel 5. Independently controlled via I²C registers LED5_ON_L, LED5_ON_H, LED5_OFF_L, LED5_OFF_H.',
     },
     {
       num:   12,
@@ -183,7 +183,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 6 open-drain output. Independently controlled via I²C registers LED6_ON_L, LED6_ON_H, LED6_OFF_L, LED6_OFF_H.',
+      note:  'PWM output channel 6. Independently controlled via I²C registers LED6_ON_L, LED6_ON_H, LED6_OFF_L, LED6_OFF_H.',
     },
     {
       num:   13,
@@ -194,7 +194,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 7 open-drain output. Independently controlled via I²C registers LED7_ON_L, LED7_ON_H, LED7_OFF_L, LED7_OFF_H.',
+      note:  'PWM output channel 7. Independently controlled via I²C registers LED7_ON_L, LED7_ON_H, LED7_OFF_L, LED7_OFF_H.',
     },
     {
       num:   14,
@@ -205,7 +205,7 @@ window.IC_CONFIG = {
       funcs: ['GND'],
       volt:  '0V',
       curr:  '—',
-      note:  'Device ground supply. Connect to the system ground plane. Place a 100 nF decoupling capacitor between VDD (pin 28) and VSS (pin 14) as close to the IC as possible.',
+      note:  'Ground (0V). Connect to the system ground plane. Place a 100 nF decoupling capacitor between VDD (pin 28) and VSS (pin 14) as close to the IC as possible.',
     },
 
     // ── RIGHT SIDE (pins 15–28) ───────────────────────────────
@@ -218,7 +218,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 8 open-drain output. Independently controlled via I²C registers LED8_ON_L, LED8_ON_H, LED8_OFF_L, LED8_OFF_H.',
+      note:  'PWM output channel 8. Independently controlled via I²C registers LED8_ON_L, LED8_ON_H, LED8_OFF_L, LED8_OFF_H.',
       _rightSlot: 0,
     },
     {
@@ -230,7 +230,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 9 open-drain output. Independently controlled via I²C registers LED9_ON_L, LED9_ON_H, LED9_OFF_L, LED9_OFF_H.',
+      note:  'PWM output channel 9. Independently controlled via I²C registers LED9_ON_L, LED9_ON_H, LED9_OFF_L, LED9_OFF_H.',
       _rightSlot: 1,
     },
     {
@@ -242,7 +242,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 10 open-drain output. Independently controlled via I²C registers LED10_ON_L, LED10_ON_H, LED10_OFF_L, LED10_OFF_H.',
+      note:  'PWM output channel 10. Independently controlled via I²C registers LED10_ON_L, LED10_ON_H, LED10_OFF_L, LED10_OFF_H.',
       _rightSlot: 2,
     },
     {
@@ -254,7 +254,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 11 open-drain output. Independently controlled via I²C registers LED11_ON_L, LED11_ON_H, LED11_OFF_L, LED11_OFF_H.',
+      note:  'PWM output channel 11. Independently controlled via I²C registers LED11_ON_L, LED11_ON_H, LED11_OFF_L, LED11_OFF_H.',
       _rightSlot: 3,
     },
     {
@@ -266,7 +266,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 12 open-drain output. Independently controlled via I²C registers LED12_ON_L, LED12_ON_H, LED12_OFF_L, LED12_OFF_H.',
+      note:  'PWM output channel 12. Independently controlled via I²C registers LED12_ON_L, LED12_ON_H, LED12_OFF_L, LED12_OFF_H.',
       _rightSlot: 4,
     },
     {
@@ -278,7 +278,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 13 open-drain output. Independently controlled via I²C registers LED13_ON_L, LED13_ON_H, LED13_OFF_L, LED13_OFF_H.',
+      note:  'PWM output channel 13. Independently controlled via I²C registers LED13_ON_L, LED13_ON_H, LED13_OFF_L, LED13_OFF_H.',
       _rightSlot: 5,
     },
     {
@@ -290,7 +290,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 14 open-drain output. Independently controlled via I²C registers LED14_ON_L, LED14_ON_H, LED14_OFF_L, LED14_OFF_H.',
+      note:  'PWM output channel 14. Independently controlled via I²C registers LED14_ON_L, LED14_ON_H, LED14_OFF_L, LED14_OFF_H.',
       _rightSlot: 6,
     },
     {
@@ -302,7 +302,7 @@ window.IC_CONFIG = {
       funcs: ['PWM'],
       volt:  '0V – VDD',
       curr:  '10 mA (25 mA max)',
-      note:  'PWM channel 15 open-drain output. Independently controlled via I²C registers LED15_ON_L, LED15_ON_H, LED15_OFF_L, LED15_OFF_H.',
+      note:  'PWM output channel 15. Independently controlled via I²C registers LED15_ON_L, LED15_ON_H, LED15_OFF_L, LED15_OFF_H.',
       _rightSlot: 7,
     },
     {
@@ -314,7 +314,7 @@ window.IC_CONFIG = {
       funcs: ['OE'],
       volt:  '0V or VDD',
       curr:  '—',
-      note:  'Output enable input, active low. When driven low all 16 PWM outputs are enabled. When driven high all outputs are driven to the state defined by the OUTNE bits in MODE2 register (default: high-impedance). Pull to GND for always-on operation, or drive from a GPIO for software control.',
+      note:  'Output Enable (active LOW). Pull LOW to enable outputs, HIGH to disable (high-impedance). When driven low all 16 PWM outputs are enabled. When driven high all outputs are driven to high-impedance state. Pull to GND for always-on operation, or drive from a GPIO for software control.',
       _rightSlot: 8,
     },
     {
@@ -326,7 +326,7 @@ window.IC_CONFIG = {
       funcs: ['ADDR'],
       volt:  '0V or VDD',
       curr:  '—',
-      note:  'I²C hardware address bit 5 (MSB of the 6-bit address field). Pull to VDD or GND. Together with A0–A4 this allows up to 62 unique I²C addresses (0x40–0x7E, excluding the All Call address 0x70).',
+      note:  'Hardware address bit 5 (I2C address selection). Pull to VDD or GND. Together with A0–A4 this allows up to 62 unique I²C addresses (0x40–0x7E, excluding the All Call address 0x70).',
       _rightSlot: 9,
     },
     {
@@ -338,7 +338,7 @@ window.IC_CONFIG = {
       funcs: ['CLK'],
       volt:  '0V – VDD',
       curr:  '—',
-      note:  'External clock input. When the EXTCLK bit in MODE1 register is set, this pin accepts an external clock source (1 Hz to 50 MHz) instead of the internal 25 MHz oscillator. To enable: write SLEEP bit, then set EXTCLK bit — this is a one-time latch until power cycle. Leave unconnected when using the internal oscillator.',
+      note:  'External clock input. Can be grounded if using the internal 25MHz oscillator. When the EXTCLK bit in MODE1 register is set, this pin accepts an external clock source (1 Hz to 50 MHz) instead of the internal 25 MHz oscillator.',
       _rightSlot: 10,
     },
     {
@@ -350,7 +350,7 @@ window.IC_CONFIG = {
       funcs: ['I2C'],
       volt:  '0V – VDD',
       curr:  '—',
-      note:  'I²C serial clock input. Supports Standard-mode (100 kHz), Fast-mode (400 kHz), and Fast-mode Plus (Fm+, 1 MHz) I²C speeds. Requires an external pull-up resistor to VDD (typical 4.7 kΩ for Fast-mode, 1 kΩ for Fm+).',
+      note:  'I2C Clock line. Supports Standard-mode (100 kHz), Fast-mode (400 kHz), and Fast-mode Plus (Fm+, 1 MHz) I²C speeds. Requires an external pull-up resistor to VDD (typical 4.7 kΩ for Fast-mode, 1 kΩ for Fm+).',
       _rightSlot: 11,
     },
     {
@@ -362,7 +362,7 @@ window.IC_CONFIG = {
       funcs: ['I2C'],
       volt:  '0V – VDD',
       curr:  '—',
-      note:  'I²C serial data bidirectional line. Used for both address and data transfer. Supports Standard-mode, Fast-mode, and Fast-mode Plus. Requires an external pull-up resistor to VDD (typical 4.7 kΩ for Fast-mode, 1 kΩ for Fm+).',
+      note:  'I2C Data line. Used for both address and data transfer. Supports Standard-mode, Fast-mode, and Fast-mode Plus. Requires an external pull-up resistor to VDD (typical 4.7 kΩ for Fast-mode, 1 kΩ for Fm+).',
       _rightSlot: 12,
     },
     {
@@ -374,7 +374,7 @@ window.IC_CONFIG = {
       funcs: ['PWR'],
       volt:  '2.3V – 5.5V',
       curr:  '—',
-      note:  'Main device supply voltage. Operating range is 2.3V to 5.5V. Decouple with a 100 nF ceramic capacitor between VDD (pin 28) and VSS (pin 14), placed as close to the IC pins as possible to suppress switching noise from PWM outputs.',
+      note:  'Supply voltage (2.3V to 5.5V). Decouple with a 100 nF ceramic capacitor between VDD (pin 28) and VSS (pin 14), placed as close to the IC pins as possible to suppress switching noise from PWM outputs.',
       _rightSlot: 13,
     },
   ],
