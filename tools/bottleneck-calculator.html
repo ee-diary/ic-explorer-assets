@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPU & GPU Bottleneck Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0d1117;
+    --surface:   #161b22;
+    --surface2:  #1c2128;
+    --border:    #30363d;
+    --border2:   #21262d;
+    --text:      #e6edf3;
+    --text-muted:#7d8590;
+    --blue:      #58a6ff;
+    --green:     #3fb950;
+    --yellow:    #d29922;
+    --red:       #f85149;
+    --purple:    #a78bfa;
+    --font:      'IBM Plex Mono', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 24px 16px;
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 24px;
+  }
+
+  /* ── SELECTORS ── */
+  .selectors {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .selector-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+  }
+
+  select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237d8590'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+  }
+  select:focus { outline: none; border-color: var(--blue); }
+  select option { background: var(--surface2); }
+
+  /* ── BUTTON ── */
+  .calc-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--blue);
+    color: #0d1117;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+    transition: opacity 0.15s;
+  }
+  .calc-btn:hover { opacity: 0.85; }
+  .calc-btn:active { opacity: 0.7; }
+
+  /* ── RESULT PANEL ── */
+  #result { display: none; }
+
+  .pair-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .pair-names {
+    font-size: 12px;
+    color: var(--text-muted);
+    flex: 1;
+    min-width: 0;
+  }
+  .pair-names span { color: var(--text); font-weight: 600; }
+
+  .overall-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-great  { background: rgba(63,185,80,.15);  color: var(--green);  border: 1px solid rgba(63,185,80,.3); }
+  .badge-good   { background: rgba(88,166,255,.15); color: var(--blue);   border: 1px solid rgba(88,166,255,.3); }
+  .badge-warn   { background: rgba(210,153,34,.15); color: var(--yellow); border: 1px solid rgba(210,153,34,.3); }
+  .badge-poor   { background: rgba(248,81,73,.15);  color: var(--red);    border: 1px solid rgba(248,81,73,.3); }
+
+  /* ── RESOLUTION TABLE ── */
+  .res-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .res-header {
+    display: grid;
+    grid-template-columns: 72px 1fr 80px 120px;
+    padding: 8px 14px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    gap: 8px;
+  }
+
+  .res-row {
+    display: grid;
+    grid-template-columns: 72px 1fr 80px 120px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border2);
+    align-items: center;
+    gap: 8px;
+  }
+  .res-row:last-child { border-bottom: none; }
+
+  .res-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .bar-wrap {
+    height: 8px;
+    background: var(--border2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .score-val {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .verdict-cell {
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── ADVICE BOX ── */
+  .advice-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+  .advice-box strong { color: var(--text); }
+  .advice-icon { color: var(--blue); margin-right: 4px; }
+
+  /* ── CHIP STATS ── */
+  .chip-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .chip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+
+  .chip-card-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+  .chip-card-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .chip-stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 1px 0;
+  }
+  .chip-stat-row span:last-child { color: var(--text); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<h1>⚡ Bottleneck & Synergy Calculator</h1>
+<p class="subtitle">Find the ideal CPU + GPU balance at every resolution — 2024/2025 hardware</p>
+
+<div class="selectors">
+  <div class="selector-group">
+    <label>CPU</label>
+    <select id="cpuSelect"></select>
+  </div>
+  <div class="selector-group">
+    <label>GPU</label>
+    <select id="gpuSelect"></select>
+  </div>
+</div>
+
+<button class="calc-btn" onclick="calculate()">▶ Calculate Synergy</button>
+
+<div id="result">
+  <div class="pair-header">
+    <div class="pair-names" id="pairNames"></div>
+    <div class="overall-badge" id="overallBadge"></div>
+  </div>
+
+  <div class="chip-stats">
+    <div class="chip-card" id="cpuCard"></div>
+    <div class="chip-card" id="gpuCard"></div>
+  </div>
+
+  <div class="res-table">
+    <div class="res-header">
+      <span>RES</span><span>SYNERGY</span><span>SCORE</span><span>VERDICT</span>
+    </div>
+    <div class="res-row" id="row1080"></div>
+    <div class="res-row" id="row1440"></div>
+    <div class="res-row" id="row4k"></div>
+  </div>
+
+  <div class="advice-box" id="adviceBox"></div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const CPUS = [
+  // Intel 12th Gen
+  { id:'i5-12600k',      name:'Intel Core i5-12600K',       tier:6,  cores:10, threads:16, tdp:125, tdpBoost:150 },
+  { id:'i7-12700k',      name:'Intel Core i7-12700K',       tier:7,  cores:12, threads:20, tdp:125, tdpBoost:190 },
+  { id:'i9-12900k',      name:'Intel Core i9-12900K',       tier:8,  cores:16, threads:24, tdp:125, tdpBoost:241 },
+  // Intel 13th Gen
+  { id:'i5-13600k',      name:'Intel Core i5-13600K',       tier:7,  cores:14, threads:20, tdp:125, tdpBoost:181 },
+  { id:'i7-13700k',      name:'Intel Core i7-13700K',       tier:8,  cores:16, threads:24, tdp:125, tdpBoost:253 },
+  { id:'i9-13900k',      name:'Intel Core i9-13900K',       tier:9,  cores:24, threads:32, tdp:125, tdpBoost:253 },
+  // Intel 14th Gen
+  { id:'i5-14600k',      name:'Intel Core i5-14600K',       tier:7,  cores:14, threads:20, tdp:125, tdpBoost:181 },
+  { id:'i7-14700k',      name:'Intel Core i7-14700K',       tier:8,  cores:20, threads:28, tdp:125, tdpBoost:253 },
+  { id:'i9-14900k',      name:'Intel Core i9-14900K',       tier:9,  cores:24, threads:32, tdp:125, tdpBoost:253 },
+  // Intel Core Ultra (Arrow Lake)
+  { id:'cu5-245k',       name:'Intel Core Ultra 5 245K',    tier:7,  cores:14, threads:14, tdp:125, tdpBoost:159 },
+  { id:'cu7-265k',       name:'Intel Core Ultra 7 265K',    tier:8,  cores:20, threads:20, tdp:125, tdpBoost:159 },
+  { id:'cu9-285k',       name:'Intel Core Ultra 9 285K',    tier:9,  cores:24, threads:24, tdp:125, tdpBoost:250 },
+  // AMD Ryzen 5000
+  { id:'r5-5600x',       name:'AMD Ryzen 5 5600X',          tier:6,  cores:6,  threads:12, tdp:65,  tdpBoost:95  },
+  { id:'r7-5800x3d',     name:'AMD Ryzen 7 5800X3D',        tier:8,  cores:8,  threads:16, tdp:105, tdpBoost:105 },
+  { id:'r9-5900x',       name:'AMD Ryzen 9 5900X',          tier:8,  cores:12, threads:24, tdp:105, tdpBoost:142 },
+  // AMD Ryzen 7000
+  { id:'r5-7600x',       name:'AMD Ryzen 5 7600X',          tier:7,  cores:6,  threads:12, tdp:105, tdpBoost:142 },
+  { id:'r7-7700x',       name:'AMD Ryzen 7 7700X',          tier:8,  cores:8,  threads:16, tdp:105, tdpBoost:142 },
+  { id:'r7-7800x3d',     name:'AMD Ryzen 7 7800X3D',        tier:9,  cores:8,  threads:16, tdp:120, tdpBoost:120 },
+  { id:'r9-7950x',       name:'AMD Ryzen 9 7950X',          tier:9,  cores:16, threads:32, tdp:170, tdpBoost:230 },
+  // AMD Ryzen AI 300 (Strix Point — laptop/desktop)
+  { id:'r-ai9-365',      name:'AMD Ryzen AI 9 365',         tier:8,  cores:10, threads:20, tdp:28,  tdpBoost:50  },
+  { id:'r-ai9-hx370',    name:'AMD Ryzen AI 9 HX 370',      tier:9,  cores:12, threads:24, tdp:28,  tdpBoost:54  },
+];
+
+const GPUS = [
+  // NVIDIA RTX 30 series
+  { id:'rtx3060',        name:'NVIDIA RTX 3060',            tier:4,  vram:12, tdp:170, bw:360  },
+  { id:'rtx3060ti',      name:'NVIDIA RTX 3060 Ti',         tier:5,  vram:8,  tdp:200, bw:448  },
+  { id:'rtx3070',        name:'NVIDIA RTX 3070',            tier:6,  vram:8,  tdp:220, bw:448  },
+  { id:'rtx3080',        name:'NVIDIA RTX 3080',            tier:7,  vram:10, tdp:320, bw:760  },
+  { id:'rtx3090',        name:'NVIDIA RTX 3090',            tier:8,  vram:24, tdp:350, bw:936  },
+  // NVIDIA RTX 40 series
+  { id:'rtx4060',        name:'NVIDIA RTX 4060',            tier:4,  vram:8,  tdp:115, bw:272  },
+  { id:'rtx4060ti',      name:'NVIDIA RTX 4060 Ti',         tier:5,  vram:16, tdp:165, bw:288  },
+  { id:'rtx4070',        name:'NVIDIA RTX 4070',            tier:6,  vram:12, tdp:200, bw:504  },
+  { id:'rtx4070ti',      name:'NVIDIA RTX 4070 Ti',         tier:7,  vram:12, tdp:285, bw:504  },
+  { id:'rtx4070super',   name:'NVIDIA RTX 4070 Super',      tier:7,  vram:12, tdp:220, bw:672  },
+  { id:'rtx4080',        name:'NVIDIA RTX 4080',            tier:8,  vram:16, tdp:320, bw:717  },
+  { id:'rtx4080super',   name:'NVIDIA RTX 4080 Super',      tier:8,  vram:16, tdp:320, bw:736  },
+  { id:'rtx4090',        name:'NVIDIA RTX 4090',            tier:10, vram:24, tdp:450, bw:1008 },
+  // NVIDIA RTX 50 series
+  { id:'rtx5070',        name:'NVIDIA RTX 5070',            tier:7,  vram:12, tdp:250, bw:896  },
+  { id:'rtx5070ti',      name:'NVIDIA RTX 5070 Ti',         tier:8,  vram:16, tdp:300, bw:960  },
+  { id:'rtx5080',        name:'NVIDIA RTX 5080',            tier:9,  vram:16, tdp:360, bw:1792 },
+  { id:'rtx5090',        name:'NVIDIA RTX 5090',            tier:10, vram:32, tdp:575, bw:1792 },
+  // AMD RX 6000 series
+  { id:'rx6700xt',       name:'AMD RX 6700 XT',             tier:5,  vram:12, tdp:230, bw:384  },
+  { id:'rx6800xt',       name:'AMD RX 6800 XT',             tier:7,  vram:16, tdp:300, bw:512  },
+  { id:'rx6900xt',       name:'AMD RX 6900 XT',             tier:8,  vram:16, tdp:300, bw:512  },
+  // AMD RX 7000 series
+  { id:'rx7600',         name:'AMD RX 7600',                tier:4,  vram:8,  tdp:165, bw:288  },
+  { id:'rx7700xt',       name:'AMD RX 7700 XT',             tier:5,  vram:12, tdp:245, bw:432  },
+  { id:'rx7800xt',       name:'AMD RX 7800 XT',             tier:6,  vram:16, tdp:263, bw:624  },
+  { id:'rx7900xt',       name:'AMD RX 7900 XT',             tier:8,  vram:20, tdp:300, bw:800  },
+  { id:'rx7900xtx',      name:'AMD RX 7900 XTX',            tier:9,  vram:24, tdp:355, bw:960  },
+  // AMD RX 9000 series
+  { id:'rx9070xt',       name:'AMD RX 9070 XT',             tier:7,  vram:16, tdp:304, bw:896  },
+  { id:'rx9080',         name:'AMD RX 9080',                tier:9,  vram:16, tdp:350, bw:1280 },
+];
+
+// ── POPULATE DROPDOWNS ────────────────────────────────────────────────────
+function populate() {
+  const cs = document.getElementById('cpuSelect');
+  const gs = document.getElementById('gpuSelect');
+
+  // Group CPUs by brand
+  const intelCPUs = CPUS.filter(c => c.name.includes('Intel'));
+  const amdCPUs   = CPUS.filter(c => c.name.includes('AMD'));
+
+  [['Intel', intelCPUs], ['AMD', amdCPUs]].forEach(([brand, list]) => {
+    const og = document.createElement('optgroup');
+    og.label = brand;
+    list.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.id; o.textContent = c.name;
+      og.appendChild(o);
+    });
+    cs.appendChild(og);
+  });
+
+  // Group GPUs by brand
+  const nvGPUs  = GPUS.filter(g => g.name.includes('NVIDIA'));
+  const amdGPUs = GPUS.filter(g => g.name.includes('AMD'));
+
+  [['NVIDIA', nvGPUs], ['AMD', amdGPUs]].forEach(([brand, list]) => {
+    const og = document.createElement('optgroup');
+    og.label = brand;
+    list.forEach(g => {
+      const o = document.createElement('option');
+      o.value = g.id; o.textContent = g.name;
+      og.appendChild(o);
+    });
+    gs.appendChild(og);
+  });
+
+  // Defaults: Ryzen 7 7800X3D + RTX 4070
+  cs.value = 'r7-7800x3d';
+  gs.value = 'rtx4070';
+}
+
+// ── CALCULATE ─────────────────────────────────────────────────────────────
+function synergy(cpuTier, gpuTier, resBias) {
+  // resBias: -1 = cpu-heavy (1080p), 0 = balanced (1440p), +1 = gpu-heavy (4K)
+  const effectiveCpu = cpuTier + resBias * 0.5;
+  const effectiveGpu = gpuTier - resBias * 0.5;
+  const diff = effectiveCpu - effectiveGpu;
+  const raw  = 100 - Math.abs(diff) * 9;
+  return Math.max(30, Math.min(100, Math.round(raw)));
+}
+
+function bottleneck(cpuTier, gpuTier, resBias) {
+  const diff = cpuTier - gpuTier + resBias * 0.8;
+  if (Math.abs(diff) < 0.8) return { label: 'Balanced ✓', color: 'var(--green)' };
+  if (diff > 0) {
+    const pct = Math.min(50, Math.round(diff * 9));
+    return { label: `GPU limit -${pct}%`, color: 'var(--yellow)' };
+  } else {
+    const pct = Math.min(50, Math.round(-diff * 9));
+    return { label: `CPU limit -${pct}%`, color: 'var(--red)' };
+  }
+}
+
+function barColor(score) {
+  if (score >= 88) return 'var(--green)';
+  if (score >= 72) return 'var(--blue)';
+  if (score >= 55) return 'var(--yellow)';
+  return 'var(--red)';
+}
+
+function overallClass(score) {
+  if (score >= 88) return ['badge-great', '★ Excellent Synergy'];
+  if (score >= 72) return ['badge-good',  '✓ Good Balance'];
+  if (score >= 55) return ['badge-warn',  '⚠ Moderate Bottleneck'];
+  return ['badge-poor', '✗ Significant Bottleneck'];
+}
+
+function buildRow(rowId, res, score, bn) {
+  const row = document.getElementById(rowId);
+  row.innerHTML = `
+    <span class="res-label">${res}</span>
+    <div class="bar-wrap">
+      <div class="bar-fill" id="bar-${rowId}" style="width:0%;background:${barColor(score)}"></div>
+    </div>
+    <span class="score-val" style="color:${barColor(score)}">${score}%</span>
+    <span class="verdict-cell" style="color:${bn.color}">${bn.label}</span>
+  `;
+  // animate bar
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.getElementById('bar-' + rowId).style.width = score + '%';
+    }, 60);
+  });
+}
+
+function buildChipCard(id, chip, type) {
+  const card = document.getElementById(id);
+  const isGPU = type === 'GPU';
+  const labelColor = isGPU ? 'var(--purple)' : 'var(--blue)';
+  const rows = isGPU
+    ? [['VRAM', chip.vram + ' GB'], ['Bandwidth', chip.bw + ' GB/s'], ['TDP', chip.tdp + 'W'], ['Perf Tier', chip.tier + ' / 10']]
+    : [['Cores', chip.cores + 'C / ' + chip.threads + 'T'], ['TDP', chip.tdp + 'W (boost ' + chip.tdpBoost + 'W)'], ['Perf Tier', chip.tier + ' / 10']];
+
+  card.innerHTML = `
+    <div class="chip-card-label" style="color:${labelColor}">${type}</div>
+    <div class="chip-card-name">${chip.name}</div>
+    ${rows.map(r => `<div class="chip-stat-row"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}
+  `;
+}
+
+function buildAdvice(cpu, gpu, s1080, s1440, s4k, bn1080, bn1440, bn4k) {
+  const best  = Math.max(s1080, s1440, s4k);
+  const bestRes = s1440 === best ? '1440p' : s4k === best ? '4K' : '1080p';
+  let advice = '';
+
+  const cpuAhead = cpu.tier > gpu.tier;
+  const gpuAhead = gpu.tier > cpu.tier;
+  const diff     = Math.abs(cpu.tier - gpu.tier);
+
+  if (diff <= 1) {
+    advice = `<strong>Near-perfect match.</strong> Your ${cpu.name} and ${gpu.name} are very well paired. 
+    ${bestRes} gives you the best balance. You can confidently upgrade either component later without wasting the other.`;
+  } else if (cpuAhead && diff >= 3) {
+    advice = `<strong>GPU is holding you back.</strong> Your ${cpu.name} (tier ${cpu.tier}) outpaces the ${gpu.name} (tier ${gpu.tier}).
+    At 1080p your CPU is underutilised — consider upgrading to a higher-tier GPU to unlock your CPU's full performance.
+    If upgrading now isn't an option, target <strong>${s4k >= s1080 ? '4K' : '1440p'}</strong> to shift load toward the GPU.`;
+  } else if (gpuAhead && diff >= 3) {
+    advice = `<strong>CPU is the bottleneck.</strong> Your ${gpu.name} (tier ${gpu.tier}) is ahead of the ${cpu.name} (tier ${cpu.tier}).
+    At 1080p your GPU is <strong>~${Math.round(diff * 9)}% underutilised</strong>. 
+    Targeting <strong>1440p or 4K</strong> will shift more work to the GPU and give you noticeably better frame rates for free.`;
+  } else if (cpuAhead) {
+    advice = `<strong>Slight GPU bottleneck.</strong> Your CPU has headroom your GPU can't always fill at 1080p.
+    Playing at <strong>1440p</strong> will improve GPU utilisation and reduce wasted CPU cycles. A GPU upgrade would unlock your full setup potential.`;
+  } else {
+    advice = `<strong>Slight CPU bottleneck.</strong> Your GPU is capable of more, especially at lower resolutions.
+    At <strong>1440p or 4K</strong> the load balances out well. For 1080p competitive gaming, a CPU upgrade would help more than a GPU upgrade.`;
+  }
+
+  document.getElementById('adviceBox').innerHTML = `<span class="advice-icon">💡</span>${advice}`;
+}
+
+function calculate() {
+  const cpuId = document.getElementById('cpuSelect').value;
+  const gpuId = document.getElementById('gpuSelect').value;
+  const cpu   = CPUS.find(c => c.id === cpuId);
+  const gpu   = GPUS.find(g => g.id === gpuId);
+
+  const s1080 = synergy(cpu.tier, gpu.tier, -1);
+  const s1440 = synergy(cpu.tier, gpu.tier,  0);
+  const s4k   = synergy(cpu.tier, gpu.tier,  1);
+
+  const bn1080 = bottleneck(cpu.tier, gpu.tier, -1);
+  const bn1440 = bottleneck(cpu.tier, gpu.tier,  0);
+  const bn4k   = bottleneck(cpu.tier, gpu.tier,  1);
+
+  const avgScore = Math.round((s1080 + s1440 + s4k) / 3);
+  const [cls, label] = overallClass(avgScore);
+
+  document.getElementById('pairNames').innerHTML =
+    `<span>${cpu.name}</span> <span style="color:var(--text-muted)">+</span> <span>${gpu.name}</span>`;
+
+  const badge = document.getElementById('overallBadge');
+  badge.textContent  = label;
+  badge.className    = 'overall-badge ' + cls;
+
+  buildChipCard('cpuCard', cpu, 'CPU');
+  buildChipCard('gpuCard', gpu, 'GPU');
+
+  buildRow('row1080', '1080p', s1080, bn1080);
+  buildRow('row1440', '1440p', s1440, bn1440);
+  buildRow('row4k',   '4K',    s4k,   bn4k);
+
+  buildAdvice(cpu, gpu, s1080, s1440, s4k, bn1080, bn1440, bn4k);
+
+  document.getElementById('result').style.display = 'block';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+populate();
+</script>
+</body>
+</html>
