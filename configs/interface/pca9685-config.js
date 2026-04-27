@@ -38,13 +38,13 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
-    { type: 'PWM',  label: 'PWM(LED0–15)', color: '#50c8c8', fontSize:'9px' },
-    { type: 'I2C',  label: 'I²C(SDA/SCL)', color: '#9898d8', fontSize:'8px' },
-    { type: 'ADDR', label: 'Addr(A0–A5)', color: '#50c8a0', fontSize:'8px' },
+    { type: 'PWM',  label: 'PWM(LED0–15)', color: '#50c8c8', fontSize:'11px' },
+    { type: 'I2C',  label: 'I²C(SDA/SCL)', color: '#9898d8', fontSize:'10px' },
+    { type: 'ADDR', label: 'Addr(A0–A5)', color: '#50c8a0', fontSize:'10px' },
     { type: 'OE',   label: 'Out En', color: '#ff9944' },
     { type: 'CLK',  label: 'Ext Clk', color: '#7090a8' },
-    { type: 'PWR',  label: 'Power(VDD)', color: '#ff6b6b', fontSize:'11px' },
-    { type: 'GND',  label: 'GND(VSS)', color: '#a8a8a8', fontSize:'11px' },
+    { type: 'PWR',  label: 'Power(VDD)', color: '#ff6b6b', fontSize:'12px' },
+    { type: 'GND',  label: 'GND(VSS)', color: '#a8a8a8', fontSize:'13px' },
   ],
 
   // ── PINS ──────────────────────────────────────────────────────
