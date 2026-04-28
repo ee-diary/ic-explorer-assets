@@ -8,8 +8,8 @@ window.IC_CONFIG = {
   partName:     'AMD Ryzen 5 7600',
   partMPN:      '100-100000592BOX',
   manufacturer: 'AMD',
-  package:      'LGA-1718',            // AM5 = LGA-1718 pads on CPU
-  pinCount:     1718,
+  package:      'DIP-40',              // DIP-40 triggers DIPRenderer; real socket is AM5 LGA-1718
+  pinCount:     40,                    // 40 functional signal groups (not physical pad count)
 
   // ── LINKS ─────────────────────────────────────────────────────
   snapPageURL:  'https://www.snapeda.com/parts/AMD-Ryzen5-7600',
@@ -306,7 +306,8 @@ window.IC_CONFIG = {
       funcs: ['USB'],
       volt: '0 V (AC coupled)',
       curr: 'Differential',
-      note: 'USB4 Version 1.0 transmit lane 0 (one of two TX lanes). Ryzen 5 7600 exposes two USB4 ports via the CPU die. USB4 at Gen 3×2 = 40 Gbps aggregate. Backward compatible with USB 3.2 Gen 2×2, Thunderbolt 3, and DisplayPort Alt Mode. USB4 controller is inside Zen 4\'s IOD. Requires a Type-C connector with appropriate E-marker cable for 40 Gbps operation.'
+      note: 'USB4 Version 1.0 transmit lane 0 (one of two TX lanes). Ryzen 5 7600 exposes two USB4 ports via the CPU die. USB4 at Gen 3×2 = 40 Gbps aggregate. Backward compatible with USB 3.2 Gen 2×2, Thunderbolt 3, and DisplayPort Alt Mode. USB4 controller is inside Zen 4\'s IOD. Requires a Type-C connector with appropriate E-marker cable for 40 Gbps operation.',
+      _rightSlot: 0
     },
     {
       num: 22,
@@ -317,7 +318,8 @@ window.IC_CONFIG = {
       funcs: ['USB'],
       volt: '0 V (AC coupled)',
       curr: 'Differential',
-      note: 'USB4 receive lane 0. Pairs with TX0 to form the first USB4 differential lane. USB4 is full-duplex, so TX and RX operate simultaneously. The Ryzen 5 7600\'s IOD includes a retimer for USB4 — no external retimer chip required on the motherboard, reducing BOM cost and board complexity.'
+      note: 'USB4 receive lane 0. Pairs with TX0 to form the first USB4 differential lane. USB4 is full-duplex, so TX and RX operate simultaneously. The Ryzen 5 7600\'s IOD includes a retimer for USB4 — no external retimer chip required on the motherboard, reducing BOM cost and board complexity.',
+      _rightSlot: 1
     },
     {
       num: 23,
@@ -328,7 +330,8 @@ window.IC_CONFIG = {
       funcs: ['USB'],
       volt: '0 V (AC coupled)',
       curr: 'Differential',
-      note: 'USB4 TX lane 1 — second lane of the first USB4 port. Both TX0+TX1 together deliver the 40 Gbps (Gen 3×2) bandwidth. When USB4 is operating in DisplayPort Alt Mode, these lanes carry the DP signal instead of USB data. The Ryzen 5 7600 supports DP 2.0 UHBR13.5 (54 Gbps) over USB4/DP Alt Mode.'
+      note: 'USB4 TX lane 1 — second lane of the first USB4 port. Both TX0+TX1 together deliver the 40 Gbps (Gen 3×2) bandwidth. When USB4 is operating in DisplayPort Alt Mode, these lanes carry the DP signal instead of USB data. The Ryzen 5 7600 supports DP 2.0 UHBR13.5 (54 Gbps) over USB4/DP Alt Mode.',
+      _rightSlot: 2
     },
     {
       num: 24,
@@ -339,7 +342,8 @@ window.IC_CONFIG = {
       funcs: ['USB'],
       volt: '0 V (AC coupled)',
       curr: 'Differential',
-      note: 'USB4 receive lane 1. Completes the second differential pair of the USB4 port. USB4 tunnels PCIe 3.0 x2 (up to 16 Gbps), DisplayPort 2.0, and USB 3.2 simultaneously over the 40 Gbps envelope — all scheduled via the USB4 router inside the CPU.'
+      note: 'USB4 receive lane 1. Completes the second differential pair of the USB4 port. USB4 tunnels PCIe 3.0 x2 (up to 16 Gbps), DisplayPort 2.0, and USB 3.2 simultaneously over the 40 Gbps envelope — all scheduled via the USB4 router inside the CPU.',
+      _rightSlot: 3
     },
     {
       num: 25,
@@ -350,7 +354,8 @@ window.IC_CONFIG = {
       funcs: ['USB'],
       volt: '0 V (AC coupled)',
       curr: 'Differential',
-      note: 'USB 3.2 Gen 2 (10 Gbps) SuperSpeed TX for the first non-USB4 port. Direct CPU-attached — not routed through the chipset. AM5 CPUs provide two Gen 2 ports directly; additional USB 3.2 ports come from the X670/B650 chipset. SuperSpeed TX/RX operate at 10 Gbps with 128b/132b encoding.'
+      note: 'USB 3.2 Gen 2 (10 Gbps) SuperSpeed TX for the first non-USB4 port. Direct CPU-attached — not routed through the chipset. AM5 CPUs provide two Gen 2 ports directly; additional USB 3.2 ports come from the X670/B650 chipset. SuperSpeed TX/RX operate at 10 Gbps with 128b/132b encoding.',
+      _rightSlot: 4
     },
     {
       num: 26,
@@ -361,7 +366,8 @@ window.IC_CONFIG = {
       funcs: ['USB'],
       volt: '0 V (AC coupled)',
       curr: 'Differential',
-      note: 'USB 3.2 Gen 2 receive lane. Paired with the TX above. USB 3.2 Gen 2 is backward compatible with USB 3.1, 3.0, and 2.0 speeds. The USB 2.0 companion path (D+/D−) for this port is also present on the CPU package (separate pads), running at 480 Mbps.'
+      note: 'USB 3.2 Gen 2 receive lane. Paired with the TX above. USB 3.2 Gen 2 is backward compatible with USB 3.1, 3.0, and 2.0 speeds. The USB 2.0 companion path (D+/D−) for this port is also present on the CPU package (separate pads), running at 480 Mbps.',
+      _rightSlot: 5
     },
     {
       num: 27,
@@ -372,7 +378,8 @@ window.IC_CONFIG = {
       funcs: ['USB'],
       volt: '3.3V / 0 V',
       curr: '≤500 mA',
-      note: 'Four USB 2.0 (480 Mbps) ports directly from the CPU. D+ and D− are the single-ended differential pair for each port. USB 2.0 shares the Type-A or Type-C connector via a MUX. Used for keyboards, mice, hubs, USB-to-UART adapters. These are among the most board-tested CPU signal pairs.'
+      note: 'Four USB 2.0 (480 Mbps) ports directly from the CPU. D+ and D− are the single-ended differential pair for each port. USB 2.0 shares the Type-A or Type-C connector via a MUX. Used for keyboards, mice, hubs, USB-to-UART adapters. These are among the most board-tested CPU signal pairs.',
+      _rightSlot: 6
     },
     {
       num: 28,
@@ -383,7 +390,8 @@ window.IC_CONFIG = {
       funcs: ['DP'],
       volt: '0 V (AC coupled)',
       curr: 'Differential',
-      note: 'DisplayPort main link from the Ryzen 5 7600\'s integrated RDNA3 GPU (Radeon 740M class, 4 CUs). Supports DP 2.0 UHBR10 (10 Gbps per lane) — enough for 4K 240 Hz or 8K 60 Hz at x4. The iGPU supports up to 4 simultaneous displays. Activated only when a monitor is connected to the motherboard\'s display output (HDMI/DP rear I/O).'
+      note: 'DisplayPort main link from the Ryzen 5 7600\'s integrated RDNA3 GPU (Radeon 740M class, 4 CUs). Supports DP 2.0 UHBR10 (10 Gbps per lane) — enough for 4K 240 Hz or 8K 60 Hz at x4. The iGPU supports up to 4 simultaneous displays. Activated only when a monitor is connected to the motherboard\'s display output (HDMI/DP rear I/O).',
+      _rightSlot: 7
     },
     {
       num: 29,
@@ -394,7 +402,8 @@ window.IC_CONFIG = {
       funcs: ['DP'],
       volt: '0 V (AC coupled)',
       curr: 'Differential',
-      note: 'Second DP main link lane. At x4 configuration (all 4 lanes active), the 4-lane DP 2.0 link provides 40 Gbps — enough for DSC-compressed 8K@120 Hz. Most AM5 boards route 2 lanes to HDMI 2.1 (via an LSPCon) and 2 lanes to native DP 2.0. Some boards expose DP over the USB4 Type-C port.'
+      note: 'Second DP main link lane. At x4 configuration (all 4 lanes active), the 4-lane DP 2.0 link provides 40 Gbps — enough for DSC-compressed 8K@120 Hz. Most AM5 boards route 2 lanes to HDMI 2.1 (via an LSPCon) and 2 lanes to native DP 2.0. Some boards expose DP over the USB4 Type-C port.',
+      _rightSlot: 8
     },
     {
       num: 30,
@@ -405,7 +414,8 @@ window.IC_CONFIG = {
       funcs: ['DP'],
       volt: '0 V (AC coupled)',
       curr: 'Differential',
-      note: 'Third DP main link lane. Together with lane D, enables x4 DP 2.0 for maximum bandwidth. Each lane runs at up to UHBR13.5 (13.5 Gbps). The Ryzen 5 7600\'s RDNA3 iGPU supports AV1 hardware decode (but not encode). Useful for media PCs, HTPCs, or workstations running the 7600 without a discrete GPU.'
+      note: 'Third DP main link lane. Together with lane D, enables x4 DP 2.0 for maximum bandwidth. Each lane runs at up to UHBR13.5 (13.5 Gbps). The Ryzen 5 7600\'s RDNA3 iGPU supports AV1 hardware decode (but not encode). Useful for media PCs, HTPCs, or workstations running the 7600 without a discrete GPU.',
+      _rightSlot: 9
     },
     {
       num: 31,
@@ -416,7 +426,8 @@ window.IC_CONFIG = {
       funcs: ['DP'],
       volt: '0 V (AC coupled)',
       curr: 'Differential',
-      note: 'Fourth DP main link lane. Completing the x4 UHBR link. The iGPU\'s display engine also handles HDR10, Dolby Vision, and HBR3 for legacy DP 1.4a compatibility. AMD FreeSync Premium is supported at all refresh rates through these pads, even at 240 Hz over DP 2.0.'
+      note: 'Fourth DP main link lane. Completing the x4 UHBR link. The iGPU\'s display engine also handles HDR10, Dolby Vision, and HBR3 for legacy DP 1.4a compatibility. AMD FreeSync Premium is supported at all refresh rates through these pads, even at 240 Hz over DP 2.0.',
+      _rightSlot: 10
     },
     {
       num: 32,
@@ -427,7 +438,8 @@ window.IC_CONFIG = {
       funcs: ['DP'],
       volt: '3.3V',
       curr: '< 1 mA',
-      note: 'Bidirectional AUX channel and Hot Plug Detect (HPD) for DisplayPort. AUX carries DPCD register reads/writes (link training, EDID, MST topology), and HPD indicates monitor connect/disconnect events. AUX also carries the DisplayPort over USB-C (DP Alt Mode) configuration handshake with the USB-C port controller (CCx lines).'
+      note: 'Bidirectional AUX channel and Hot Plug Detect (HPD) for DisplayPort. AUX carries DPCD register reads/writes (link training, EDID, MST topology), and HPD indicates monitor connect/disconnect events. AUX also carries the DisplayPort over USB-C (DP Alt Mode) configuration handshake with the USB-C port controller (CCx lines).',
+      _rightSlot: 11
     },
     {
       num: 33,
@@ -438,7 +450,8 @@ window.IC_CONFIG = {
       funcs: ['SPI'],
       volt: '1.8V logic',
       curr: 'Signal',
-      note: 'eSPI (Enhanced Serial Peripheral Interface) replaces the legacy LPC bus on AM5. Used to communicate with: (1) the BIOS SPI flash chip (up to 33 MHz quad-IO for fast POST), (2) the embedded controller (EC) for keyboard, fan control, power button. eSPI runs at 1.8 V on AM5 — unlike older 3.3 V SPI. Includes CLK, CS#, IO[3:0], ALERT#, and RESET# signals.'
+      note: 'eSPI (Enhanced Serial Peripheral Interface) replaces the legacy LPC bus on AM5. Used to communicate with: (1) the BIOS SPI flash chip (up to 33 MHz quad-IO for fast POST), (2) the embedded controller (EC) for keyboard, fan control, power button. eSPI runs at 1.8 V on AM5 — unlike older 3.3 V SPI. Includes CLK, CS#, IO[3:0], ALERT#, and RESET# signals.',
+      _rightSlot: 12
     },
     {
       num: 34,
@@ -449,7 +462,8 @@ window.IC_CONFIG = {
       funcs: ['SPI'],
       volt: '1.8V logic',
       curr: 'Signal',
-      note: 'Four bidirectional eSPI data lines (IO0–IO3) for quad-mode transfers. In quad mode, BIOS boot image is loaded at up to ~132 Mbps — significantly faster than legacy dual SPI. IO0 = MOSI (Single), IO0+IO1 = Dual, IO0–IO3 = Quad. The AMD FCH arbitrates between the BIOS flash device and EC over eSPI.'
+      note: 'Four bidirectional eSPI data lines (IO0–IO3) for quad-mode transfers. In quad mode, BIOS boot image is loaded at up to ~132 Mbps — significantly faster than legacy dual SPI. IO0 = MOSI (Single), IO0+IO1 = Dual, IO0–IO3 = Quad. The AMD FCH arbitrates between the BIOS flash device and EC over eSPI.',
+      _rightSlot: 13
     },
     {
       num: 35,
@@ -460,7 +474,8 @@ window.IC_CONFIG = {
       funcs: ['SMB'],
       volt: '3.3V',
       curr: '< 1 mA',
-      note: 'System Management Bus (SMBus 2.0, ~100 kHz) clock. Connects the AMD FCH to: DDR5 SPD5 EEPROMs (for XMP/EXPO profile reading), DIMM temperature sensors (TS5111), VRM PMBus controllers, and other onboard sensors. The CPU itself is the bus master via the FCH. HWiNFO64 reads temperatures and power from this bus.'
+      note: 'System Management Bus (SMBus 2.0, ~100 kHz) clock. Connects the AMD FCH to: DDR5 SPD5 EEPROMs (for XMP/EXPO profile reading), DIMM temperature sensors (TS5111), VRM PMBus controllers, and other onboard sensors. The CPU itself is the bus master via the FCH. HWiNFO64 reads temperatures and power from this bus.',
+      _rightSlot: 14
     },
     {
       num: 36,
@@ -471,7 +486,8 @@ window.IC_CONFIG = {
       funcs: ['SMB'],
       volt: '3.3V open-drain',
       curr: 'Pulled up 10 kΩ',
-      note: 'SMBus data line. Open-drain — all devices can assert low but only pull-up resistors drive high. Carries SPD5 data read during memory training (crucial for XMP/EXPO profiles), PMBus VRM commands, and sensor polling. DDR5\'s on-die ECC and refresh management are also configured via this bus by the memory controller.'
+      note: 'SMBus data line. Open-drain — all devices can assert low but only pull-up resistors drive high. Carries SPD5 data read during memory training (crucial for XMP/EXPO profiles), PMBus VRM commands, and sensor polling. DDR5\'s on-die ECC and refresh management are also configured via this bus by the memory controller.',
+      _rightSlot: 15
     },
     {
       num: 37,
@@ -482,7 +498,8 @@ window.IC_CONFIG = {
       funcs: ['MISC'],
       volt: '1.8V diff',
       curr: 'Signal',
-      note: 'The CPU outputs a 100 MHz reference clock to the AMD FCH/chipset (X670E, B650 etc.) for chipset-side PCIe, SATA, and USB clocking. This clock is generated by the CPU\'s internal PLL from its internal oscillator or an external 48 MHz crystal input (board-dependent). BCLK overclocking adjusts this reference, affecting all clocked domains.'
+      note: 'The CPU outputs a 100 MHz reference clock to the AMD FCH/chipset (X670E, B650 etc.) for chipset-side PCIe, SATA, and USB clocking. This clock is generated by the CPU\'s internal PLL from its internal oscillator or an external 48 MHz crystal input (board-dependent). BCLK overclocking adjusts this reference, affecting all clocked domains.',
+      _rightSlot: 16
     },
     {
       num: 38,
@@ -493,7 +510,8 @@ window.IC_CONFIG = {
       funcs: ['MISC'],
       volt: '1.8V diff',
       curr: 'Signal',
-      note: 'Base clock reference input. Nominally 100 MHz. Multiplied by the CPU\'s internal clock multiplier (ratio) to produce the core frequency. Ryzen 5 7600: up to 50× = 5.0 GHz boost. BCLK OCing (e.g. to 103 MHz) proportionally raises core clock, Infinity Fabric, and PCIe clocks. Most AM5 boards allow BCLK 99–105 MHz range. Unlike Intel, Ryzen 7000 can be multiplier-unlocked without BCLK OC.'
+      note: 'Base clock reference input. Nominally 100 MHz. Multiplied by the CPU\'s internal clock multiplier (ratio) to produce the core frequency. Ryzen 5 7600: up to 50× = 5.0 GHz boost. BCLK OCing (e.g. to 103 MHz) proportionally raises core clock, Infinity Fabric, and PCIe clocks. Most AM5 boards allow BCLK 99–105 MHz range. Unlike Intel, Ryzen 7000 can be multiplier-unlocked without BCLK OC.',
+      _rightSlot: 17
     },
     {
       num: 39,
@@ -504,7 +522,8 @@ window.IC_CONFIG = {
       funcs: ['PCIE'],
       volt: '3.3V logic',
       curr: '< 1 mA',
-      note: 'Active-low PCIe Fundamental Reset signal sent from the CPU to the GPU (or other PCIe endpoint). The CPU asserts PERST# during system boot and releases it after PCIe link training begins. Also asserted on warm reset, BSOD recovery, or GPU driver crash. GPUs must complete link training within 100 ms of PERST# deassertion (per PCIe spec).'
+      note: 'Active-low PCIe Fundamental Reset signal sent from the CPU to the GPU (or other PCIe endpoint). The CPU asserts PERST# during system boot and releases it after PCIe link training begins. Also asserted on warm reset, BSOD recovery, or GPU driver crash. GPUs must complete link training within 100 ms of PERST# deassertion (per PCIe spec).',
+      _rightSlot: 18
     },
     {
       num: 40,
