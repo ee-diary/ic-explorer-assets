@@ -34,31 +34,91 @@ The four planned tools are described below in priority order.
 ## Repository Structure (GitHub Pages asset host)
 
 ```
-ic-explorer-assets/
-│
-├── core/
-│   ├── ic-explorer-core.css          # Shared dark-theme UI (DO NOT MODIFY)
-│   └── ic-explorer-base.js           # Shared engine (DO NOT MODIFY)
-│
-├── renderers/                        # IC renderers (DO NOT MODIFY unless bug fix)
-│   ├── renderer-factory.js
-│   ├── dip-renderer.js
-│   ├── qfp-renderer.js
-│   ├── qfn-renderer.js
-│   ├── custom-board-renderer.js
-│   ├── arduino-uno-renderer.js
-│   └── teensy41-renderer.js
-│
-├── configs/                          # One JS config file per standard IC chip
-│   ├── pic16f877a-config.js
-│   ├── pic18f4550-config.js
-│   └── stm32f103c8t6-config.js
-│
-├── boards/                           # Board geometry for dev boards (Raspberry Pi, Arduino, etc.)
-│   ├── raspberry-pi-4b-board.js
-│   └── arduino-uno-board.js
-│
-└── ic-explorer-shell.html            # Reference scaffold for IC chip pages
+📦 
+├─ AI_HARDWARE_SITE_README.md
+├─ README.md
+├─ configs
+│  ├─ .keep
+│  ├─ analog
+│  │  ├─ lm3914-config.js
+│  │  ├─ mc1496-config.js
+│  │  ├─ mp1584-config.js
+│  │  └─ op-amp
+│  │     ├─ lm324-config.js
+│  │     ├─ lm358-config.js
+│  │     └─ tl072-config.js
+│  ├─ boards
+│  │  ├─ arduino-uno-config.js
+│  │  ├─ rasberry-pi3-config.js
+│  │  └─ teensy41-config.js
+│  ├─ cpu
+│  │  └─ ryzen5-7600-config.js
+│  ├─ digital
+│  │  ├─ 74hc4051-config.js
+│  │  ├─ 74hc595-config.js
+│  │  ├─ dm7486n-config.js
+│  │  └─ ne555-timer-config.js
+│  ├─ interface
+│  │  ├─ ch340g-config.js
+│  │  ├─ cp2102-config.js
+│  │  ├─ ft232rl-config.js
+│  │  ├─ max7219-config.js
+│  │  ├─ mcp2515-config.js
+│  │  └─ pca9685-config.js
+│  ├─ mcu
+│  │  ├─ arm
+│  │  │  └─ rp2350-config.js
+│  │  ├─ avr
+│  │  │  ├─ atmega2560-config.js
+│  │  │  ├─ atmega32-config.js
+│  │  │  ├─ atmega328p-config.js
+│  │  │  ├─ atmega32u4-config.js
+│  │  │  ├─ attiny13-config.js
+│  │  │  ├─ attiny45-config.js
+│  │  │  └─ attiny85-config.js
+│  │  ├─ msp430
+│  │  │  ├─ msp430f5529-config.js
+│  │  │  ├─ msp430fr5994-config.js
+│  │  │  └─ msp430g2553-config.js
+│  │  ├─ pic
+│  │  │  ├─ pic12f683-config.js
+│  │  │  ├─ pic16f877a-config.js
+│  │  │  └─ pic18f4550-config.js
+│  │  └─ stm32
+│  │     ├─ stm32f103c8t6-config.js
+│  │     ├─ stm32f401re-config.js
+│  │     └─ stm32l4r5zit6-config.js
+│  ├─ mixed
+│  │  ├─ ads1115-config.js
+│  │  ├─ l293d-config.js
+│  │  ├─ mp2307-config.js
+│  │  └─ mpu-6050-config.js
+│  ├─ pmic
+│  │  ├─ lm2596-config.js
+│  │  ├─ mp2315-config.js
+│  │  └─ tp4056-config.js
+│  └─ soc
+│     └─ nrf52840-config.js
+├─ core
+│  ├─ .keep
+│  ├─ ic-explorer-base.js
+│  └─ ic-explorer-core.css
+├─ dip-renderer.js
+├─ flashers
+│  ├─ stk500-flasher.js
+│  └─ webdfu.js
+├─ ic-explorer-core.css
+├─ ic-explorer-engine.js
+├─ qfp-renderer.js
+└─ renderers
+   ├─ .keep
+   ├─ arduino-uno-renderer.js
+   ├─ custom-board-renderer.js
+   ├─ dip-renderer.js
+   ├─ qfn-renderer.js
+   ├─ qfp-renderer.js
+   ├─ renderer-factory.js
+   └─ teensy41-renderer.js
 ```
 
 > **Note:** There is no `tools/` folder. Tool widgets are not hosted as separate files.
