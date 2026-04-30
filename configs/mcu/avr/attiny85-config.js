@@ -46,12 +46,12 @@ window.IC_CONFIG = {
       num:   1,
       id:    'PB5',
       lbl:   'PB5',
-      name:  'PB5 / !RESET / ADC0 / dW',
+      name:  'PB5 / RESET / ADC0 / dW',
       type:  'RESET',
       funcs: ['RESET', 'GPIO', 'ADC'],
       volt:  '2.7–5.5V',
       curr:  '40 mA',
-      note:  'Port B bit 5. Serves as the active-low external reset input when configured as !RESET. Also functions as ADC channel 0 (ADC0) and debugWIRE (dW) communication pin. Can be reconfigured as a GPIO via fuse settings, but this disables external reset capability.'
+      note:  'Port B bit 5. Serves as the active-low external reset input (primary function). Also functions as ADC channel 0 (ADC0) and the debugWIRE single-wire debug interface (dW). Can be reconfigured as a standard GPIO via fuse settings, but doing so permanently disables the external reset capability.'
     },
     {
       num:   2,
@@ -62,7 +62,7 @@ window.IC_CONFIG = {
       funcs: ['GPIO', 'XTAL', 'ADC', 'PWM', 'TIMER'],
       volt:  '2.7–5.5V',
       curr:  '40 mA',
-      note:  'Port B bit 3. Doubles as the XTAL1 crystal oscillator input and external clock input (CLKI) when an external oscillator is selected. Also serves as ADC channel 3 (ADC3) and Timer/Counter1 compare match output B (OC1B) for PWM generation.'
+      note:  'Port B bit 3. Acts as the XTAL1 crystal oscillator input or external clock input (CLKI) when an external clock source is selected. Also serves as ADC channel 3 (ADC3) and Timer/Counter1 compare match output B (OC1B) for PWM generation.'
     },
     {
       num:   3,
@@ -73,7 +73,7 @@ window.IC_CONFIG = {
       funcs: ['GPIO', 'XTAL', 'ADC', 'PWM', 'TIMER'],
       volt:  '2.7–5.5V',
       curr:  '40 mA',
-      note:  'Port B bit 4. Acts as the XTAL2 crystal oscillator output and clock output (CLKO) when the clock-output fuse is programmed. Also supports ADC channel 2 (ADC2) and Timer/Counter1 complementary compare match output B (OC1B).'
+      note:  'Port B bit 4. Acts as the XTAL2 crystal oscillator output and clock output (CLKO) when the clock-output fuse is programmed. Also supports ADC channel 2 (ADC2) and Timer/Counter1 compare match output B (OC1B) for PWM.'
     },
     {
       num:   4,
@@ -90,36 +90,36 @@ window.IC_CONFIG = {
       num:   5,
       id:    'PB0',
       lbl:   'PB0',
-      name:  'PB0 / MOSI / SDA / AIN0 / OC0A / AREF / PCINT0',
+      name:  'PB0 / MOSI / SDA / AIN0 / OC0A / OC1A / AREF',
       type:  'GPIO',
-      funcs: ['GPIO', 'SPI', 'I2C', 'ADC', 'PWM', 'TIMER', 'INT'],
+      funcs: ['GPIO', 'SPI', 'I2C', 'ADC', 'PWM', 'TIMER'],
       volt:  '2.7–5.5V',
       curr:  '40 mA',
-      note:  'Port B bit 0. One of the most versatile pins on the ATtiny85. Serves as SPI MOSI (Master Out Slave In) and USI DI/SDA for I²C. Functions as the analog positive comparator input (AIN0), ADC voltage reference (AREF), Timer0 compare match output A (OC0A), and supports pin-change interrupt (PCINT0).',
+      note:  'Port B bit 0 — the most versatile pin on the ATtiny85. Serves as SPI MOSI (Master Out Slave In) and USI DI/SDA for I²C communication. Functions as the analog positive comparator input (AIN0), external ADC voltage reference (AREF), Timer0 compare match output A (OC0A), and Timer1 compare match output A (OC1A) for PWM.',
       _rightSlot: 0
     },
     {
       num:   6,
       id:    'PB1',
       lbl:   'PB1',
-      name:  'PB1 / MISO / DO / AIN1 / OC0B / OC1A / PCINT1',
+      name:  'PB1 / MISO / DO / AIN1 / OC0B / OC1A',
       type:  'GPIO',
-      funcs: ['GPIO', 'SPI', 'ADC', 'PWM', 'TIMER', 'INT'],
+      funcs: ['GPIO', 'SPI', 'ADC', 'PWM', 'TIMER'],
       volt:  '2.7–5.5V',
       curr:  '40 mA',
-      note:  'Port B bit 1. Acts as SPI MISO (Master In Slave Out) and USI DO in SPI/I²C communication. Also serves as the analog negative comparator input (AIN1), Timer0 compare match output B (OC0B), Timer1 compare match output A (OC1A), and pin-change interrupt (PCINT1).',
+      note:  'Port B bit 1. Acts as SPI MISO (Master In Slave Out) and USI DO in serial communication. Also serves as the analog negative comparator input (AIN1), Timer0 compare match output B (OC0B), and Timer1 compare match output A (OC1A) for PWM generation.',
       _rightSlot: 1
     },
     {
       num:   7,
       id:    'PB2',
       lbl:   'PB2',
-      name:  'PB2 / SCK / SCL / ADC1 / T0 / INT0 / PCINT2',
+      name:  'PB2 / SCK / SCL / ADC1 / T0 / INT0',
       type:  'GPIO',
       funcs: ['GPIO', 'SPI', 'I2C', 'ADC', 'TIMER', 'INT'],
       volt:  '2.7–5.5V',
       curr:  '40 mA',
-      note:  'Port B bit 2. Serves as the SPI clock (SCK) and USI SCL for I²C. Also functions as ADC channel 1 (ADC1), Timer0 external clock input (T0), external interrupt pin (INT0), and pin-change interrupt (PCINT2). The INT0 function makes this the primary hardware interrupt pin.',
+      note:  'Port B bit 2. Serves as the SPI clock (SCK) and USI SCL for I²C communication. Also functions as ADC channel 1 (ADC1), Timer0 external clock input (T0), and the primary external interrupt pin (INT0) with configurable edge or level triggering.',
       _rightSlot: 2
     },
     {
@@ -131,19 +131,19 @@ window.IC_CONFIG = {
       funcs: ['PWR'],
       volt:  '2.7–5.5V',
       curr:  'N/A',
-      note:  'Positive supply voltage for the device. The ATtiny85 operates from 2.7V to 5.5V (full speed up to 5.5V at 20 MHz). For battery-powered applications, the device can operate down to 1.8V at reduced frequencies (ATtiny85V variant). Decouple with a 100 nF ceramic capacitor placed close to this pin.',
+      note:  'Positive supply voltage for the device. The ATtiny85 operates from 2.7V to 5.5V (full speed up to 20 MHz). For battery-powered applications, the ATtiny85V variant operates down to 1.8V at reduced clock frequencies. Decouple with a 100 nF ceramic capacitor placed as close to this pin as possible.',
       _rightSlot: 3
     },
   ],
 
   // ── ALTERNATE FUNCTIONS ───────────────────────────────────────
   altFuncs: {
-    'PB5': ['!RESET', 'ADC0', 'dW', 'PCINT5'],
-    'PB3': ['XTAL1', 'CLKI', 'OC1B', 'ADC3', 'PCINT3'],
-    'PB4': ['XTAL2', 'CLKO', 'OC1B', 'ADC2', 'PCINT4'],
-    'PB0': ['MOSI', 'DI', 'SDA', 'AIN0', 'OC0A', '!OC1A', 'AREF', 'PCINT0'],
-    'PB1': ['MISO', 'DO', 'AIN1', 'OC0B', 'OC1A', 'PCINT1'],
-    'PB2': ['SCK', 'USCK', 'SCL', 'ADC1', 'T0', 'INT0', 'PCINT2'],
+    'PB5': ['RESET', 'ADC0', 'dW'],
+    'PB3': ['XTAL1', 'CLKI', 'OC1B', 'ADC3'],
+    'PB4': ['XTAL2', 'CLKO', 'OC1B', 'ADC2'],
+    'PB0': ['MOSI', 'DI', 'SDA', 'AIN0', 'OC0A', 'OC1A', 'AREF'],
+    'PB1': ['MISO', 'DO', 'AIN1', 'OC0B', 'OC1A'],
+    'PB2': ['SCK', 'USCK', 'SCL', 'ADC1', 'T0', 'INT0'],
   },
 
   // ── QUICK SPECS ───────────────────────────────────────────────
