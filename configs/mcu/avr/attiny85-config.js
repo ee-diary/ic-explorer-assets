@@ -96,7 +96,7 @@ window.IC_CONFIG = {
       volt:  '2.7–5.5V',
       curr:  '40 mA',
       note:  'Port B bit 0 — the most versatile pin on the ATtiny85. Serves as SPI MOSI (Master Out Slave In) and USI DI/SDA for I²C communication. Functions as the analog positive comparator input (AIN0), external ADC voltage reference (AREF), Timer0 compare match output A (OC0A), and Timer1 compare match output A (OC1A) for PWM.',
-      _rightSlot: 0
+      _rightSlot: 3
     },
     {
       num:   6,
@@ -108,7 +108,7 @@ window.IC_CONFIG = {
       volt:  '2.7–5.5V',
       curr:  '40 mA',
       note:  'Port B bit 1. Acts as SPI MISO (Master In Slave Out) and USI DO in serial communication. Also serves as the analog negative comparator input (AIN1), Timer0 compare match output B (OC0B), and Timer1 compare match output A (OC1A) for PWM generation.',
-      _rightSlot: 1
+      _rightSlot: 2
     },
     {
       num:   7,
@@ -120,7 +120,7 @@ window.IC_CONFIG = {
       volt:  '2.7–5.5V',
       curr:  '40 mA',
       note:  'Port B bit 2. Serves as the SPI clock (SCK) and USI SCL for I²C communication. Also functions as ADC channel 1 (ADC1), Timer0 external clock input (T0), and the primary external interrupt pin (INT0) with configurable edge or level triggering.',
-      _rightSlot: 2
+      _rightSlot: 1
     },
     {
       num:   8,
@@ -132,7 +132,7 @@ window.IC_CONFIG = {
       volt:  '2.7–5.5V',
       curr:  'N/A',
       note:  'Positive supply voltage for the device. The ATtiny85 operates from 2.7V to 5.5V (full speed up to 20 MHz). For battery-powered applications, the ATtiny85V variant operates down to 1.8V at reduced clock frequencies. Decouple with a 100 nF ceramic capacitor placed as close to this pin as possible.',
-      _rightSlot: 3
+      _rightSlot: 0
     },
   ],
 
