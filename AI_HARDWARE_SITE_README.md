@@ -35,93 +35,94 @@ The four planned tools are described below in priority order.
 
 ```
 📦 
-├─ AI_HARDWARE_SITE_README.md
-├─ README.md
-├─ configs
-│  ├─ .keep
-│  ├─ analog
-│  │  ├─ lm3914-config.js
-│  │  ├─ mc1496-config.js
-│  │  ├─ mp1584-config.js
-│  │  └─ op-amp
-│  │     ├─ lm324-config.js
-│  │     ├─ lm358-config.js
-│  │     └─ tl072-config.js
-│  ├─ boards
-│  │  ├─ arduino-uno-config.js
-│  │  ├─ rasberry-pi3-config.js
-│  │  └─ teensy41-config.js
-│  ├─ cpu
-│  │  └─ ryzen5-7600-config.js
-│  ├─ digital
-│  │  ├─ 74hc4051-config.js
-│  │  ├─ 74hc595-config.js
-│  │  ├─ dm7486n-config.js
-│  │  └─ ne555-timer-config.js
-│  ├─ interface
-│  │  ├─ ch340g-config.js
-│  │  ├─ cp2102-config.js
-│  │  ├─ ft232rl-config.js
-│  │  ├─ max7219-config.js
-│  │  ├─ mcp2515-config.js
-│  │  └─ pca9685-config.js
-│  ├─ mcu
-│  │  ├─ arm
-│  │  │  └─ rp2350-config.js
-│  │  ├─ avr
-│  │  │  ├─ atmega2560-config.js
-│  │  │  ├─ atmega32-config.js
-│  │  │  ├─ atmega328p-config.js
-│  │  │  ├─ atmega32u4-config.js
-│  │  │  ├─ attiny13-config.js
-│  │  │  ├─ attiny45-config.js
-│  │  │  └─ attiny85-config.js
-│  │  ├─ msp430
-│  │  │  ├─ msp430f5529-config.js
-│  │  │  ├─ msp430fr5994-config.js
-│  │  │  └─ msp430g2553-config.js
-│  │  ├─ pic
-│  │  │  ├─ pic12f683-config.js
-│  │  │  ├─ pic16f877a-config.js
-│  │  │  └─ pic18f4550-config.js
-│  │  └─ stm32
-│  │     ├─ stm32f103c8t6-config.js
-│  │     ├─ stm32f401re-config.js
-│  │     └─ stm32l4r5zit6-config.js
-│  ├─ mixed
-│  │  ├─ ads1115-config.js
-│  │  ├─ l293d-config.js
-│  │  ├─ mp2307-config.js
-│  │  └─ mpu-6050-config.js
-│  ├─ pmic
-│  │  ├─ lm2596-config.js
-│  │  ├─ mp2315-config.js
-│  │  └─ tp4056-config.js
-│  └─ soc
-│     └─ nrf52840-config.js
-├─ core
-│  ├─ .keep
-│  ├─ ic-explorer-base.js
-│  └─ ic-explorer-core.css
-├─ dip-renderer.js
-├─ flashers
-│  ├─ stk500-flasher.js
-│  └─ webdfu.js
-├─ ic-explorer-core.css
-├─ ic-explorer-engine.js
-├─ qfp-renderer.js
-└─ renderers
-   ├─ .keep
-   ├─ arduino-uno-renderer.js
-   ├─ cpu-socket-renderer.js
-   ├─ custom-board-renderer.js
-   ├─ dip-renderer.js
-   ├─ gpu-renderer.js
-   ├─ qfn-renderer.js
-   ├─ qfp-renderer.js
-   ├─ renderer-factory.js
-   ├─ soic-renderer.js
-   └─ teensy41-renderer.js
+├─ AI_HARDWARE_SITE_README.md
+├─ README.md
+├─ configs
+│  ├─ .keep
+│  ├─ analog
+│  │  ├─ lm3914-config.js
+│  │  ├─ mc1496-config.js
+│  │  ├─ mp1584-config.js
+│  │  └─ op-amp
+│  │     ├─ lm324-config.js
+│  │     ├─ lm358-config.js
+│  │     └─ tl072-config.js
+│  ├─ boards
+│  │  ├─ arduino-uno-config.js
+│  │  ├─ rasberry-pi3-config.js
+│  │  └─ teensy41-config.js
+│  ├─ cpu
+│  │  └─ ryzen5-7600-config.js
+│  ├─ digital
+│  │  ├─ 74hc4051-config.js
+│  │  ├─ 74hc595-config.js
+│  │  ├─ dm7486n-config.js
+│  │  └─ ne555-timer-config.js
+│  ├─ interface
+│  │  ├─ ch340g-config.js
+│  │  ├─ cp2102-config.js
+│  │  ├─ ft232rl-config.js
+│  │  ├─ max7219-config.js
+│  │  ├─ mcp2515-config.js
+│  │  └─ pca9685-config.js
+│  ├─ mcu
+│  │  ├─ arm
+│  │  │  └─ rp2350-config.js
+│  │  ├─ avr
+│  │  │  ├─ atmega2560-config.js
+│  │  │  ├─ atmega32-config.js
+│  │  │  ├─ atmega328p-config.js
+│  │  │  ├─ atmega32u4-config.js
+│  │  │  ├─ attiny13-config.js
+│  │  │  ├─ attiny45-config.js
+│  │  │  └─ attiny85-config.js
+│  │  ├─ msp430
+│  │  │  ├─ msp430f5529-config.js
+│  │  │  ├─ msp430fr5994-config.js
+│  │  │  └─ msp430g2553-config.js
+│  │  ├─ pic
+│  │  │  ├─ pic12f683-config.js
+│  │  │  ├─ pic16f877a-config.js
+│  │  │  └─ pic18f4550-config.js
+│  │  └─ stm32
+│  │     ├─ stm32f103c8t6-config.js
+│  │     ├─ stm32f401re-config.js
+│  │     └─ stm32l4r5zit6-config.js
+│  ├─ mixed
+│  │  ├─ ads1115-config.js
+│  │  ├─ l293d-config.js
+│  │  ├─ mp2307-config.js
+│  │  └─ mpu-6050-config.js
+│  ├─ pmic
+│  │  ├─ lm2596-config.js
+│  │  ├─ mp2315-config.js
+│  │  └─ tp4056-config.js
+│  └─ soc
+│     └─ nrf52840-config.js
+├─ core
+│  ├─ .keep
+│  ├─ ic-explorer-base.js
+│  └─ ic-explorer-core.css
+├─ dip-renderer.js
+├─ flashers
+│  ├─ stk500-flasher.js
+│  └─ webdfu.js
+├─ ic-explorer-core.css
+├─ ic-explorer-engine.js
+├─ qfp-renderer.js
+└─ renderers
+   ├─ .keep
+   ├─ arduino-uno-renderer.js
+   ├─ cpu-socket-renderer.js
+   ├─ custom-board-renderer.js
+   ├─ dip-renderer.js
+   ├─ gpu-renderer.js
+   ├─ qfn-renderer.js
+   ├─ qfp-renderer.js
+   ├─ renderer-factory.js
+   ├─ soic-renderer.js
+   ├─ soc-renderer.js
+   └─ teensy41-renderer.js
 ```
 
 > **Note:** There is no `tools/` folder. Tool widgets are not hosted as separate files.
@@ -233,43 +234,26 @@ Each GPU entry needs:
 ```js
 {
   id: 'rtx-4090',
-  name: 'NVIDIA RTX 4090',
+  name: 'NVIDIA GeForce RTX 4090',
   tier: 10,         // 1–10 GPU gaming performance tier
-  vram: 24,         // GB
-  tdp: 450,         // watts
-  bandwidth: 1008,  // GB/s
-  hasRTCores: true,
-  hasTensorCores: true
+  vram: 24,
+  tdp: 450,
+  vendor: 'nvidia'
 }
-```
-
-### Bottleneck calculation logic
-```
-bottleneck_pct = abs(cpu_tier - gpu_tier) * 10  // rough percentage
-resolution_weight:
-  1080p → CPU-heavy (cpu_tier matters more)
-  1440p → balanced
-  4K    → GPU-heavy (gpu_tier matters more)
-
-synergy_1080p = 100 - max(0, (gpu_tier - cpu_tier) * 12)
-synergy_1440p = 100 - abs(cpu_tier - gpu_tier) * 7
-synergy_4K    = 100 - max(0, (cpu_tier - gpu_tier) * 12)
 ```
 
 ### UI layout
 ```
-[CPU Dropdown]    [GPU Dropdown]    [Calculate Button]
+[CPU Dropdown ▼]          [GPU Dropdown ▼]          [Calculate]
 
-─────────────────────────────────────
-  Resolution  │  Synergy  │  Verdict
-─────────────────────────────────────
-  1080p        [====|====] 78%  CPU bottleneck -22%
-  1440p        [=========] 94%  Balanced ✓
-  4K           [====|====] 82%  GPU bottleneck -18%
-─────────────────────────────────────
+┌──────────────────────────────────────────────────────────────┐
+│  1080p   Synergy: ████████░░  82%   Bottleneck: CPU          │
+│  1440p   Synergy: █████████░  91%   Bottleneck: Balanced ✓   │
+│  4K      Synergy: ██████████  97%   Bottleneck: GPU          │
+└──────────────────────────────────────────────────────────────┘
 
-  💡 Advice: Your GPU is underutilized at 1080p.
-     Switch to 1440p for the best balance.
+💡 Your GPU is 30% underutilised at 1080p.
+   Switch to 1440p for the best balance.
 ```
 
 ---
@@ -415,21 +399,56 @@ For each CPU/GPU blog post (paralleling how AVR/PIC posts work for IC Explorer):
 
 ---
 
-## What NOT to Touch
+## IC Explorer Renderer Files — What to Touch and When
 
-These files must not be modified unless fixing a confirmed bug:
+The renderer files serve the original IC Explorer pages. The rules below replace any
+previous blanket "do not touch" guidance and give you clear criteria for each file.
+
+### Never modify (bug fixes only)
+These files are core infrastructure. Only touch them if you have identified and can
+reproduce a specific bug:
 
 - `core/ic-explorer-core.css`
 - `core/ic-explorer-base.js`
-- `renderers/renderer-factory.js`
 - `renderers/dip-renderer.js`
-- `renderers/qfp-renderer.js`
 - `renderers/qfn-renderer.js`
 - `renderers/custom-board-renderer.js`
 - `renderers/arduino-uno-renderer.js`
 - `renderers/teensy41-renderer.js`
 
-These serve the original IC Explorer pages and must remain backward compatible.
+### Modify when a new chip or renderer requires it
+`renderer-factory.js` maps package strings and part names to renderer objects.
+You **must** update it when:
+
+- Adding a CPU, GPU, or SoC whose `package` value does not match any existing
+  factory entry (e.g. a new socket type, a new GPU family, a new SoC form factor).
+- Creating a brand-new renderer file — the factory must register it before any
+  chip page can use it.
+
+When editing `renderer-factory.js`:
+- Add the new match condition following the pattern of existing entries.
+- Do not remove or reorder existing conditions — all existing chip pages must keep working.
+- Return the correct renderer object from the factory function.
+
+### Modify to check or fix renderer completeness
+If the chip's package routes to one of the renderers below but the rendered output
+is wrong or incomplete, inspect and update the relevant file:
+
+- `renderers/qfp-renderer.js` — for QFP / LQFP / TQFP chips
+- `renderers/cpu-socket-renderer.js` — for socketed CPUs (AM5, LGA1851, etc.)
+- `renderers/gpu-renderer.js` — for PCIe GPU cards
+- `renderers/soc-renderer.js` — for SoC / integrated die packages
+
+### Create a new renderer when the form factor is not covered
+If the chip's physical form factor does not match any existing renderer (e.g. an
+AI accelerator mezzanine, a BGA module, or a custom connector layout), **create a
+new renderer** rather than forcing the chip into the wrong one:
+
+1. Create `renderers/CHIPTYPE-renderer.js`.
+2. Implement `draw(svg, config)` and `updatePins(selectedId, filterType, filterFn)`.
+3. Register it on `window` (e.g. `window.MyChipRenderer = { draw, updatePins }`).
+4. Add a `<script>` tag for it in the 6-step load order on the chip's HTML page.
+5. Add a match condition in `renderer-factory.js` pointing to the new renderer.
 
 ---
 
@@ -457,12 +476,14 @@ These serve the original IC Explorer pages and must remain backward compatible.
 
 ### When asked to create a new IC Explorer chip page (original feature)
 
-Follow the original IC Explorer rules:
+Follow the original IC Explorer rules defined in `README.md`:
 - Write only `configs/CHIPNAME-config.js`
 - Use lowercase-hyphenated names: `rtx4090`, `corei9-14900k`, etc.
-- Follow the `window.IC_CONFIG` schema from the original readme
-- The HTML page for the blog post loads scripts in the 6-step order defined
-  in the original readme
+- Follow the `window.IC_CONFIG` schema from `README.md`
+- The HTML page for the blog post loads scripts in the 6-step order defined there
+- For CPU / GPU / SoC packages, check and update `renderer-factory.js` if the
+  package string is new, and create a new renderer file if the form factor is not
+  covered by any existing renderer
 
 ### Output format rules
 
@@ -482,8 +503,8 @@ Follow the original IC Explorer rules:
 ## Reference — Standard IC Explorer Config (for legacy chip pages)
 
 The IC Explorer config format for standard microcontroller chips (AVR, PIC, STM32 etc.)
-is unchanged. See original `readme.txt` for the full `window.IC_CONFIG` schema,
-pin ordering rules, renderer factory routing, and the 6-step HTML load order.
+is unchanged. See `README.md` for the full `window.IC_CONFIG` schema, pin ordering
+rules, renderer factory routing, and the 6-step HTML load order.
 
 The gold-standard reference page for IC Explorer behavior is the PIC16F877A page.
 
@@ -498,5 +519,7 @@ The gold-standard reference page for IC Explorer behavior is the PIC16F877A page
 | Chip Anatomy Explorer tool      | Blogger HTML snippet (no doc tags)               | Tool #3 spec above        |
 | PSU/Thermal Sanity Check tool   | Blogger HTML snippet (no doc tags)               | Tool #4 spec above        |
 | New CPU/GPU blog post           | Paste widget snippet into Blogger post HTML      | Post structure above      |
-| New standard IC pinout page     | `configs/CHIPNAME-config.js`                     | Original readme.txt       |
-| New dev board pinout page       | `configs/BOARD-config.js` + `boards/BOARD-board.js` | Original readme.txt    |
+| New standard IC pinout page     | `configs/CHIPNAME-config.js`                     | README.md                 |
+| New CPU / GPU / SoC pinout page | `configs/TYPE/CHIPNAME-config.js` + factory update if needed | README.md + renderer rules above |
+| New dev board pinout page       | `configs/BOARD-config.js` + `boards/BOARD-board.js` | README.md             |
+| New renderer (unsupported form factor) | `renderers/CHIPTYPE-renderer.js` + `renderer-factory.js` update | README.md step 8 |

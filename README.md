@@ -14,93 +14,95 @@ The live asset base is: https://ee-diary.github.io/ic-explorer-assets/
 
 ```
 📦 
-├─ AI_HARDWARE_SITE_README.md
-├─ README.md
-├─ configs
-│  ├─ .keep
-│  ├─ analog
-│  │  ├─ lm3914-config.js
-│  │  ├─ mc1496-config.js
-│  │  ├─ mp1584-config.js
-│  │  └─ op-amp
-│  │     ├─ lm324-config.js
-│  │     ├─ lm358-config.js
-│  │     └─ tl072-config.js
-│  ├─ boards
-│  │  ├─ arduino-uno-config.js
-│  │  ├─ rasberry-pi3-config.js
-│  │  └─ teensy41-config.js
-│  ├─ cpu
-│  │  └─ ryzen5-7600-config.js
-│  ├─ digital
-│  │  ├─ 74hc4051-config.js
-│  │  ├─ 74hc595-config.js
-│  │  ├─ dm7486n-config.js
-│  │  └─ ne555-timer-config.js
-│  ├─ interface
-│  │  ├─ ch340g-config.js
-│  │  ├─ cp2102-config.js
-│  │  ├─ ft232rl-config.js
-│  │  ├─ max7219-config.js
-│  │  ├─ mcp2515-config.js
-│  │  └─ pca9685-config.js
-│  ├─ mcu
-│  │  ├─ arm
-│  │  │  └─ rp2350-config.js
-│  │  ├─ avr
-│  │  │  ├─ atmega2560-config.js
-│  │  │  ├─ atmega32-config.js
-│  │  │  ├─ atmega328p-config.js
-│  │  │  ├─ atmega32u4-config.js
-│  │  │  ├─ attiny13-config.js
-│  │  │  ├─ attiny45-config.js
-│  │  │  └─ attiny85-config.js
-│  │  ├─ msp430
-│  │  │  ├─ msp430f5529-config.js
-│  │  │  ├─ msp430fr5994-config.js
-│  │  │  └─ msp430g2553-config.js
-│  │  ├─ pic
-│  │  │  ├─ pic12f683-config.js
-│  │  │  ├─ pic16f877a-config.js
-│  │  │  └─ pic18f4550-config.js
-│  │  └─ stm32
-│  │     ├─ stm32f103c8t6-config.js
-│  │     ├─ stm32f401re-config.js
-│  │     └─ stm32l4r5zit6-config.js
-│  ├─ mixed
-│  │  ├─ ads1115-config.js
-│  │  ├─ l293d-config.js
-│  │  ├─ mp2307-config.js
-│  │  └─ mpu-6050-config.js
-│  ├─ pmic
-│  │  ├─ lm2596-config.js
-│  │  ├─ mp2315-config.js
-│  │  └─ tp4056-config.js
-│  └─ soc
-│     └─ nrf52840-config.js
-├─ core
-│  ├─ .keep
-│  ├─ ic-explorer-base.js
-│  └─ ic-explorer-core.css
-├─ dip-renderer.js
-├─ flashers
-│  ├─ stk500-flasher.js
-│  └─ webdfu.js
-├─ ic-explorer-core.css
-├─ ic-explorer-engine.js
-├─ qfp-renderer.js
-└─ renderers
-   ├─ .keep
-   ├─ arduino-uno-renderer.js
-   ├─ cpu-socket-renderer.js
-   ├─ custom-board-renderer.js
-   ├─ dip-renderer.js
-   ├─ gpu-renderer.js
-   ├─ qfn-renderer.js
-   ├─ qfp-renderer.js
-   ├─ renderer-factory.js
-   ├─ soic-renderer.js
-   └─ teensy41-renderer.js
+├─ AI_HARDWARE_SITE_README.md
+├─ README.md
+├─ configs
+│  ├─ .keep
+│  ├─ analog
+│  │  ├─ lm3914-config.js
+│  │  ├─ mc1496-config.js
+│  │  ├─ mp1584-config.js
+│  │  └─ op-amp
+│  │     ├─ lm324-config.js
+│  │     ├─ lm358-config.js
+│  │     └─ tl072-config.js
+│  ├─ boards
+│  │  ├─ arduino-uno-config.js
+│  │  ├─ rasberry-pi3-config.js
+│  │  └─ teensy41-config.js
+│  ├─ cpu
+│  │  └─ ryzen5-7600-config.js
+│  ├─ digital
+│  │  ├─ 74hc4051-config.js
+│  │  ├─ 74hc595-config.js
+│  │  ├─ dm7486n-config.js
+│  │  └─ ne555-timer-config.js
+│  ├─ interface
+│  │  ├─ ch340g-config.js
+│  │  ├─ cp2102-config.js
+│  │  ├─ ft232rl-config.js
+│  │  ├─ max7219-config.js
+│  │  ├─ mcp2515-config.js
+│  │  └─ pca9685-config.js
+│  ├─ mcu
+│  │  ├─ arm
+│  │  │  └─ rp2350-config.js
+│  │  ├─ avr
+│  │  │  ├─ atmega2560-config.js
+│  │  │  ├─ atmega32-config.js
+│  │  │  ├─ atmega328p-config.js
+│  │  │  ├─ atmega32u4-config.js
+│  │  │  ├─ attiny13-config.js
+│  │  │  ├─ attiny45-config.js
+│  │  │  └─ attiny85-config.js
+│  │  ├─ msp430
+│  │  │  ├─ msp430f5529-config.js
+│  │  │  ├─ msp430fr5994-config.js
+│  │  │  └─ msp430g2553-config.js
+│  │  ├─ pic
+│  │  │  ├─ pic12f683-config.js
+│  │  │  ├─ pic16f877a-config.js
+│  │  │  └─ pic18f4550-config.js
+│  │  └─ stm32
+│  │     ├─ stm32f103c8t6-config.js
+│  │     ├─ stm32f401re-config.js
+│  │     └─ stm32l4r5zit6-config.js
+│  ├─ mixed
+│  │  ├─ ads1115-config.js
+│  │  ├─ l293d-config.js
+│  │  ├─ mp2307-config.js
+│  │  └─ mpu-6050-config.js
+│  ├─ pmic
+│  │  ├─ lm2596-config.js
+│  │  ├─ mp2315-config.js
+│  │  └─ tp4056-config.js
+│  └─ soc
+│     └─ nrf52840-config.js
+├─ core
+│  ├─ .keep
+│  ├─ ic-explorer-base.js
+│  └─ ic-explorer-core.css
+├─ dip-renderer.js
+├─ flashers
+│  ├─ stk500-flasher.js
+│  └─ webdfu.js
+├─ ic-explorer-core.css
+├─ ic-explorer-engine.js
+├─ qfp-renderer.js
+└─ renderers
+   ├─ .keep
+   ├─ arduino-uno-renderer.js
+   ├─ cpu-socket-renderer.js
+   ├─ custom-board-renderer.js
+   ├─ dip-renderer.js
+   ├─ gpu-renderer.js
+   ├─ qfn-renderer.js
+   ├─ qfp-renderer.js
+   ├─ renderer-factory.js
+   ├─ soic-renderer.js
+   ├─ soc-renderer.js
+   └─ teensy41-renderer.js
+```
 
 ---
 
@@ -127,6 +129,9 @@ Every chip HTML page loads in this exact order — do not change the order:
 <script src="https://ee-diary.github.io/ic-explorer-assets/renderers/dip-renderer.js"></script>
 <script src="https://ee-diary.github.io/ic-explorer-assets/renderers/qfp-renderer.js"></script>
 <script src="https://ee-diary.github.io/ic-explorer-assets/renderers/custom-board-renderer.js"></script>
+<script src="https://ee-diary.github.io/ic-explorer-assets/renderers/cpu-socket-renderer.js"></script>
+<script src="https://ee-diary.github.io/ic-explorer-assets/renderers/gpu-renderer.js"></script>
+<script src="https://ee-diary.github.io/ic-explorer-assets/renderers/soc-renderer.js"></script>
 <script src="https://ee-diary.github.io/ic-explorer-assets/core/ic-explorer-base.js"></script>
 
 <!-- 6. Boot script (populates header from config, selects renderer, calls ICExplorer.init) -->
@@ -409,13 +414,16 @@ Op-amp output    #78c878 (green)     Clock input       #7090a8 (steel)
 |---|---|
 | `DIP` | `DIPRenderer` — 2 sides, left + right |
 | `QFP`, `LQFP`, `TQFP` | `QFPRenderer` — 4 sides, counter-clockwise from pin 1 |
+| `CPU-SOCKET`, `LGA`, `AM5`, `AM4`, `LGA1700`, `LGA1851` | `CPUSocketRenderer` — top-down socket view with contact grid |
+| `GPU` | `GPURenderer` — PCIe card view with edge connector and power headers |
+| `SoC`, `SOC` | `SoCRenderer` — top-down die view with grouped signal regions |
 | Raspberry Pi / Arduino / Teensy (by partName) | `CustomBoardRenderer` or a dedicated board renderer |
 
 The factory is called automatically by the boot script — you never call it manually.
 
 ---
 
-## Pin Highlight Behaviour (both renderers must match this)
+## Pin Highlight Behaviour (all renderers must match this)
 
 | State | Fill | Stroke | SVG Filter | Label colour | Opacity |
 |---|---|---|---|---|---|
@@ -470,22 +478,74 @@ When adding a standard IC, you must:
 6. **Do NOT modify** these files unless there is a specific bug to fix:
    - `ic-explorer-core.css`
    - `ic-explorer-base.js`
-   - `renderer-factory.js`
    - `dip-renderer.js`
    - `custom-board-renderer.js`
 
-7. **Output format**: provide the complete file(s) ready to drop into the repo.
+7. **Renderer factory — when to modify it:**
+   `renderer-factory.js` maps package strings and part names to the correct renderer.
+   You **must** update it when:
+   - Adding a CPU, GPU, or SoC chip whose `package` value does not match any existing
+     factory entry (e.g. a new socket type like `AM5` or a new `GPU` variant).
+   - Creating a brand-new renderer file (see step 8 below) — the factory must register it.
+
+   When updating `renderer-factory.js`:
+   - Add the new match condition following the same pattern as existing entries.
+   - Do not remove or reorder existing conditions — existing pages must keep working.
+   - Return the new renderer object from the factory function.
+
+8. **Creating a new renderer** — when the chip type does not match any existing renderer:
+   If the chip's physical form factor is fundamentally different from DIP, QFP, CPU socket,
+   GPU card, SoC die, or existing board layouts, **create a new renderer file** rather than
+   forcing the chip into an ill-fitting renderer. To do this:
+   - Create `renderers/CHIPTYPE-renderer.js` following the standard renderer interface.
+   - Implement `draw(svg, config)` and `updatePins(selectedId, filterType, filterFn)`.
+   - Register the renderer on `window` (e.g. `window.MyRenderer = { draw, updatePins }`).
+   - Add a `<script>` tag for the new file in the 6-step load order on the chip's HTML page.
+   - Update `renderer-factory.js` to return the new renderer for the relevant package string.
+
+9. **Output format**: provide the complete file(s) ready to drop into the repo.
    Name files exactly as: `configs/CHIPNAME-config.js`
    Use lowercase-hyphenated chip names: `pic16f877a`, `stm32f103c8t6`, `attiny85`, etc.
 
-8. **Flag these issues** if you spot them:
-   - Filename vs. chip identity mismatch (e.g. file named F401 but contains F103 data)
-   - Hardcoded API keys in any file
-   - Pin count mismatch between `pinCount` field and actual `pins` array length
-   - Pins array not sorted in the correct side order for the package type
-   - Custom type used in `pins[].type` or `pins[].funcs` but not defined in `customTypes`
-   - `filterButtons` defined but a pin's `funcs` value has no matching button entry
-     (that pin will never be highlightable via the filter UI)
+10. **Flag these issues** if you spot them:
+    - Filename vs. chip identity mismatch (e.g. file named F401 but contains F103 data)
+    - Hardcoded API keys in any file
+    - Pin count mismatch between `pinCount` field and actual `pins` array length
+    - Pins array not sorted in the correct side order for the package type
+    - Custom type used in `pins[].type` or `pins[].funcs` but not defined in `customTypes`
+    - `filterButtons` defined but a pin's `funcs` value has no matching button entry
+      (that pin will never be highlightable via the filter UI)
+
+---
+
+### CPU / GPU / SoC Chips
+
+CPUs (socketed desktop/server), GPUs (PCIe cards), and SoCs (integrated die packages)
+are handled by their dedicated renderers — `cpu-socket-renderer.js`, `gpu-renderer.js`,
+and `soc-renderer.js` respectively. These renderers each implement the same
+`draw(svg, config)` / `updatePins(selectedId, filterType, filterFn)` interface as all
+other renderers, but produce a form-factor-appropriate visual layout.
+
+When adding a CPU, GPU, or SoC chip:
+
+1. **Set `package` in the config to match the factory routing table** (see Renderer
+   Selection Rules above). Examples: `'AM5'`, `'LGA1851'`, `'GPU-PCIe'`, `'SoC'`.
+
+2. **Check whether `renderer-factory.js` already handles that package string.**
+   If yes, no factory change is needed. If the package string is new (e.g. a new socket
+   generation), add a match condition to `renderer-factory.js` pointing to the correct
+   renderer.
+
+3. **If the chip's form factor is not covered by any of the three existing renderers**
+   (e.g. an AI accelerator card, a BGA module, or an embedded SoC with a non-standard
+   pinout), create a new renderer file following the instructions in step 8 of the
+   Standard IC section above, and update `renderer-factory.js` accordingly.
+
+4. **Write the config file** at `configs/cpu/CHIPNAME-config.js`,
+   `configs/gpu/CHIPNAME-config.js`, or `configs/soc/CHIPNAME-config.js`.
+
+5. **Add the new renderer `<script>` tag** to the chip's HTML page in the 6-step load
+   order (between the existing renderer tags and `ic-explorer-base.js`).
 
 ---
 
@@ -530,14 +590,15 @@ When adding or converting a custom board, you must:
    - Every new renderer must implement the same interface as existing renderers:
      `draw(svg, config)` and `updatePins(selectedId, filterType, filterFn)`
 
-5. **Update `renderer-factory.js` if you add a new renderer.**
+5. **Update `renderer-factory.js` when you add a new renderer.**
    Add the new board's partName match and return the correct renderer object.
    Do not break existing entries.
 
 6. **Preserve backward compatibility.**
    Existing chip pages must continue to work without any changes after your new files
-   are added. Do not alter shared files (`ic-explorer-base.js`, `ic-explorer-core.css`,
-   `renderer-factory.js`) beyond what is strictly necessary for the new board.
+   are added. Do not alter shared files (`ic-explorer-base.js`, `ic-explorer-core.css`)
+   beyond what is strictly necessary for the new board. When editing `renderer-factory.js`,
+   only add new conditions — never remove or reorder existing ones.
 
 7. **Pin highlight behaviour must match the standard.**
    All five visual states (Default, Hover, Selected, Filter match, Filter no-match) must
