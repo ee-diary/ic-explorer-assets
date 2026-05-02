@@ -58,11 +58,11 @@ window.IC_CONFIG = {
   // OC community, motherboard VRM documentation) — each representing a pad class.
   dipConfig: {
     pinsPerSide: 20,
-    bodyX: 122, bodyY: 25, bodyW: 260, bodyH: 700,
+    bodyX: 122, bodyY: 40, bodyW: 260, bodyH: 740,
     pinLength: 34, pinWidthHalf: 16,
     notchSize: 8, notchX: 14, notchY: 14,
     textSizes: { mfr: 12, part: 20, pkg: 14, pinCount: 12 },
-    labelSize: 10, pinNumSize: 13, yOffset: -60
+    labelSize: 10, pinNumSize: 13, yOffset: 0
   },
 
   // ── PINS ───────────────────────────────────────────────────────
