@@ -113,11 +113,14 @@ The four planned tools are described below in priority order.
 └─ renderers
    ├─ .keep
    ├─ arduino-uno-renderer.js
+   ├─ cpu-socket-renderer.js
    ├─ custom-board-renderer.js
    ├─ dip-renderer.js
+   ├─ gpu-renderer.js
    ├─ qfn-renderer.js
    ├─ qfp-renderer.js
    ├─ renderer-factory.js
+   ├─ soic-renderer.js
    └─ teensy41-renderer.js
 ```
 

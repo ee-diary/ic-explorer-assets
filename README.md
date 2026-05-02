@@ -13,38 +13,94 @@ The live asset base is: https://ee-diary.github.io/ic-explorer-assets/
 ## Repository Structure
 
 ```
-ic-explorer-assets/
-
-├── core/
-│   ├── ic-explorer-core.css      # Shared dark-theme UI styles (tabs, panels, badges, tooltip, pin list)
-│   └── ic-explorer-base.js       # Shared engine: tab switching, pin selection, filter buttons,
-│                                 # tooltip, pin list, detail panel, calls renderer.draw() and
-│                                 # renderer.updatePins() on every state change
-
-├── renderers/
-│   ├── renderer-factory.js       # Maps package string → correct renderer object
-│   │                             # DIP-* → DIPRenderer, LQFP/QFP/TQFP → QFPRenderer,
-│   │                             # Raspberry Pi / Arduino / Teensy → CustomBoardRenderer
-│   ├── dip-renderer.js           # Draws 2-sided DIP packages (left + right columns of pins)
-│   ├── qfp-renderer.js           # Draws 4-sided QFP/LQFP packages with full highlight parity
-│   └── custom-board-renderer.js  # Draws dev-board outlines (Raspberry Pi, Arduino, etc.)
-
-├── boards/                       # Board-specific geometry and layout logic (one file per board)
-│   │                             # Created by AI when custom-board-renderer.js is insufficient.
-│   │                             # Each file exports or registers a board definition object
-│   │                             # consumed by custom-board-renderer.js or its own renderer.
-│   ├── raspberry-pi-4b-board.js  # Example: board outline, connector geometry, pin coordinates
-│   └── arduino-uno-board.js      # Example: board outline, header positions, pin coordinates
-
-├── configs/                      # ONE FILE PER CHIP — standard ICs only (DIP / QFP)
-│   ├── pic16f877a-config.js
-│   ├── pic18f4550-config.js
-│   └── stm32f103c8t6-config.js
-
-├── ic-explorer-core.css          # Kept for backward compatibility (same file as core/)
-├── ic-explorer-engine.js         # Legacy monolithic engine — kept for backward compatibility only
-└── ic-explorer-shell.html        # Reference HTML scaffold (copy this for each new chip page)
-```
+📦 
+├─ AI_HARDWARE_SITE_README.md
+├─ README.md
+├─ configs
+│  ├─ .keep
+│  ├─ analog
+│  │  ├─ lm3914-config.js
+│  │  ├─ mc1496-config.js
+│  │  ├─ mp1584-config.js
+│  │  └─ op-amp
+│  │     ├─ lm324-config.js
+│  │     ├─ lm358-config.js
+│  │     └─ tl072-config.js
+│  ├─ boards
+│  │  ├─ arduino-uno-config.js
+│  │  ├─ rasberry-pi3-config.js
+│  │  └─ teensy41-config.js
+│  ├─ cpu
+│  │  └─ ryzen5-7600-config.js
+│  ├─ digital
+│  │  ├─ 74hc4051-config.js
+│  │  ├─ 74hc595-config.js
+│  │  ├─ dm7486n-config.js
+│  │  └─ ne555-timer-config.js
+│  ├─ interface
+│  │  ├─ ch340g-config.js
+│  │  ├─ cp2102-config.js
+│  │  ├─ ft232rl-config.js
+│  │  ├─ max7219-config.js
+│  │  ├─ mcp2515-config.js
+│  │  └─ pca9685-config.js
+│  ├─ mcu
+│  │  ├─ arm
+│  │  │  └─ rp2350-config.js
+│  │  ├─ avr
+│  │  │  ├─ atmega2560-config.js
+│  │  │  ├─ atmega32-config.js
+│  │  │  ├─ atmega328p-config.js
+│  │  │  ├─ atmega32u4-config.js
+│  │  │  ├─ attiny13-config.js
+│  │  │  ├─ attiny45-config.js
+│  │  │  └─ attiny85-config.js
+│  │  ├─ msp430
+│  │  │  ├─ msp430f5529-config.js
+│  │  │  ├─ msp430fr5994-config.js
+│  │  │  └─ msp430g2553-config.js
+│  │  ├─ pic
+│  │  │  ├─ pic12f683-config.js
+│  │  │  ├─ pic16f877a-config.js
+│  │  │  └─ pic18f4550-config.js
+│  │  └─ stm32
+│  │     ├─ stm32f103c8t6-config.js
+│  │     ├─ stm32f401re-config.js
+│  │     └─ stm32l4r5zit6-config.js
+│  ├─ mixed
+│  │  ├─ ads1115-config.js
+│  │  ├─ l293d-config.js
+│  │  ├─ mp2307-config.js
+│  │  └─ mpu-6050-config.js
+│  ├─ pmic
+│  │  ├─ lm2596-config.js
+│  │  ├─ mp2315-config.js
+│  │  └─ tp4056-config.js
+│  └─ soc
+│     └─ nrf52840-config.js
+├─ core
+│  ├─ .keep
+│  ├─ ic-explorer-base.js
+│  └─ ic-explorer-core.css
+├─ dip-renderer.js
+├─ flashers
+│  ├─ stk500-flasher.js
+│  └─ webdfu.js
+├─ ic-explorer-core.css
+├─ ic-explorer-engine.js
+├─ qfp-renderer.js
+└─ renderers
+   ├─ .keep
+   ├─ arduino-uno-renderer.js
+   ├─ cpu-socket-renderer.js
+   ├─ custom-board-renderer.js
+   ├─ dip-renderer.js
+   ├─ gpu-renderer.js
+   ├─ qfn-renderer.js
+   ├─ qfp-renderer.js
+   ├─ renderer-factory.js
+   ├─ soic-renderer.js
+   └─ teensy41-renderer.js
 
 ---
 
