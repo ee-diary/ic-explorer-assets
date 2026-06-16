@@ -48,7 +48,7 @@ window.IC_CONFIG = {
     { type: 'PWR',  label: 'VCC',       color: '#ff6b6b' },
     { type: 'GND',  label: 'GND',       color: '#a8a8a8' },
     { type: 'LDO',  label: 'VG',        color: '#c078ff' },
-    { type: 'DRV',  label: 'DRV — Gate Drive',         color: '#a78bfa' },
+    { type: 'DRV',  label: 'DRV',         color: '#a78bfa' },
     { type: 'BAT',  label: 'BAT/CSP',color: '#3fb950' },
     { type: 'MPPT', label: 'MPPT', color: '#50c8a0' },
     { type: 'STAT', label: 'CHRG/DONE',     color: '#d29922' },
