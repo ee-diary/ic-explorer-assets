@@ -45,14 +45,14 @@ window.IC_CONFIG = {
 
   // ── FILTER BUTTONS ────────────────────────────────────────────
   filterButtons: [
-    { type: 'PWR',  label: 'VCC — Supply Input',       color: '#ff6b6b' },
-    { type: 'GND',  label: 'GND — Ground',             color: '#a8a8a8' },
-    { type: 'LDO',  label: 'VG — Internal LDO',        color: '#c078ff' },
+    { type: 'PWR',  label: 'VCC',       color: '#ff6b6b' },
+    { type: 'GND',  label: 'GND',       color: '#a8a8a8' },
+    { type: 'LDO',  label: 'VG',        color: '#c078ff' },
     { type: 'DRV',  label: 'DRV — Gate Drive',         color: '#a78bfa' },
-    { type: 'BAT',  label: 'BAT / CSP — Current Sense',color: '#3fb950' },
-    { type: 'MPPT', label: 'MPPT — Power Point Track', color: '#50c8a0' },
-    { type: 'STAT', label: 'CHRG / DONE — Status',     color: '#d29922' },
-    { type: 'COMP', label: 'COM — Loop Compensation',  color: '#7090a8' },
+    { type: 'BAT',  label: 'BAT/CSP',color: '#3fb950' },
+    { type: 'MPPT', label: 'MPPT', color: '#50c8a0' },
+    { type: 'STAT', label: 'CHRG/DONE',     color: '#d29922' },
+    { type: 'COMP', label: 'COM',  color: '#7090a8' },
   ],
 
   // ── PINS ──────────────────────────────────────────────────────
